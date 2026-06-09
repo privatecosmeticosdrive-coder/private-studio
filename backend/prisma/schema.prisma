@@ -1,8 +1,15 @@
+// ============================================================
 // Private Studio (v9) — Prisma schema
-// Dia 1: apenas datasource + generator (conexao PostgreSQL KingHost).
-// Dia 2: entram todas as tabelas do Doc 2, secao 3
-//   (users, clientes, materias_primas, mp_fornecedores_alt, formulas,
-//    formula_composicao, orcamentos, cotacoes_pendentes, audit_log, system_config).
+// Modelo de dados conforme Doc 2 (sistema novo), secao 3 + secao 11.
+//
+// Convencoes:
+//  - Modelos em PascalCase; tabelas/colunas em snake_case via @map/@@map.
+//  - PKs de entidades de negocio (users, clientes, orcamentos) = UUID.
+//  - PKs herdadas do KB (materias_primas, formulas) = autoincrement,
+//    preservando os codigos/ids originais em colunas dedicadas.
+//  - Campos extra (batelada, total_ingredientes, snapshots de preco) foram
+//    ADICIONADOS alem do Doc 2 para NAO perder dados do kb.json original.
+// ============================================================
 
 generator client {
   provider = "prisma-client-js"
@@ -11,4 +18,301 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ----------------------- ENUMS -----------------------
+
+enum Role {
+  admin
+  comercial
+  pd
+  compras
+  producao
+}
+
+enum FormulaOrigem {
+  banco_validado
+  ia_gerada
+  pd_manual
+}
+
+enum FormulaStatus {
+  rascunho
+  em_revisao
+  aprovada
+  em_producao
+  arquivada
+}
+
+enum OrcamentoNivel {
+  basic
+  inter
+  premium
+}
+
+enum OrcamentoStatus {
+  rascunho
+  aprovado
+  enviado
+  aceito
+  rejeitado
+  arquivado
+}
+
+enum CotacaoStatus {
+  aguardando
+  validada_pd
+  validada_compras
+  rejeitada
+}
+
+// ----------------------- USERS -----------------------
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  email         String   @unique
+  nome          String
+  password_hash String
+  role          Role
+  ativo         Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  clientes_criados   Cliente[]         @relation("ClienteCreatedBy")
+  formulas_criadas   Formula[]         @relation("FormulaCreatedBy")
+  orcamentos_criados Orcamento[]       @relation("OrcamentoCreatedBy")
+  cotacoes_criadas   CotacaoPendente[] @relation("CotacaoCreatedBy")
+  cotacoes_validadas CotacaoPendente[] @relation("CotacaoValidadaPor")
+  audit_logs         AuditLog[]
+
+  @@map("users")
+}
+
+// ----------------------- CLIENTES -----------------------
+
+model Cliente {
+  id          String   @id @default(uuid()) @db.Uuid
+  nome        String
+  cnpj        String?
+  email       String?
+  telefone    String?
+  observacoes String?
+  created_at  DateTime @default(now())
+  created_by  String?  @db.Uuid
+
+  criado_por User?       @relation("ClienteCreatedBy", fields: [created_by], references: [id])
+  formulas   Formula[]
+  orcamentos Orcamento[]
+
+  @@map("clientes")
+}
+
+// ----------------------- MATERIAS-PRIMAS -----------------------
+
+model MateriaPrima {
+  id               Int       @id @default(autoincrement())
+  codigo           Int       @unique
+  nome             String
+  preco_kg_brl     Decimal?  @db.Decimal(10, 2)
+  preco_anterior   Decimal?  @db.Decimal(10, 2)
+  aumento_pct      Decimal?  @db.Decimal(6, 2)
+  fornecedor       String?
+  embalagem_minima String?
+  data_cotacao     DateTime? @db.Date
+  validade_cotacao String?
+  n_formulas_uso   Int       @default(0)
+  validado_pd      Boolean   @default(false)
+  validado_compras Boolean   @default(false)
+  ativo            Boolean   @default(true)
+  observacoes      String?
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+
+  fornecedores_alt   MpFornecedorAlt[]
+  composicoes        FormulaComposicao[]
+  cotacoes_pendentes CotacaoPendente[]
+
+  @@index([nome])
+  @@map("materias_primas")
+}
+
+// ----------------------- FORNECEDORES ALTERNATIVOS (M:N) -----------------------
+
+model MpFornecedorAlt {
+  id            Int       @id @default(autoincrement())
+  mp_id         Int
+  fornecedor    String
+  preco_kg_brl  Decimal?  @db.Decimal(10, 2)
+  prazo_entrega String?
+  observacoes   String?
+  data_cotacao  DateTime? @db.Date
+
+  mp MateriaPrima @relation(fields: [mp_id], references: [id], onDelete: Cascade)
+
+  @@index([mp_id])
+  @@map("mp_fornecedores_alt")
+}
+
+// ----------------------- FORMULAS -----------------------
+
+model Formula {
+  id                 Int           @id @default(autoincrement())
+  nome_produto       String
+  versao_codigo      String?
+  cliente_id         String?       @db.Uuid
+  data_criacao       DateTime?     @db.Date
+  responsavel        String?
+  custo_mp_kg        Decimal?      @db.Decimal(10, 2)
+  origem             FormulaOrigem @default(banco_validado)
+  status             FormulaStatus @default(aprovada)
+  categoria          String?
+  observacoes        String?
+  // Campos preservados do kb.json (alem do Doc 2):
+  batelada           String?
+  total_ingredientes Int?
+  cliente_original   String? // nome do cliente no KB (antes de virar cliente_id)
+  created_at         DateTime      @default(now())
+  created_by         String?       @db.Uuid
+  updated_at         DateTime      @updatedAt
+
+  cliente    Cliente?            @relation(fields: [cliente_id], references: [id])
+  criado_por User?               @relation("FormulaCreatedBy", fields: [created_by], references: [id])
+  composicao FormulaComposicao[]
+  orcamentos Orcamento[]
+
+  @@index([categoria])
+  @@index([origem])
+  @@map("formulas")
+}
+
+// ----------------------- COMPOSICAO DAS FORMULAS -----------------------
+
+model FormulaComposicao {
+  id                        Int      @id @default(autoincrement())
+  formula_id                Int
+  fase                      String?
+  ordem                     Int?
+  mp_id                     Int?
+  mp_nome_original          String? // nome no KB; preservado p/ casos sem match
+  concentracao_pct          Decimal? @db.Decimal(6, 3)
+  funcao                    String?
+  fornecedor_pref           String?
+  // Snapshots historicos preservados do kb.json (NAO usar como preco atual):
+  preco_kg_snapshot         Decimal? @db.Decimal(10, 2)
+  custo_na_formula_snapshot Decimal? @db.Decimal(10, 4)
+
+  formula Formula       @relation(fields: [formula_id], references: [id], onDelete: Cascade)
+  mp      MateriaPrima? @relation(fields: [mp_id], references: [id])
+
+  @@index([formula_id])
+  @@index([mp_id])
+  @@map("formula_composicao")
+}
+
+// ----------------------- ORCAMENTOS -----------------------
+
+model Orcamento {
+  id                 String          @id @default(uuid()) @db.Uuid
+  numero             Int             @unique @default(autoincrement())
+  cliente_id         String?         @db.Uuid
+  produto            String
+  categoria          String?
+  nivel              OrcamentoNivel?
+  volume_un          Decimal?        @db.Decimal(8, 2)
+  quantidade         Int?
+  margem_pct         Decimal?        @db.Decimal(5, 2)
+  formula_id         Int?
+  embalagem          String?
+  budget_mp          Decimal?        @db.Decimal(10, 2)
+  produto_referencia String?
+  status             OrcamentoStatus @default(rascunho)
+
+  // JSON_CALC travado (Fase 1). Nullable: rascunho ainda nao calculado.
+  calculo Json?
+
+  // Conteudo das 4 paginas (Fase 2)
+  conteudo_pag1 String? // Comercial
+  conteudo_pag2 String? // Industrial
+  conteudo_pag3 String? // Formula P&D
+  conteudo_pag4 String? // Cotacoes
+
+  score_global Int?
+  preco_sipi   Decimal? @db.Decimal(10, 2)
+  preco_cipi   Decimal? @db.Decimal(10, 2)
+  pdf_url      String?
+
+  created_at DateTime @default(now())
+  created_by String?  @db.Uuid
+  updated_at DateTime @updatedAt
+
+  cliente    Cliente? @relation(fields: [cliente_id], references: [id])
+  formula    Formula? @relation(fields: [formula_id], references: [id])
+  criado_por User?    @relation("OrcamentoCreatedBy", fields: [created_by], references: [id])
+
+  @@index([status])
+  @@index([cliente_id])
+  @@map("orcamentos")
+}
+
+// ----------------------- COTACOES PENDENTES -----------------------
+
+model CotacaoPendente {
+  id               Int           @id @default(autoincrement())
+  mp_id            Int?
+  fornecedor       String
+  quantidade       Decimal?      @db.Decimal(10, 2)
+  unidade          String? // kg, L, un
+  valor            Decimal?      @db.Decimal(10, 2)
+  prazo_entrega    String?
+  validade_cotacao DateTime?     @db.Date
+  observacoes      String?
+  status           CotacaoStatus @default(aguardando)
+  created_at       DateTime      @default(now())
+  created_by       String?       @db.Uuid
+  validada_por     String?       @db.Uuid
+  validada_em      DateTime?
+
+  mp         MateriaPrima? @relation(fields: [mp_id], references: [id])
+  criado_por User?         @relation("CotacaoCreatedBy", fields: [created_by], references: [id])
+  validador  User?         @relation("CotacaoValidadaPor", fields: [validada_por], references: [id])
+
+  @@index([status])
+  @@map("cotacoes_pendentes")
+}
+
+// ----------------------- AUDITORIA -----------------------
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  user_id     String?  @db.Uuid
+  acao        String
+  entidade    String?
+  entidade_id String?
+  detalhes    Json?
+  created_at  DateTime @default(now())
+
+  user User? @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@index([entidade, entidade_id])
+  @@map("audit_log")
+}
+
+// ----------------------- CONFIG DO SISTEMA (Doc 2 §11) -----------------------
+// Linha unica (id=1) com parametros editaveis do modelo de custo Private.
+
+model SystemConfig {
+  id                   Int      @id @default(1)
+  mo_folha_mensal      Decimal  @default(75000) @db.Decimal(12, 2)
+  mo_dias_uteis        Int      @default(20)
+  mo_colaboradores     Int      @default(11)
+  imposto_mp_pct       Decimal  @default(37.5) @db.Decimal(6, 3)
+  imposto_mo_pct       Decimal  @default(9.25) @db.Decimal(6, 3)
+  ipi_pct              Decimal  @default(4.55) @db.Decimal(6, 3)
+  desvio_mp_pct        Decimal  @default(10) @db.Decimal(6, 3)
+  frete_un_brl         Decimal  @default(0.10) @db.Decimal(8, 4)
+  produtividade_etapas Json? // regras un/min e un/dia por faixa de etapas
+  updated_at           DateTime @updatedAt
+
+  @@map("system_config")
 }

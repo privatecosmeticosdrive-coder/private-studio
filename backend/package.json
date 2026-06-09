@@ -17,7 +17,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prisma:generate": "prisma generate",
+    "migrate:deploy": "prisma migrate deploy",
+    "seed": "ts-node --transpile-only -P prisma/tsconfig.json prisma/seed.ts",
+    "import:kb": "ts-node --transpile-only -P prisma/tsconfig.json prisma/import-kb.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -25,6 +29,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/client": "^6.19.3",
+    "bcryptjs": "^3.0.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "reflect-metadata": "^0.2.2",
@@ -36,6 +41,7 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
