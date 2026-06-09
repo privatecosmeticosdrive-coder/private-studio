@@ -47,8 +47,26 @@ Sem banco configurado, responde `database: "unavailable"` (o backend sobe mesmo 
 - [x] **Dia 3** — Auth JWT (login/refresh/logout/me) + CRUD de usuários (admin only) + Guards globais (JWT + Roles) + decorators (@Public/@Roles/@CurrentUser). Smoke test 15/15.
 - [x] **Dia 4** — CRUD Clientes; CRUD MPs (busca/paginação/filtros, formulas-que-usam); **atualizar-preço** (histórico + audit + alerta em transação); histórico + gráfico; Alertas (listar/marcar-lido/resolver); SystemConfig GET/PATCH. Smoke test 23/23.
 - [x] **Dia 5** — Fórmulas: CRUD + composição aninhada; versionamento Lab Vivo (nova-versão, validar, diff JSON, árvore de família); **cálculo de custo em tempo real** (preços atuais + termômetro de assertividade); busca fuzzy (GIN tsvector) + sugerir similares. Smoke test 18/18.
-- [ ] Dias 6-7 — Orçamentos Fase 1 + Fase 2, amostragem (Doc 2c), cotações
-- [ ] **Doc 2c** (Dias 6-7) — campos de amostragem em orçamentos + tabelas `amostra_eventos`/`integration_events`
+- [x] **Dia 6** — Orçamentos: schema estendido (amostragem Doc 2c, status String); CRUD (criar/listar/detalhe/editar/duplicar); **motor de custo Private determinístico** (Doc 1 §6); `POST /:id/calcular` (Fase 1) com modos MOCK e REAL. Smoke 11/11 (mock) + math validada em real.
+- [ ] Dia 7 — Orçamentos Fase 2 (formatação 4 páginas) + pipeline de amostragem (endpoints + tabelas `amostra_eventos`/`integration_events`) + cotações
+
+## Cálculo de orçamento (Fase 1) — modos MOCK e REAL
+
+O endpoint `POST /api/orcamentos/:id/calcular` gera o `JSON_CALC` travado. A
+**matemática do modelo Private** (impostos, MO, IPI, produtividade — `custo-engine.ts`)
+é sempre determinística em código. O que muda entre os modos é apenas a **estimativa
+dos inputs fuzzy** (etapas, embalagem, fragrância, e custo-base de MP quando não há fórmula):
+
+| | MOCK | REAL |
+|---|---|---|
+| Quando | `ANTHROPIC_API_KEY` vazio no `.env` | `ANTHROPIC_API_KEY` preenchido |
+| Estimativa de inputs | heurística local (coerente, sem custo) | Anthropic API (`ANTHROPIC_MODEL`) |
+| Campo `calculo._mode` | `"mock"` (+ `_aviso_mock`) | `"real"` |
+| Custo de API | R$ 0 | consome tokens |
+
+**Ativar o modo real:** basta preencher `ANTHROPIC_API_KEY` em `backend/.env` e reiniciar.
+A troca é automática — nenhum código muda. Se a API falhar, cai em fallback heurístico
+(marcado em `calculo.estimativa.fallback_de`).
 - [ ] Dias 8-11 — Frontend
 - [ ] Dias 12-13 — PDF server-side + telas admin
 - [ ] Dias 14-15 — Deploy KingHost + testes

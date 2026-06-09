@@ -40,14 +40,12 @@ enum OrcamentoNivel {
   premium
 }
 
-enum OrcamentoStatus {
-  rascunho
-  aprovado
-  enviado
-  aceito
-  rejeitado
-  arquivado
-}
+// orcamentos.status e String (Doc 2c — estados revisados):
+//   rascunho | aprovado_interno | enviado | aprovado_cliente
+//   | em_amostragem | em_producao | concluido | rejeitado | arquivado
+// orcamentos.amostra_status (Doc 2c §2):
+//   nao_solicitada | solicitada | em_producao | pronta | enviada
+//   | aprovada_cliente | rejeitada
 
 enum CotacaoStatus {
   aguardando
@@ -72,6 +70,8 @@ model User {
   formulas_criadas     Formula[]          @relation("FormulaCreatedBy")
   formulas_validadas   Formula[]          @relation("FormulaValidadaPor")
   orcamentos_criados   Orcamento[]        @relation("OrcamentoCreatedBy")
+  amostras_solicitadas Orcamento[]        @relation("AmostraSolicitadaPor")
+  amostras_responsavel Orcamento[]        @relation("AmostraResponsavel")
   cotacoes_criadas     CotacaoPendente[]  @relation("CotacaoCreatedBy")
   cotacoes_validadas   CotacaoPendente[]  @relation("CotacaoValidadaPor")
   historico_precos_reg MpHistoricoPreco[] @relation("HistoricoRegistradoPor")
@@ -239,7 +239,7 @@ model Orcamento {
   embalagem          String?
   budget_mp          Decimal?        @db.Decimal(10, 2)
   produto_referencia String?
-  status             OrcamentoStatus @default(rascunho)
+  status             String          @default("rascunho")
 
   // JSON_CALC travado (Fase 1). Nullable: rascunho ainda nao calculado.
   calculo Json?
@@ -249,6 +249,24 @@ model Orcamento {
   formula_versao_codigo       String?
   formula_status_momento      String?
   formula_composicao_snapshot Json?
+
+  // PIPELINE DE AMOSTRAGEM (Doc 2c §5.1)
+  requer_amostra               Boolean   @default(true)
+  amostra_status               String    @default("nao_solicitada")
+  amostra_solicitada_em        DateTime?
+  amostra_solicitada_por       String?   @db.Uuid
+  amostra_producao_iniciada_em DateTime?
+  amostra_responsavel_id       String?   @db.Uuid
+  amostra_pronta_em            DateTime?
+  amostra_enviada_em           DateTime?
+  amostra_retorno_em           DateTime?
+  amostra_qtd                  Int?
+  amostra_observacoes_lab      String?
+  amostra_feedback_cliente     String?
+
+  // HOOKS p/ integracoes futuras (NULL na v9 — Doc 2c)
+  clickup_task_id String?
+  crm_deal_id     String?
 
   // Conteudo das 4 paginas (Fase 2)
   conteudo_pag1 String? // Comercial
@@ -265,12 +283,16 @@ model Orcamento {
   created_by String?  @db.Uuid
   updated_at DateTime @updatedAt
 
-  cliente    Cliente? @relation(fields: [cliente_id], references: [id])
-  formula    Formula? @relation(fields: [formula_id], references: [id])
-  criado_por User?    @relation("OrcamentoCreatedBy", fields: [created_by], references: [id])
+  cliente             Cliente? @relation(fields: [cliente_id], references: [id])
+  formula             Formula? @relation(fields: [formula_id], references: [id])
+  criado_por          User?    @relation("OrcamentoCreatedBy", fields: [created_by], references: [id])
+  amostra_solicitante User?    @relation("AmostraSolicitadaPor", fields: [amostra_solicitada_por], references: [id])
+  amostra_responsavel User?    @relation("AmostraResponsavel", fields: [amostra_responsavel_id], references: [id])
 
   @@index([status])
   @@index([cliente_id])
+  @@index([amostra_status])
+  @@index([amostra_responsavel_id])
   @@map("orcamentos")
 }
 

@@ -11,6 +11,7 @@ import { AlertasModule } from './alertas/alertas.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { MateriasPrimasModule } from './materias-primas/materias-primas.module';
 import { FormulasModule } from './formulas/formulas.module';
+import { OrcamentosModule } from './orcamentos/orcamentos.module';
 import { SystemConfigModule } from './system-config/system-config.module';
 
 @Module({
@@ -24,6 +25,7 @@ import { SystemConfigModule } from './system-config/system-config.module';
     AlertasModule,
     MateriasPrimasModule,
     FormulasModule,
+    OrcamentosModule,
     SystemConfigModule,
     HealthModule,
   ],
