@@ -21,7 +21,10 @@
     "prisma:generate": "prisma generate",
     "migrate:deploy": "prisma migrate deploy",
     "seed": "ts-node --transpile-only -P prisma/tsconfig.json prisma/seed.ts",
-    "import:kb": "ts-node --transpile-only -P prisma/tsconfig.json prisma/import-kb.ts"
+    "import:kb": "ts-node --transpile-only -P prisma/tsconfig.json prisma/import-kb.ts",
+    "promote:formulas": "ts-node --transpile-only -P prisma/tsconfig.json prisma/promote-formulas-to-maes.ts",
+    "baseline:precos": "ts-node --transpile-only -P prisma/tsconfig.json prisma/baseline-historico-precos.ts",
+    "fix:extracao": "ts-node --transpile-only -P prisma/tsconfig.json prisma/fix-extracao-trocada.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

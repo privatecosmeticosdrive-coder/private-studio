@@ -43,6 +43,7 @@ Sem banco configurado, responde `database: "unavailable"` (o backend sobe mesmo 
 
 - [x] **Dia 1** — Setup do ambiente: scaffold NestJS, Prisma, health check, repo git
 - [x] **Dia 2** — Schema completo (10 tabelas), migration aplicada, seed (admin + config), importação do `kb.json` (1.162 MPs + 814 fórmulas + 12.038 linhas de composição, match MP↔composição 95,3%)
+- [x] **Dia 2b** — Laboratório Vivo + Gestão de Preços: +2 tabelas (`mp_historico_precos`, `alertas`), versionamento de fórmulas (mãe+versões), snapshot em orçamentos, alertas de preço. Correção de extração trocada (nome↔versao_codigo em 68 fichas "Folha de Formulação"). Promoção final: **735 mães + 79 versões** (814 validadas). Baseline de histórico: 1.162 registros.
 - [ ] Dias 3-7 — Backend (auth, CRUDs, orçamentos Fase 1 + Fase 2)
 - [ ] Dias 8-11 — Frontend
 - [ ] Dias 12-13 — PDF server-side + telas admin
