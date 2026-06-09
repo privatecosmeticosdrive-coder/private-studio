@@ -1,0 +1,49 @@
+# Private Studio (v9)
+
+Plataforma interna de orçamento cosmético da **Private Cosméticos** — sucessora do
+agente v8 (Vercel). Multi-usuário, banco de dados real, PDF profissional server-side.
+
+> Migração v8 → v9 conforme `docs/03_plano_implementacao.md` (plano de 15 dias).
+
+## Stack
+
+| Camada | Tecnologia |
+|--------|-----------|
+| Backend | NestJS 11 (Node 24, TypeScript) |
+| ORM | Prisma 6 |
+| Banco | PostgreSQL 13 (KingHost) |
+| Auth | JWT + Bcrypt |
+| PDF | Puppeteer (server-side) |
+| Frontend | Vite + React 18 + TailwindCSS + shadcn/ui |
+| Hospedagem | KingHost (Node.js III + Cloud WEB) |
+
+## Estrutura
+
+```
+private-studio/
+├── backend/     # API NestJS (Prisma + PostgreSQL)
+├── frontend/    # SPA Vite + React (scaffold a partir do Dia 8)
+└── docs/        # Specs: sistema atual, sistema novo e plano de 15 dias
+```
+
+## Backend — como rodar localmente
+
+```bash
+cd backend
+npm install
+cp .env.example .env      # preencha DATABASE_URL com as credenciais da KingHost
+npx prisma generate
+npm run start:dev         # http://localhost:3000/api
+```
+
+Health check: `GET http://localhost:3000/api/health`
+Sem banco configurado, responde `database: "unavailable"` (o backend sobe mesmo assim).
+
+## Progresso
+
+- [x] **Dia 1** — Setup do ambiente: scaffold NestJS, Prisma, health check, repo git
+- [ ] **Dia 2** — Schema completo + migrations + importação do `kb.json`
+- [ ] Dias 3-7 — Backend (auth, CRUDs, orçamentos Fase 1 + Fase 2)
+- [ ] Dias 8-11 — Frontend
+- [ ] Dias 12-13 — PDF server-side + telas admin
+- [ ] Dias 14-15 — Deploy KingHost + testes

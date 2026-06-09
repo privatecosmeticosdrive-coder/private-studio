@@ -1,0 +1,14 @@
+// Private Studio (v9) — Prisma schema
+// Dia 1: apenas datasource + generator (conexao PostgreSQL KingHost).
+// Dia 2: entram todas as tabelas do Doc 2, secao 3
+//   (users, clientes, materias_primas, mp_fornecedores_alt, formulas,
+//    formula_composicao, orcamentos, cotacoes_pendentes, audit_log, system_config).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}

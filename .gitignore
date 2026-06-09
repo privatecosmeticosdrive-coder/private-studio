@@ -1,0 +1,34 @@
+# Dependencias
+node_modules/
+
+# Build
+dist/
+build/
+frontend/dist/
+
+# Ambiente (segredos — NUNCA commitar)
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# Prisma
+backend/prisma/*.db
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Coverage / testes
+coverage/
+
+# PDFs gerados (artefatos de runtime — Dia 12)
+backend/storage/pdf/
