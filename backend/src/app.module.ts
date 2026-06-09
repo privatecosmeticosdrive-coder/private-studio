@@ -10,6 +10,7 @@ import { AuditModule } from './audit/audit.module';
 import { AlertasModule } from './alertas/alertas.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { MateriasPrimasModule } from './materias-primas/materias-primas.module';
+import { FormulasModule } from './formulas/formulas.module';
 import { SystemConfigModule } from './system-config/system-config.module';
 
 @Module({
@@ -22,6 +23,7 @@ import { SystemConfigModule } from './system-config/system-config.module';
     ClientesModule,
     AlertasModule,
     MateriasPrimasModule,
+    FormulasModule,
     SystemConfigModule,
     HealthModule,
   ],

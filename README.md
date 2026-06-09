@@ -46,7 +46,9 @@ Sem banco configurado, responde `database: "unavailable"` (o backend sobe mesmo 
 - [x] **Dia 2b** — Laboratório Vivo + Gestão de Preços: +2 tabelas (`mp_historico_precos`, `alertas`), versionamento de fórmulas (mãe+versões), snapshot em orçamentos, alertas de preço. Correção de extração trocada (nome↔versao_codigo em 68 fichas "Folha de Formulação"). Promoção final: **735 mães + 79 versões** (814 validadas). Baseline de histórico: 1.162 registros.
 - [x] **Dia 3** — Auth JWT (login/refresh/logout/me) + CRUD de usuários (admin only) + Guards globais (JWT + Roles) + decorators (@Public/@Roles/@CurrentUser). Smoke test 15/15.
 - [x] **Dia 4** — CRUD Clientes; CRUD MPs (busca/paginação/filtros, formulas-que-usam); **atualizar-preço** (histórico + audit + alerta em transação); histórico + gráfico; Alertas (listar/marcar-lido/resolver); SystemConfig GET/PATCH. Smoke test 23/23.
-- [ ] Dias 5-7 — Backend (fórmulas+versionamento, orçamentos Fase 1 + Fase 2, cotações)
+- [x] **Dia 5** — Fórmulas: CRUD + composição aninhada; versionamento Lab Vivo (nova-versão, validar, diff JSON, árvore de família); **cálculo de custo em tempo real** (preços atuais + termômetro de assertividade); busca fuzzy (GIN tsvector) + sugerir similares. Smoke test 18/18.
+- [ ] Dias 6-7 — Orçamentos Fase 1 + Fase 2, amostragem (Doc 2c), cotações
+- [ ] **Doc 2c** (Dias 6-7) — campos de amostragem em orçamentos + tabelas `amostra_eventos`/`integration_events`
 - [ ] Dias 8-11 — Frontend
 - [ ] Dias 12-13 — PDF server-side + telas admin
 - [ ] Dias 14-15 — Deploy KingHost + testes
