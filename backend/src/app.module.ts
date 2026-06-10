@@ -12,6 +12,8 @@ import { ClientesModule } from './clientes/clientes.module';
 import { MateriasPrimasModule } from './materias-primas/materias-primas.module';
 import { FormulasModule } from './formulas/formulas.module';
 import { OrcamentosModule } from './orcamentos/orcamentos.module';
+import { AmostrasModule } from './amostras/amostras.module';
+import { CotacoesModule } from './cotacoes/cotacoes.module';
 import { SystemConfigModule } from './system-config/system-config.module';
 
 @Module({
@@ -26,6 +28,8 @@ import { SystemConfigModule } from './system-config/system-config.module';
     MateriasPrimasModule,
     FormulasModule,
     OrcamentosModule,
+    AmostrasModule,
+    CotacoesModule,
     SystemConfigModule,
     HealthModule,
   ],

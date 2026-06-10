@@ -47,12 +47,8 @@ enum OrcamentoNivel {
 //   nao_solicitada | solicitada | em_producao | pronta | enviada
 //   | aprovada_cliente | rejeitada
 
-enum CotacaoStatus {
-  aguardando
-  validada_pd
-  validada_compras
-  rejeitada
-}
+// cotacoes_pendentes.status e String:
+//   aguardando | validada_pd | validada_compras | rejeitada | integrada
 
 // ----------------------- USERS -----------------------
 
@@ -75,6 +71,7 @@ model User {
   cotacoes_criadas     CotacaoPendente[]  @relation("CotacaoCreatedBy")
   cotacoes_validadas   CotacaoPendente[]  @relation("CotacaoValidadaPor")
   historico_precos_reg MpHistoricoPreco[] @relation("HistoricoRegistradoPor")
+  amostra_eventos_reg  AmostraEvento[]    @relation("AmostraEventoPor")
   audit_logs           AuditLog[]
 
   @@map("users")
@@ -283,11 +280,12 @@ model Orcamento {
   created_by String?  @db.Uuid
   updated_at DateTime @updatedAt
 
-  cliente             Cliente? @relation(fields: [cliente_id], references: [id])
-  formula             Formula? @relation(fields: [formula_id], references: [id])
-  criado_por          User?    @relation("OrcamentoCreatedBy", fields: [created_by], references: [id])
-  amostra_solicitante User?    @relation("AmostraSolicitadaPor", fields: [amostra_solicitada_por], references: [id])
-  amostra_responsavel User?    @relation("AmostraResponsavel", fields: [amostra_responsavel_id], references: [id])
+  cliente             Cliente?        @relation(fields: [cliente_id], references: [id])
+  formula             Formula?        @relation(fields: [formula_id], references: [id])
+  criado_por          User?           @relation("OrcamentoCreatedBy", fields: [created_by], references: [id])
+  amostra_solicitante User?           @relation("AmostraSolicitadaPor", fields: [amostra_solicitada_por], references: [id])
+  amostra_responsavel User?           @relation("AmostraResponsavel", fields: [amostra_responsavel_id], references: [id])
+  amostra_eventos     AmostraEvento[]
 
   @@index([status])
   @@index([cliente_id])
@@ -299,19 +297,19 @@ model Orcamento {
 // ----------------------- COTACOES PENDENTES -----------------------
 
 model CotacaoPendente {
-  id               Int           @id @default(autoincrement())
+  id               Int       @id @default(autoincrement())
   mp_id            Int?
   fornecedor       String
-  quantidade       Decimal?      @db.Decimal(10, 2)
+  quantidade       Decimal?  @db.Decimal(10, 2)
   unidade          String? // kg, L, un
-  valor            Decimal?      @db.Decimal(10, 2)
+  valor            Decimal?  @db.Decimal(10, 2)
   prazo_entrega    String?
-  validade_cotacao DateTime?     @db.Date
+  validade_cotacao DateTime? @db.Date
   observacoes      String?
-  status           CotacaoStatus @default(aguardando)
-  created_at       DateTime      @default(now())
-  created_by       String?       @db.Uuid
-  validada_por     String?       @db.Uuid
+  status           String    @default("aguardando")
+  created_at       DateTime  @default(now())
+  created_by       String?   @db.Uuid
+  validada_por     String?   @db.Uuid
   validada_em      DateTime?
 
   mp         MateriaPrima? @relation(fields: [mp_id], references: [id])
@@ -405,4 +403,49 @@ model Alerta {
 
   @@index([resolvido, created_at(sort: Desc)])
   @@map("alertas")
+}
+
+// ----------------------- AMOSTRA EVENTOS (Doc 2c §5.2) -----------------------
+// Auditoria de cada transicao de status do pipeline de amostragem.
+
+model AmostraEvento {
+  id              Int      @id @default(autoincrement())
+  orcamento_id    String   @db.Uuid
+  status_anterior String?
+  status_novo     String
+  observacao      String?
+  registrado_por  String?  @db.Uuid
+  registrado_em   DateTime @default(now())
+
+  orcamento   Orcamento @relation(fields: [orcamento_id], references: [id], onDelete: Cascade)
+  registrador User?     @relation("AmostraEventoPor", fields: [registrado_por], references: [id])
+
+  @@index([orcamento_id])
+  @@index([registrado_em(sort: Desc)])
+  @@map("amostra_eventos")
+}
+
+// ----------------------- INTEGRATION EVENTS (Doc 2c §5.3) -----------------------
+// Fila para integracoes futuras (ClickUp/CRM). Na v9 sao CRIADOS mas nenhum
+// processador roda — acumulam para quando a integracao for ativada.
+
+model IntegrationEvent {
+  id            Int    @id @default(autoincrement())
+  tipo          String // amostra_solicitada | amostra_pronta | amostra_enviada | orcamento_aprovado_cliente | orcamento_rejeitado_cliente
+  entidade_tipo String // 'orcamento'
+  entidade_id   String
+  payload       Json
+
+  clickup_status        String    @default("pending") // pending | sent | error | skipped
+  clickup_response      Json?
+  clickup_processado_em DateTime?
+
+  crm_status        String    @default("pending")
+  crm_response      Json?
+  crm_processado_em DateTime?
+
+  created_at DateTime @default(now())
+
+  @@index([clickup_status, crm_status])
+  @@map("integration_events")
 }

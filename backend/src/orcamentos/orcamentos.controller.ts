@@ -70,4 +70,11 @@ export class OrcamentosController {
   ) {
     return this.orcamentos.calcular(id, dto, user.sub);
   }
+
+  // Fase 2 — formatação das 4 páginas. admin, comercial, pd
+  @Post(':id/formatar')
+  @Roles(Role.admin, Role.comercial, Role.pd)
+  formatar(@Param('id') id: string, @CurrentUser() user: JwtUser) {
+    return this.orcamentos.formatar(id, user.sub);
+  }
 }

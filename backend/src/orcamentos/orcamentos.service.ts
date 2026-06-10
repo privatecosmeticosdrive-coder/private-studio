@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { CalculoService } from './calculo.service';
+import { FormatacaoService } from './formatacao.service';
 import { CreateOrcamentoDto } from './dto/create-orcamento.dto';
 import { UpdateOrcamentoDto } from './dto/update-orcamento.dto';
 import { CalcularDto } from './dto/calcular.dto';
@@ -21,6 +22,7 @@ export class OrcamentosService {
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
     private readonly calculo: CalculoService,
+    private readonly formatacao: FormatacaoService,
   ) {}
 
   async findAll(query: ListarOrcamentoQuery) {
@@ -135,6 +137,20 @@ export class OrcamentosService {
       },
     });
     return atualizado;
+  }
+
+  /** FASE 2 — formata as 4 paginas a partir do JSON_CALC travado. */
+  async formatar(id: string, userId: string) {
+    await this.ensure(id);
+    const r = await this.formatacao.formatar(id);
+    await this.audit.registrar({
+      userId,
+      acao: 'formatar_orcamento',
+      entidade: 'orcamento',
+      entidadeId: id,
+      detalhes: { modo: r._mode },
+    });
+    return r;
   }
 
   private async ensure(id: string) {

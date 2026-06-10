@@ -48,7 +48,7 @@ Sem banco configurado, responde `database: "unavailable"` (o backend sobe mesmo 
 - [x] **Dia 4** — CRUD Clientes; CRUD MPs (busca/paginação/filtros, formulas-que-usam); **atualizar-preço** (histórico + audit + alerta em transação); histórico + gráfico; Alertas (listar/marcar-lido/resolver); SystemConfig GET/PATCH. Smoke test 23/23.
 - [x] **Dia 5** — Fórmulas: CRUD + composição aninhada; versionamento Lab Vivo (nova-versão, validar, diff JSON, árvore de família); **cálculo de custo em tempo real** (preços atuais + termômetro de assertividade); busca fuzzy (GIN tsvector) + sugerir similares. Smoke test 18/18.
 - [x] **Dia 6** — Orçamentos: schema estendido (amostragem Doc 2c, status String); CRUD (criar/listar/detalhe/editar/duplicar); **motor de custo Private determinístico** (Doc 1 §6); `POST /:id/calcular` (Fase 1) com modos MOCK e REAL. Smoke 11/11 (mock) + math validada em real.
-- [ ] Dia 7 — Orçamentos Fase 2 (formatação 4 páginas) + pipeline de amostragem (endpoints + tabelas `amostra_eventos`/`integration_events`) + cotações
+- [x] **Dia 7 — BACKEND COMPLETO ✅** — Orçamentos Fase 2 (formatação 4 páginas, MOCK/REAL); pipeline de amostragem Doc 2c (solicitar→iniciar→pronta→enviar→feedback + aprovar/rejeitar cliente + kanban `/amostras/pipeline` + eventos; tabelas `amostra_eventos`/`integration_events`); cotações (CRUD + validar-pd→validar-compras→integrar com aplicação de preço na MP). Smoke 23/23.
 
 ## Cálculo de orçamento (Fase 1) — modos MOCK e REAL
 
