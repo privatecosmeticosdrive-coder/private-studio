@@ -1,0 +1,1605 @@
+{
+  "info": {
+    "_postman_id": "private-studio-api-0001-0001-000000000001",
+    "name": "Private Studio API (v9)",
+    "description": "Colecao completa do backend NestJS da Private Cosmeticos.\n\n1) Rode \"Auth > Login\" primeiro (o token e salvo automaticamente em {{token}}).\n2) Ajuste os IDs nas variaveis da colecao (mp_codigo, formula_id, orcamento_id...).\n\nImportavel no Postman e no Insomnia.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "refresh_token",
+      "value": ""
+    },
+    {
+      "key": "user_id",
+      "value": ""
+    },
+    {
+      "key": "cliente_id",
+      "value": ""
+    },
+    {
+      "key": "mp_codigo",
+      "value": "0"
+    },
+    {
+      "key": "formula_id",
+      "value": "1"
+    },
+    {
+      "key": "orcamento_id",
+      "value": ""
+    },
+    {
+      "key": "cotacao_id",
+      "value": ""
+    },
+    {
+      "key": "alerta_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Salva token e refresh_token automaticamente.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"privatecosmeticosdrive@gmail.com\",\n  \"senha\": \"PrivateStudio@2026\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d = pm.response.json();",
+                  "if (d.access_token) { pm.collectionVariables.set('token', d.access_token); }",
+                  "if (d.refresh_token) { pm.collectionVariables.set('refresh_token', d.refresh_token); }",
+                  "pm.test('login ok', () => pm.expect(pm.response.code).to.eql(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users (admin)",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Detalhe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "role: admin|comercial|pd|compras|producao",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"novo@privatecosmeticos.com.br\",\n  \"nome\": \"Novo Usuario\",\n  \"senha\": \"senha123\",\n  \"role\": \"comercial\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Nome Editado\",\n  \"role\": \"pd\",\n  \"ativo\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Desativar",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Soft delete: ativo=false"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clientes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "clientes"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Detalhe (+ orcamentos)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clientes/{{cliente_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "clientes",
+                "{{cliente_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clientes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "clientes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Marca Bella\",\n  \"cnpj\": \"12.345.678/0001-90\",\n  \"email\": \"contato@bella.com\",\n  \"telefone\": \"11999990000\",\n  \"observacoes\": \"Cliente premium\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clientes/{{cliente_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "clientes",
+                "{{cliente_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefone\": \"11888887777\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Excluir",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clientes/{{cliente_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "clientes",
+                "{{cliente_id}}"
+              ]
+            },
+            "description": "Bloqueado se houver orcamentos/formulas vinculados."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Materias-primas",
+      "item": [
+        {
+          "name": "Listar (busca/filtros/paginacao)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mps",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mps"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "glicerina",
+                  "disabled": true
+                },
+                {
+                  "key": "fornecedor",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "vencidas",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "pageSize",
+                  "value": "50",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Detalhe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mps/{{mp_codigo}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mps",
+                "{{mp_codigo}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Formulas que usam",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mps/{{mp_codigo}}/formulas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mps",
+                "{{mp_codigo}}",
+                "formulas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Historico de precos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mps/{{mp_codigo}}/historico",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mps",
+                "{{mp_codigo}}",
+                "historico"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Historico (grafico)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/mps/{{mp_codigo}}/historico/grafico",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mps",
+                "{{mp_codigo}}",
+                "historico",
+                "grafico"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/mps",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mps"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo\": 99001,\n  \"nome\": \"Nova MP\",\n  \"preco_kg_brl\": 25.5,\n  \"fornecedor\": \"Fornecedor A\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar (cadastro)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/mps/{{mp_codigo}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mps",
+                "{{mp_codigo}}"
+              ]
+            },
+            "description": "Preco NAO entra aqui — use atualizar-preco.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fornecedor\": \"Fornecedor B\",\n  \"observacoes\": \"nota\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar Preco (todos auth)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/mps/{{mp_codigo}}/atualizar-preco",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "mps",
+                "{{mp_codigo}}",
+                "atualizar-preco"
+              ]
+            },
+            "description": "fonte_info: ligacao|email|whatsapp|pedido_formal|painel_fornecedor|ultima_compra|outro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"preco_kg_brl\": 30,\n  \"fornecedor\": \"Fornecedor B\",\n  \"data_cotacao\": \"2026-06-09\",\n  \"fonte_info\": \"ligacao\",\n  \"observacoes\": \"reajuste\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Formulas",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/formulas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "categoria",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "origem",
+                  "value": "banco_original",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "cliente_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "maes",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "pageSize",
+                  "value": "50",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "origem: banco_original|ia_gerada|pd_manual ; status: rascunho|validada|arquivada ; maes=true lista familias"
+          }
+        },
+        {
+          "name": "Buscar (fuzzy GIN)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/formulas/buscar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas",
+                "buscar"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "condicionador",
+                  "disabled": false
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Sugerir similar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/formulas/sugerir-similar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas",
+                "sugerir-similar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_produto\": \"condicionador argan\",\n  \"categoria\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Detalhe (+ custo)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/formulas/{{formula_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas",
+                "{{formula_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Custo em tempo real",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/formulas/{{formula_id}}/custo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas",
+                "{{formula_id}}",
+                "custo"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Versoes (familia)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/formulas/{{formula_id}}/versoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas",
+                "{{formula_id}}",
+                "versoes"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/formulas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas"
+              ]
+            },
+            "description": "pd/admin",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_produto\": \"Serum Teste\",\n  \"categoria\": \"serum facial\",\n  \"composicao\": [\n    {\n      \"mp_id\": 1,\n      \"concentracao_pct\": 80,\n      \"fase\": \"A\",\n      \"ordem\": 0\n    },\n    {\n      \"mp_nome_original\": \"Ativo X\",\n      \"concentracao_pct\": 20,\n      \"fase\": \"B\",\n      \"ordem\": 1\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Editar (bloqueia validada)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/formulas/{{formula_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas",
+                "{{formula_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"observacoes\": \"ajuste\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Nova versao (Lab Vivo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/formulas/{{formula_id}}/nova-versao",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas",
+                "{{formula_id}}",
+                "nova-versao"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"versao_descricao\": \"ajuste pH\",\n  \"composicao\": [\n    {\n      \"mp_id\": 1,\n      \"concentracao_pct\": 78,\n      \"fase\": \"A\",\n      \"ordem\": 0\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Validar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/formulas/{{formula_id}}/validar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas",
+                "{{formula_id}}",
+                "validar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"validacao_obs\": \"aprovada pelo P&D\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Arquivar",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/formulas/{{formula_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "formulas",
+                "{{formula_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orcamentos",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orcamentos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "cliente_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "pageSize",
+                  "value": "50",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Detalhe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar (rascunho)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orcamentos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos"
+              ]
+            },
+            "description": "nivel: basic|inter|premium",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"produto\": \"Serum PDRN Premium\",\n  \"cliente_id\": \"{{cliente_id}}\",\n  \"categoria\": \"serum facial\",\n  \"nivel\": \"premium\",\n  \"volume_un\": 50,\n  \"quantidade\": 2000,\n  \"margem_pct\": 35,\n  \"formula_id\": 1,\n  \"requer_amostra\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Atualizar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantidade\": 3000\n}"
+            }
+          }
+        },
+        {
+          "name": "Duplicar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/duplicar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "duplicar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Calcular (FASE 1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/calcular",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "calcular"
+              ]
+            },
+            "description": "overrides opcionais: etapas, margem_pct, embalagem_un, mp_frag_kg, cmp_base_mp_kg",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"margem_pct\": 35\n}"
+            }
+          }
+        },
+        {
+          "name": "Formatar 4 paginas (FASE 2)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/formatar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "formatar"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Amostras (pipeline)",
+      "item": [
+        {
+          "name": "Marcar aprovado cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/marcar-aprovado-cliente",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "marcar-aprovado-cliente"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"observacoes\": \"cliente aprovou proposta\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Marcar rejeitado cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/marcar-rejeitado-cliente",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "marcar-rejeitado-cliente"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivo\": \"preco acima do orcado\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Solicitar amostra (comercial)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/amostra/solicitar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "amostra",
+                "solicitar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"qtd\": 5,\n  \"observacoes\": \"cor laranja vibrante\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Iniciar producao (pd)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/amostra/iniciar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "amostra",
+                "iniciar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"observacoes\": \"assumido pelo lab\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Marcar pronta (pd)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/amostra/pronta",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "amostra",
+                "pronta"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"observacoes\": \"amostra pronta\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Marcar enviada (comercial)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/amostra/enviar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "amostra",
+                "enviar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"observacoes\": \"enviada via Correios XYZ\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Feedback do cliente (comercial)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/amostra/feedback",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "amostra",
+                "feedback"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"aprovada\": true,\n  \"feedback\": \"cliente adorou\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eventos do pipeline",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orcamentos/{{orcamento_id}}/amostra/eventos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orcamentos",
+                "{{orcamento_id}}",
+                "amostra",
+                "eventos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Pipeline (kanban)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/amostras/pipeline",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "amostras",
+                "pipeline"
+              ],
+              "query": [
+                {
+                  "key": "responsavel_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "cliente_id",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cotacoes",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cotacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cotacoes"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "status: aguardando|validada_pd|validada_compras|rejeitada|integrada"
+          }
+        },
+        {
+          "name": "Detalhe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cotacoes/{{cotacao_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cotacoes",
+                "{{cotacao_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar (compras/admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cotacoes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cotacoes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mp_id\": 1,\n  \"fornecedor\": \"Fornecedor X\",\n  \"valor\": 100,\n  \"quantidade\": 5,\n  \"unidade\": \"kg\",\n  \"prazo_entrega\": \"15 dias\",\n  \"validade_cotacao\": \"2026-09-09\",\n  \"observacoes\": \"cotacao formal\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Validar P&D",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cotacoes/{{cotacao_id}}/validar-pd",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cotacoes",
+                "{{cotacao_id}}",
+                "validar-pd"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Validar Compras",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cotacoes/{{cotacao_id}}/validar-compras",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cotacoes",
+                "{{cotacao_id}}",
+                "validar-compras"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Rejeitar",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/cotacoes/{{cotacao_id}}/rejeitar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cotacoes",
+                "{{cotacao_id}}",
+                "rejeitar"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"motivo\": \"fornecedor sem estoque\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Integrar (aplica preco na MP)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cotacoes/{{cotacao_id}}/integrar",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cotacoes",
+                "{{cotacao_id}}",
+                "integrar"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Alertas",
+      "item": [
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/alertas",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alertas"
+              ],
+              "query": [
+                {
+                  "key": "lido",
+                  "value": "false",
+                  "disabled": true
+                },
+                {
+                  "key": "resolvido",
+                  "value": "false",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Marcar lido",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/alertas/{{alerta_id}}/marcar-lido",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alertas",
+                "{{alerta_id}}",
+                "marcar-lido"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Resolver",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/alertas/{{alerta_id}}/resolver",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "alertas",
+                "{{alerta_id}}",
+                "resolver"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "System Config",
+      "item": [
+        {
+          "name": "Obter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/system-config",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "system-config"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar (admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/system-config",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "system-config"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"alerta_aumento_mp_pct\": 20,\n  \"alertas_ativos\": true\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

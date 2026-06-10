@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   PRIVATE STUDIO — Design tokens "Atelier Tecnico"
+   Tokens em canais RGB (R G B) p/ suportar opacidade no Tailwind:
+   ex.: bg-ink/90, ring-gold/25.
+   ============================================================ */
+:root {
+  /* Marca */
+  --ink: 28 23 18; /* #1C1712 */
+  --sand: 250 247 242; /* #FAF7F2 */
+  --surface: 255 253 251; /* #FFFDFB */
+  --gold-400: 212 169 74; /* #D4A94A */
+  --gold-500: 184 131 42; /* #B8832A */
+  --gold-600: 138 99 32; /* #8A6320 (dourado acessivel p/ texto) */
+  --gold-700: 107 76 24; /* #6B4C18 */
+
+  /* Neutros quentes */
+  --warm-50: 250 247 242;
+  --warm-100: 242 236 227;
+  --warm-200: 231 222 207; /* borda hairline */
+  --warm-300: 214 201 181;
+  --warm-400: 185 168 142;
+  --warm-500: 148 131 106;
+  --warm-600: 110 94 71; /* texto secundario (AA) */
+  --warm-700: 74 63 48;
+  --warm-800: 44 37 25;
+  --warm-900: 28 23 18;
+
+  /* Semanticos (terrosos) */
+  --success: 46 125 82;
+  --success-soft: 230 240 234;
+  --warning: 194 65 12;
+  --warning-soft: 251 234 224;
+  --error: 179 64 46;
+  --error-soft: 247 229 225;
+  --info: 58 107 138;
+  --info-soft: 229 238 243;
+
+  /* Termometro de assertividade (Doc 1 §7) */
+  --score-verde: 46 125 82;
+  --score-amarelo: 201 162 39;
+  --score-laranja: 194 65 12;
+  --score-vermelho: 179 64 46;
+
+  /* Semanticos de UI (apontam para a marca) */
+  --background: var(--sand);
+  --foreground: var(--ink);
+  --card: var(--surface);
+  --muted: var(--warm-100);
+  --muted-foreground: var(--warm-600);
+  --border: var(--warm-200);
+  --ring: var(--gold-500);
+
+  --radius: 0.75rem; /* 12px — cards */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  h1, h2, h3 {
+    @apply font-display;
+  }
+  /* Numerais tabulares em dados (tabelas, valores) */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
