@@ -32,3 +32,7 @@ coverage/
 
 # PDFs gerados (artefatos de runtime — Dia 12)
 backend/storage/pdf/
+
+# Pacote knowledge do Mestre Treinado externo (regeneravel via npm run knowledge)
+backend/knowledge-out/
+backend/mestre-treinado-knowledge.zip
