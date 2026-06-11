@@ -7,7 +7,7 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-h1 text-ink">Bem-vindo, {user?.nome?.split(' ')[0]}</h1>
-        <p className="mt-1 text-muted-foreground">Visao geral do Private Studio.</p>
+        <p className="mt-1 text-muted-foreground">Visão geral do Private Studio.</p>
       </div>
       <Card>
         <CardHeader>
@@ -15,7 +15,7 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            KPIs, ultimos orcamentos e alertas chegam no <strong className="text-ink">Dia 9</strong>.
+            KPIs, últimos orçamentos e alertas chegam no <strong className="text-ink">Dia 9</strong>.
           </p>
         </CardContent>
       </Card>

@@ -11,8 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 const schema = z.object({
-  email: z.string().email('Email invalido'),
-  senha: z.string().min(6, 'Minimo 6 caracteres'),
+  email: z.string().email('Email inválido'),
+  senha: z.string().min(6, 'Mínimo 6 caracteres'),
 });
 type FormData = z.infer<typeof schema>;
 
@@ -35,7 +35,7 @@ export default function Login() {
       navigate('/dashboard', { replace: true });
     } catch (e) {
       const ax = e as AxiosError<{ message?: string }>;
-      setErro(ax.response?.status === 401 ? 'Credenciais invalidas.' : 'Falha ao entrar. Tente novamente.');
+      setErro(ax.response?.status === 401 ? 'Credenciais inválidas.' : 'Falha ao entrar. Tente novamente.');
     }
   };
 
@@ -49,7 +49,7 @@ export default function Login() {
           </h1>
           <div className="mt-2 h-px w-24 bg-gold-500" />
           <p className="mt-3 text-sm text-muted-foreground">
-            Plataforma de orcamento cosmetico
+            Plataforma de orçamento cosmético
           </p>
         </div>
 
@@ -78,7 +78,7 @@ export default function Login() {
           </form>
         </div>
         <p className="mt-6 text-center text-caption text-warm-500">
-          Acesso restrito · Private Cosmeticos
+          Acesso restrito · Private Cosméticos
         </p>
       </div>
     </div>

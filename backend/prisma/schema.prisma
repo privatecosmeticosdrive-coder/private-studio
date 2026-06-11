@@ -62,16 +62,18 @@ model User {
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
 
-  clientes_criados     Cliente[]          @relation("ClienteCreatedBy")
-  formulas_criadas     Formula[]          @relation("FormulaCreatedBy")
-  formulas_validadas   Formula[]          @relation("FormulaValidadaPor")
-  orcamentos_criados   Orcamento[]        @relation("OrcamentoCreatedBy")
-  amostras_solicitadas Orcamento[]        @relation("AmostraSolicitadaPor")
-  amostras_responsavel Orcamento[]        @relation("AmostraResponsavel")
-  cotacoes_criadas     CotacaoPendente[]  @relation("CotacaoCreatedBy")
-  cotacoes_validadas   CotacaoPendente[]  @relation("CotacaoValidadaPor")
-  historico_precos_reg MpHistoricoPreco[] @relation("HistoricoRegistradoPor")
-  amostra_eventos_reg  AmostraEvento[]    @relation("AmostraEventoPor")
+  clientes_criados     Cliente[]           @relation("ClienteCreatedBy")
+  formulas_criadas     Formula[]           @relation("FormulaCreatedBy")
+  formulas_validadas   Formula[]           @relation("FormulaValidadaPor")
+  orcamentos_criados   Orcamento[]         @relation("OrcamentoCreatedBy")
+  amostras_solicitadas Orcamento[]         @relation("AmostraSolicitadaPor")
+  amostras_responsavel Orcamento[]         @relation("AmostraResponsavel")
+  cotacoes_criadas     CotacaoPendente[]   @relation("CotacaoCreatedBy")
+  cotacoes_validadas   CotacaoPendente[]   @relation("CotacaoValidadaPor")
+  historico_precos_reg MpHistoricoPreco[]  @relation("HistoricoRegistradoPor")
+  amostra_eventos_reg  AmostraEvento[]     @relation("AmostraEventoPor")
+  embalagens_criadas   Embalagem[]         @relation("EmbalagemCreatedBy")
+  emb_historico_reg    EmbHistoricoPreco[] @relation("EmbHistoricoRegistradoPor")
   audit_logs           AuditLog[]
 
   @@map("users")
@@ -233,10 +235,18 @@ model Orcamento {
   quantidade         Int?
   margem_pct         Decimal?        @db.Decimal(5, 2)
   formula_id         Int?
-  embalagem          String?
+  embalagem          String? // legado (texto livre) — substituido por embalagem_id (Doc 2d §B)
   budget_mp          Decimal?        @db.Decimal(10, 2)
   produto_referencia String?
   status             String          @default("rascunho")
+
+  // PRODUTIVIDADE DIRETA (Doc 2d §A) — un/min informado, sem inferencia de etapas
+  un_min Decimal? @db.Decimal(6, 2)
+
+  // EMBALAGEM via catalogo (Doc 2d §B)
+  embalagem_id       Int?
+  embalagem_snapshot Json? // {nome, tipo, preco_un_brl, fornecedor} no momento do orcamento
+  sem_embalagem      Boolean @default(false) // true = apenas formula a granel
 
   // JSON_CALC travado (Fase 1). Nullable: rascunho ainda nao calculado.
   calculo Json?
@@ -282,10 +292,12 @@ model Orcamento {
 
   cliente             Cliente?        @relation(fields: [cliente_id], references: [id])
   formula             Formula?        @relation(fields: [formula_id], references: [id])
+  embalagem_catalogo  Embalagem?      @relation(fields: [embalagem_id], references: [id])
   criado_por          User?           @relation("OrcamentoCreatedBy", fields: [created_by], references: [id])
   amostra_solicitante User?           @relation("AmostraSolicitadaPor", fields: [amostra_solicitada_por], references: [id])
   amostra_responsavel User?           @relation("AmostraResponsavel", fields: [amostra_responsavel_id], references: [id])
   amostra_eventos     AmostraEvento[]
+  formula_matches     FormulaMatch[]
 
   @@index([status])
   @@index([cliente_id])
@@ -448,4 +460,82 @@ model IntegrationEvent {
 
   @@index([clickup_status, crm_status])
   @@map("integration_events")
+}
+
+// ----------------------- EMBALAGENS (Doc 2d §B) -----------------------
+// Catalogo dedicado de embalagens (frascos, pumps, tampas, cartuchos...).
+// Espelha MateriaPrima + MpHistoricoPreco. Indice GIN de busca por nome
+// criado via SQL raw na migration (to_tsvector('portuguese', nome)).
+
+model Embalagem {
+  id             Int       @id @default(autoincrement())
+  codigo         String?   @unique
+  nome           String
+  tipo           String // 'frasco'|'pump'|'tampa'|'cartucho'|'valvula'|'celofane'|'caixa'|'rotulo'|'outro'
+  volume_ml      Decimal?  @db.Decimal(8, 2)
+  material       String? // 'PET'|'vidro'|'PEAD'|'aluminio'|'papel'
+  cor            String?
+  preco_un_brl   Decimal?  @db.Decimal(8, 4)
+  fornecedor     String?
+  prazo_entrega  String?
+  preco_estimado Boolean   @default(false) // true = valor chutado; false = cotado
+  observacoes    String?
+  ativo          Boolean   @default(true)
+  data_cotacao   DateTime? @db.Date
+
+  created_at DateTime @default(now())
+  created_by String?  @db.Uuid
+  updated_at DateTime @updatedAt
+
+  criado_por       User?               @relation("EmbalagemCreatedBy", fields: [created_by], references: [id])
+  historico_precos EmbHistoricoPreco[]
+  orcamentos       Orcamento[]
+
+  @@index([tipo])
+  @@index([volume_ml])
+  @@map("embalagens")
+}
+
+// ----------------------- HISTORICO DE PRECOS DE EMBALAGEM (Doc 2d §B3) -----------------------
+
+model EmbHistoricoPreco {
+  id                Int      @id @default(autoincrement())
+  embalagem_id      Int
+  preco_un_brl      Decimal  @db.Decimal(8, 4)
+  preco_anterior_un Decimal? @db.Decimal(8, 4)
+  variacao_pct      Decimal? @db.Decimal(6, 2)
+  fornecedor        String?
+  data_cotacao      DateTime @db.Date
+  origem            String // import_inicial | atualizacao_rapida | cotacao_validada | criacao
+  fonte_info        String? // ligacao | email | whatsapp | pedido_formal | outro
+  observacoes       String?
+  registrado_por    String?  @db.Uuid
+  registrado_em     DateTime @default(now())
+
+  embalagem   Embalagem @relation(fields: [embalagem_id], references: [id], onDelete: Cascade)
+  registrador User?     @relation("EmbHistoricoRegistradoPor", fields: [registrado_por], references: [id])
+
+  @@index([embalagem_id])
+  @@index([data_cotacao(sort: Desc)])
+  @@map("emb_historico_precos")
+}
+
+// ----------------------- MATCH DE FORMULAS (Doc 2d §C/H) -----------------------
+// Cache/log de cada busca de match. Criado ANTES do orcamento existir
+// (etapa de briefing), por isso orcamento_id e nullable. refinar-ia carrega
+// pelo id retornado.
+
+model FormulaMatch {
+  id           Int      @id @default(autoincrement())
+  orcamento_id String?  @db.Uuid
+  query_hash   String? // hash do briefing para dedupe/cache
+  candidatas   Json // top N formulas com score
+  modo         String // 'hibrido' | 'ia_refinado'
+  created_at   DateTime @default(now())
+
+  orcamento Orcamento? @relation(fields: [orcamento_id], references: [id], onDelete: SetNull)
+
+  @@index([orcamento_id])
+  @@index([query_hash])
+  @@map("formula_matches")
 }

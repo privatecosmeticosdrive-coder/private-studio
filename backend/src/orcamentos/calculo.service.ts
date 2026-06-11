@@ -1,5 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   calcularCustoPrivate,
@@ -17,26 +16,25 @@ type FormulaComCusto = {
   origem: string;
   custo_mp_kg_atual: number;
   score_global: number;
-  etapas_detectadas: number;
   ingredientes: any[];
   composicao_snapshot: any[];
 } | null;
 
+type EmbalagemResolvida = {
+  embalagem_un: number;
+  preliminar: boolean; // true = embalagem escolhida porem sem cotacao (custo R$0)
+  snapshot: any | null;
+};
+
 @Injectable()
 export class CalculoService {
-  private readonly logger = new Logger(CalculoService.name);
+  constructor(private readonly prisma: PrismaService) {}
 
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly config: ConfigService,
-  ) {}
-
-  private temApiKey(): boolean {
-    const k = this.config.get<string>('ANTHROPIC_API_KEY');
-    return !!k && k.trim().length > 0;
-  }
-
-  /** Fase 1: monta inputs (MOCK ou REAL), roda o motor e devolve JSON_CALC travado. */
+  /**
+   * Fase 1 (Doc 2d) — DETERMINISTICA, sem IA. Monta os inputs a partir do
+   * orcamento/formula/catalogo, roda o motor e devolve o JSON_CALC travado.
+   * Zero chamada de API: produtividade (un_min) e embalagem sao inputs diretos.
+   */
   async gerarCalculo(orcamentoId: string, overrides: CalcularDto) {
     const orc = await this.prisma.orcamento.findUnique({ where: { id: orcamentoId } });
     if (!orc) throw new NotFoundException('Orcamento nao encontrado');
@@ -44,42 +42,49 @@ export class CalculoService {
     const cfg = await this.getParametros();
     const formula = orc.formula_id ? await this.carregarFormula(orc.formula_id) : null;
 
-    // valores default razoaveis quando o briefing nao trouxe
     const volume_un = orc.volume_un != null ? Number(orc.volume_un) : 100;
     const quantidade = orc.quantidade ?? 1000;
     const margem_pct = overrides.margem_pct ?? (orc.margem_pct != null ? Number(orc.margem_pct) : 30);
 
-    // estimativa dos inputs "fuzzy" (embalagem, fragrancia, etapas, mp base)
-    const modoReal = this.temApiKey();
-    const est = modoReal
-      ? await this.estimarComIA(orc, formula, { volume_un, quantidade })
-      : this.estimarMock(orc, formula, { volume_un });
+    // Produtividade direta (Doc 2d §A) — obrigatoria: do calculo OU ja no orcamento.
+    const un_min = overrides.un_min ?? (orc.un_min != null ? Number(orc.un_min) : undefined);
+    if (un_min == null) {
+      throw new BadRequestException(
+        'un_min (produtividade em unidades/minuto) e obrigatorio. Informe no calculo ou grave no orcamento.',
+      );
+    }
+
+    // Embalagem via catalogo (Doc 2d §B): snapshot do orcamento, catalogo, ou sem embalagem.
+    const emb = await this.resolverEmbalagem(orc);
+
+    // Custo de MP base por kg: formula > override manual > budget do briefing > 0.
+    // Fragrancia agora e MP da composicao (decisao A) — sem input separado.
+    const cmp_base_mp_kg =
+      formula?.custo_mp_kg_atual ??
+      overrides.cmp_base_mp_kg ??
+      (orc.budget_mp != null ? Number(orc.budget_mp) : 0);
 
     const inputs: InputsCusto = {
-      cmp_base_mp_kg:
-        overrides.cmp_base_mp_kg ??
-        formula?.custo_mp_kg_atual ??
-        est.cmp_base_mp_kg ??
-        0,
+      cmp_base_mp_kg,
       volume_un,
       quantidade,
-      etapas: overrides.etapas ?? est.etapas ?? formula?.etapas_detectadas ?? 4,
+      un_min,
       margem_pct,
-      mp_frag_kg: overrides.mp_frag_kg ?? est.mp_frag_kg,
-      embalagem_un: overrides.embalagem_un ?? est.embalagem_un,
+      mp_frag_kg: 0,
+      embalagem_un: emb.embalagem_un,
     };
 
     const calc = calcularCustoPrivate(inputs, cfg);
     const score_global = formula ? formula.score_global : 55; // sem formula => baixa confianca
 
     const calculo = {
-      _mode: est.modo,
-      _modelo_versao: '1.0',
+      _mode: 'deterministico',
+      _modelo_versao: '2.0',
       _gerado_em: new Date().toISOString(),
-      _aviso_mock:
-        est.modo === 'mock'
-          ? 'Inputs estimados por heuristica (ANTHROPIC_API_KEY ausente). Coerente, porem nao oficial.'
-          : undefined,
+      _preliminar: emb.preliminar || undefined,
+      _aviso: emb.preliminar
+        ? 'Embalagem sem cotacao — custo usa R$0 e o orcamento e preliminar (Doc 2d §B4).'
+        : undefined,
       inputs,
       parametros: cfg,
       custo_mp: calc.custo_mp,
@@ -96,8 +101,8 @@ export class CalculoService {
             origem: formula.origem,
           }
         : null,
+      embalagem: emb.snapshot,
       ingredientes: formula?.ingredientes ?? [],
-      estimativa: est.meta,
     };
 
     return {
@@ -125,6 +130,32 @@ export class CalculoService {
     };
   }
 
+  // ---------------- embalagem do catalogo (Doc 2d §B4) ----------------
+  private async resolverEmbalagem(orc: any): Promise<EmbalagemResolvida> {
+    if (orc.sem_embalagem) return { embalagem_un: 0, preliminar: false, snapshot: null };
+
+    // Snapshot ja gravado tem prioridade (preco travado no momento do orcamento).
+    let snap = orc.embalagem_snapshot as any | null;
+    if (!snap && orc.embalagem_id) {
+      const e = await this.prisma.embalagem.findUnique({ where: { id: orc.embalagem_id } });
+      if (e) {
+        snap = {
+          id: e.id,
+          nome: e.nome,
+          tipo: e.tipo,
+          preco_un_brl: e.preco_un_brl != null ? Number(e.preco_un_brl) : null,
+          fornecedor: e.fornecedor,
+          preco_estimado: e.preco_estimado,
+        };
+      }
+    }
+    if (!snap) return { embalagem_un: 0, preliminar: false, snapshot: null };
+
+    const preco = snap.preco_un_brl != null ? Number(snap.preco_un_brl) : null;
+    // Sem cotacao -> usa R$0 e marca o orcamento como preliminar.
+    return { embalagem_un: preco ?? 0, preliminar: preco == null, snapshot: snap };
+  }
+
   // ---------------- carrega formula + custo atual + score ----------------
   private async carregarFormula(formulaId: number): Promise<FormulaComCusto> {
     const f = await this.prisma.formula.findUnique({
@@ -139,13 +170,11 @@ export class CalculoService {
     if (!f) return null;
 
     let custoAtual = 0;
-    const fases = new Set<string>();
     const ingredientes = f.composicao.map((c) => {
       const conc = c.concentracao_pct != null ? Number(c.concentracao_pct) : 0;
       const preco = c.mp?.preco_kg_brl != null ? Number(c.mp.preco_kg_brl) : null;
       const custo = preco != null ? (conc / 100) * preco : null;
       if (custo != null) custoAtual += custo;
-      if (c.fase) fases.add(c.fase);
       return {
         nome: c.mp?.nome ?? c.mp_nome_original,
         mp_codigo: c.mp?.codigo ?? null,
@@ -173,99 +202,8 @@ export class CalculoService {
       origem: f.origem,
       custo_mp_kg_atual: Number(custoAtual.toFixed(4)),
       score_global: score,
-      etapas_detectadas: fases.size > 0 ? fases.size : 4,
       ingredientes,
       composicao_snapshot: ingredientes,
     };
-  }
-
-  // ---------------- estimativa MOCK (heuristica) ----------------
-  private estimarMock(
-    orc: any,
-    formula: FormulaComCusto,
-    ctx: { volume_un: number },
-  ) {
-    const jitter = (base: number, pct: number) =>
-      Number((base * (1 + (Math.random() * 2 - 1) * pct)).toFixed(2));
-    const nivel = orc.nivel ?? 'inter';
-    const fragBase = nivel === 'premium' ? 180 : nivel === 'basic' ? 80 : 120;
-
-    const embalagem_un = jitter(0.5 + ctx.volume_un * 0.004, 0.15);
-    const mp_frag_kg = jitter(fragBase, 0.1);
-    const etapas = formula?.etapas_detectadas ?? 4;
-    const cmp_base_mp_kg = formula
-      ? undefined
-      : orc.budget_mp != null
-        ? Number(orc.budget_mp)
-        : jitter(60, 0.4);
-
-    return {
-      modo: 'mock' as const,
-      embalagem_un,
-      mp_frag_kg,
-      etapas,
-      cmp_base_mp_kg,
-      meta: {
-        fonte: 'heuristica',
-        nivel,
-        nota: 'embalagem ~ volume; fragrancia por nivel; etapas das fases da formula',
-      },
-    };
-  }
-
-  // ---------------- estimativa REAL (Anthropic API) ----------------
-  private async estimarComIA(
-    orc: any,
-    formula: FormulaComCusto,
-    ctx: { volume_un: number; quantidade: number },
-  ) {
-    const model = this.config.get<string>('ANTHROPIC_MODEL') ?? 'claude-sonnet-4-6';
-    const key = this.config.get<string>('ANTHROPIC_API_KEY')!;
-
-    const prompt = [
-      'Voce e um analista de custos de cosmeticos da Private Cosmeticos.',
-      'Estime APENAS os parametros de entrada (nao calcule preco final) e responda',
-      'SOMENTE com um JSON valido, sem texto extra, no formato:',
-      '{"etapas": <int 2-12>, "embalagem_un": <R$ por unidade>, "mp_frag_kg": <R$/kg fragrancia>,',
-      ' "cmp_base_mp_kg": <R$/kg de MP, somente se NAO houver formula>, "justificativa": "<curto>"}',
-      '',
-      `Produto: ${orc.produto} | Categoria: ${orc.categoria ?? '-'} | Nivel: ${orc.nivel ?? '-'}`,
-      `Volume por unidade: ${ctx.volume_un} mL | Quantidade do lote: ${ctx.quantidade}`,
-      formula
-        ? `Formula base: ${formula.nome_produto} (custo MP atual R$${formula.custo_mp_kg_atual}/kg, ${formula.etapas_detectadas} fases). NAO retorne cmp_base_mp_kg.`
-        : 'Sem formula base — estime cmp_base_mp_kg coerente com a categoria/nivel.',
-    ].join('\n');
-
-    try {
-      const resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'x-api-key': key,
-          'anthropic-version': '2023-06-01',
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          model,
-          max_tokens: 512,
-          messages: [{ role: 'user', content: prompt }],
-        }),
-      });
-      if (!resp.ok) throw new Error(`Anthropic HTTP ${resp.status}`);
-      const data: any = await resp.json();
-      const texto: string = data?.content?.[0]?.text ?? '';
-      const json = JSON.parse(texto.slice(texto.indexOf('{'), texto.lastIndexOf('}') + 1));
-      return {
-        modo: 'real' as const,
-        embalagem_un: Number(json.embalagem_un) || undefined,
-        mp_frag_kg: Number(json.mp_frag_kg) || undefined,
-        etapas: Number(json.etapas) || undefined,
-        cmp_base_mp_kg: formula ? undefined : Number(json.cmp_base_mp_kg) || undefined,
-        meta: { fonte: 'anthropic', model, justificativa: json.justificativa ?? null },
-      };
-    } catch (e) {
-      this.logger.warn(`Falha na IA, usando heuristica: ${(e as Error).message}`);
-      const mock = this.estimarMock(orc, formula, { volume_un: ctx.volume_un });
-      return { ...mock, modo: 'mock' as const, meta: { ...mock.meta, fallback_de: 'real', erro: (e as Error).message } };
-    }
   }
 }

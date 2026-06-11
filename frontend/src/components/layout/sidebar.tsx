@@ -23,11 +23,11 @@ interface NavItem {
 
 const ITENS: NavItem[] = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/orcamentos', label: 'Orcamentos', icon: FileText },
-  { to: '/formulas', label: 'Formulas', icon: FlaskConical },
-  { to: '/materias-primas', label: 'Materias-primas', icon: Boxes },
+  { to: '/orcamentos', label: 'Orçamentos', icon: FileText },
+  { to: '/formulas', label: 'Fórmulas', icon: FlaskConical },
+  { to: '/materias-primas', label: 'Matérias-primas', icon: Boxes },
   { to: '/amostras', label: 'Amostras', icon: TestTubes },
-  { to: '/cotacoes', label: 'Cotacoes', icon: ClipboardList },
+  { to: '/cotacoes', label: 'Cotações', icon: ClipboardList },
   { to: '/clientes', label: 'Clientes', icon: Users },
   { to: '/admin', label: 'Admin', icon: Settings, roles: ['admin'] },
 ];

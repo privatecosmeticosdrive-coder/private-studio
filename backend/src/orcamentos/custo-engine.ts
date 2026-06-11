@@ -23,18 +23,15 @@ export interface InputsCusto {
   cmp_base_mp_kg: number; // custo de MP por kg da formula
   volume_un: number; // mL/g por unidade
   quantidade: number; // unidades do lote
-  etapas: number; // nº de etapas de producao (define produtividade)
+  un_min: number; // produtividade informada (unidades/minuto) — Doc 2d §A
   margem_pct: number; // margem alvo (%)
   mp_frag_kg?: number; // custo de fragrancia por kg (opcional)
   embalagem_un?: number; // custo de embalagem por unidade (opcional)
 }
 
-/** un/dia por faixa de etapas (Doc 1 §6). */
-export function unDiaPorEtapas(etapas: number): number {
-  if (etapas <= 3) return 2880;
-  if (etapas <= 5) return 1920;
-  if (etapas <= 7) return 1200;
-  return 720;
+/** producao diaria a partir de un/min: un_min × 60min × 8h = un_min × 480 (Doc 2d §A3). */
+export function producaoDiaria(un_min: number): number {
+  return Math.max(0.01, un_min) * 480;
 }
 
 const r2 = (n: number) => Number(n.toFixed(2));
@@ -56,7 +53,7 @@ export function calcularCustoPrivate(inputs: InputsCusto, p: ParametrosCusto) {
 
   // --- Mao de obra por unidade ---
   const mo_diario = p.mo_folha_mensal / p.mo_dias_uteis;
-  const un_dia = unDiaPorEtapas(inputs.etapas);
+  const un_dia = producaoDiaria(inputs.un_min); // un_min × 480 (Doc 2d §A3)
   const dias_necessarios = Math.ceil(quantidade / un_dia);
   const mo_lote = mo_diario * dias_necessarios;
   const mo_un = mo_lote / quantidade;
@@ -85,8 +82,8 @@ export function calcularCustoPrivate(inputs: InputsCusto, p: ParametrosCusto) {
       mo_folha_mensal: p.mo_folha_mensal,
       mo_dias_uteis: p.mo_dias_uteis,
       mo_diario: r2(mo_diario),
-      etapas: inputs.etapas,
-      un_dia,
+      un_min: inputs.un_min,
+      producao_diaria: r2(un_dia),
       dias_necessarios,
       mo_lote: r2(mo_lote),
       mo_un: r4(mo_un),

@@ -13,11 +13,11 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/orcamentos" element={<Placeholder title="Orcamentos" dia="Dia 9-10" />} />
-          <Route path="/formulas" element={<Placeholder title="Formulas" dia="Dia 9-11" />} />
-          <Route path="/materias-primas" element={<Placeholder title="Materias-primas" dia="Dia 9-11" />} />
+          <Route path="/orcamentos" element={<Placeholder title="Orçamentos" dia="Dia 9-10" />} />
+          <Route path="/formulas" element={<Placeholder title="Fórmulas" dia="Dia 9-11" />} />
+          <Route path="/materias-primas" element={<Placeholder title="Matérias-primas" dia="Dia 9-11" />} />
           <Route path="/amostras" element={<Placeholder title="Amostras (pipeline)" dia="Dia 11" />} />
-          <Route path="/cotacoes" element={<Placeholder title="Cotacoes" dia="Dia 11" />} />
+          <Route path="/cotacoes" element={<Placeholder title="Cotações" dia="Dia 11" />} />
           <Route path="/clientes" element={<Placeholder title="Clientes" dia="Dia 13" />} />
           <Route path="/admin" element={<Placeholder title="Admin" dia="Dia 13" />} />
           <Route index element={<Navigate to="/dashboard" replace />} />

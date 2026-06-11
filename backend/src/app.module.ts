@@ -10,8 +10,10 @@ import { AuditModule } from './audit/audit.module';
 import { AlertasModule } from './alertas/alertas.module';
 import { ClientesModule } from './clientes/clientes.module';
 import { MateriasPrimasModule } from './materias-primas/materias-primas.module';
+import { EmbalagensModule } from './embalagens/embalagens.module';
 import { FormulasModule } from './formulas/formulas.module';
 import { OrcamentosModule } from './orcamentos/orcamentos.module';
+import { MatchFormulasModule } from './match-formulas/match-formulas.module';
 import { AmostrasModule } from './amostras/amostras.module';
 import { CotacoesModule } from './cotacoes/cotacoes.module';
 import { SystemConfigModule } from './system-config/system-config.module';
@@ -26,8 +28,10 @@ import { SystemConfigModule } from './system-config/system-config.module';
     ClientesModule,
     AlertasModule,
     MateriasPrimasModule,
+    EmbalagensModule,
     FormulasModule,
     OrcamentosModule,
+    MatchFormulasModule,
     AmostrasModule,
     CotacoesModule,
     SystemConfigModule,

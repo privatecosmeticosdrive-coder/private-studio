@@ -1,23 +1,19 @@
-import { IsInt, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import { IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 /**
- * Overrides opcionais para a Fase 1 (cálculo). Quando ausentes, o sistema
- * estima a partir da formula/briefing (heuristica no MOCK, IA no modo real).
+ * Inputs da Fase 1 (cálculo determinístico — Doc 2d). Sem IA: a produtividade
+ * é informada diretamente em un/min e os demais custos vêm da fórmula/catálogo.
+ * un_min é obrigatório aqui OU já gravado no orçamento (orcamento.un_min).
  */
 export class CalcularDto {
-  @IsOptional() @IsInt() @Min(2) @Max(20)
-  etapas?: number;
+  // Produtividade em unidades/minuto (presets 8/6/4/2/1 ou livre). Doc 2d §A2.
+  @IsOptional() @IsNumber() @Min(0.1) @Max(60)
+  un_min?: number;
 
   @IsOptional() @IsNumber() @Min(0) @Max(99)
   margem_pct?: number;
 
-  @IsOptional() @IsNumber() @Min(0)
-  embalagem_un?: number;
-
-  @IsOptional() @IsNumber() @Min(0)
-  mp_frag_kg?: number;
-
-  // Forca um custo de MP base (R$/kg) quando nao ha formula selecionada
+  // Custo de MP base (R$/kg) quando NAO ha formula selecionada (senao vem da formula/budget).
   @IsOptional() @IsNumber() @Min(0)
   cmp_base_mp_kg?: number;
 }

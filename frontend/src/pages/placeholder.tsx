@@ -11,7 +11,7 @@ export default function Placeholder({ title, dia }: { title: string; dia?: strin
             <Construction className="size-6" />
           </div>
           <div>
-            <p className="font-medium text-ink">Em construcao</p>
+            <p className="font-medium text-ink">Em construção</p>
             <p className="text-sm text-muted-foreground">
               Esta tela chega {dia ? `no ${dia}` : 'em breve'} (frontend Dias 9-13).
             </p>

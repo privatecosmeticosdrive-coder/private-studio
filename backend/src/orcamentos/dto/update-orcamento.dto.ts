@@ -44,6 +44,17 @@ export class UpdateOrcamentoDto {
   @IsOptional() @IsString()
   embalagem?: string;
 
+  // Produtividade direta em un/min (Doc 2d §A).
+  @IsOptional() @IsNumber() @Min(0.1) @Max(60)
+  un_min?: number;
+
+  // Embalagem do catalogo (Doc 2d §B).
+  @IsOptional() @IsInt() @Min(1)
+  embalagem_id?: number;
+
+  @IsOptional() @IsBoolean()
+  sem_embalagem?: boolean;
+
   @IsOptional() @IsNumber() @Min(0)
   budget_mp?: number;
 

@@ -6,7 +6,7 @@ const ROLE_LABEL: Record<string, string> = {
   comercial: 'Comercial',
   pd: 'P&D',
   compras: 'Compras',
-  producao: 'Producao',
+  producao: 'Produção',
 };
 
 export function Header() {
