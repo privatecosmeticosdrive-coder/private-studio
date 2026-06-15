@@ -62,6 +62,24 @@ export const orcamentosApi = {
     const { data } = await api.get<OrcamentoDetalhe>(`/orcamentos/${id}`);
     return data;
   },
+  // PDF interno (Dia 14). Via axios (responseType blob) para carregar o Bearer —
+  // um link direto nao autenticaria. Dispara o download e devolve o nome do arquivo.
+  baixarPdf: async (id: string) => {
+    const resp = await api.get<Blob>(`/orcamentos/${id}/pdf`, {
+      responseType: 'blob',
+    });
+    const cd = resp.headers['content-disposition'] as string | undefined;
+    const filename = cd?.match(/filename="?([^"]+)"?/)?.[1] ?? `orcamento-${id}.pdf`;
+    const url = URL.createObjectURL(resp.data);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    return filename;
+  },
   criar: async (payload: CriarOrcamentoPayload) => {
     const { data } = await api.post<OrcamentoDetalhe>('/orcamentos', payload);
     return data;

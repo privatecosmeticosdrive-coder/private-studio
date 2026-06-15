@@ -6,7 +6,9 @@ import {
   Patch,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { Role } from '@prisma/client';
 import { OrcamentosService } from './orcamentos.service';
 import { CreateOrcamentoDto } from './dto/create-orcamento.dto';
@@ -39,6 +41,23 @@ export class OrcamentosController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orcamentos.findOne(id);
+  }
+
+  // PDF interno (Dia 14). Qualquer autenticado (espelha a tela de detalhe).
+  // 400 se ainda nao calculado, 404 se nao existe — heranca do JwtAuthGuard global.
+  @Get(':id/pdf')
+  async pdf(
+    @Param('id') id: string,
+    @CurrentUser() user: JwtUser,
+    @Res() res: Response,
+  ) {
+    const { buffer, filename } = await this.orcamentos.gerarPdf(id, user.sub);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${filename}"`,
+      'Content-Length': String(buffer.length),
+    });
+    res.end(buffer);
   }
 
   // criar/editar: admin e comercial

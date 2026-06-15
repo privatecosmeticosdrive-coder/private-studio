@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { CalculoService } from './calculo.service';
 import { FormatacaoService } from './formatacao.service';
+import { PdfService } from './pdf.service';
 import { CreateOrcamentoDto } from './dto/create-orcamento.dto';
 import { UpdateOrcamentoDto } from './dto/update-orcamento.dto';
 import { CalcularDto } from './dto/calcular.dto';
@@ -23,6 +28,7 @@ export class OrcamentosService {
     private readonly audit: AuditService,
     private readonly calculo: CalculoService,
     private readonly formatacao: FormatacaoService,
+    private readonly pdf: PdfService,
   ) {}
 
   async findAll(query: ListarOrcamentoQuery) {
@@ -157,6 +163,28 @@ export class OrcamentosService {
       detalhes: { modo: r._mode },
     });
     return r;
+  }
+
+  /**
+   * PDF INTERNO do orcamento (Dia 14). Espelha a tela de detalhe. Exige o
+   * JSON_CALC travado (400 se ainda nao calculado). Stream em memoria.
+   */
+  async gerarPdf(id: string, userId: string) {
+    const orc = await this.findOne(id); // 404 embutido
+    if (!orc.calculo) {
+      throw new BadRequestException(
+        'Calcule o orcamento antes de exportar o PDF.',
+      );
+    }
+    const buffer = await this.pdf.gerar(orc);
+    await this.audit.registrar({
+      userId,
+      acao: 'exportar_pdf_orcamento',
+      entidade: 'orcamento',
+      entidadeId: id,
+      detalhes: { numero: orc.numero, bytes: buffer.length },
+    });
+    return { buffer, filename: `orcamento-${orc.numero}.pdf` };
   }
 
   private async ensure(id: string) {

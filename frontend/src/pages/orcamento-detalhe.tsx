@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, FlaskConical, Package } from 'lucide-react';
+import type { AxiosError } from 'axios';
+import { toast } from 'sonner';
+import { ArrowLeft, FileDown, FlaskConical, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
@@ -75,11 +78,36 @@ export default function OrcamentoDetalhe() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
+  const [baixando, setBaixando] = useState(false);
+
   const { data: orc, isLoading, isError, refetch } = useQuery({
     queryKey: ['orcamentos', 'detalhe', id],
     queryFn: () => orcamentosApi.obter(id!),
     enabled: !!id,
   });
+
+  // PDF interno: erro vem como Blob (responseType blob) — extrai a mensagem do backend.
+  const baixarPdf = async () => {
+    if (!orc) return;
+    setBaixando(true);
+    try {
+      await orcamentosApi.baixarPdf(orc.id);
+    } catch (err) {
+      let msg = 'Não foi possível gerar o PDF.';
+      const data = (err as AxiosError).response?.data;
+      if (data instanceof Blob) {
+        try {
+          const j = JSON.parse(await data.text()) as { message?: string | string[] };
+          if (j.message) msg = Array.isArray(j.message) ? j.message[0] : j.message;
+        } catch {
+          /* mantém a mensagem genérica */
+        }
+      }
+      toast.error(msg);
+    } finally {
+      setBaixando(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -128,6 +156,23 @@ export default function OrcamentoDetalhe() {
             )}
           </div>
         </div>
+
+        <span
+          title={!orc.calculo ? 'Calcule o orçamento antes de exportar' : undefined}
+        >
+          <Button
+            variant="outline"
+            disabled={!orc.calculo || baixando}
+            onClick={baixarPdf}
+          >
+            {baixando ? (
+              <Spinner className="text-gold-500" />
+            ) : (
+              <FileDown className="size-4" />
+            )}
+            Baixar PDF
+          </Button>
+        </span>
       </div>
 
       <ResumoBriefing orc={orc} />
