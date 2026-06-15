@@ -16,7 +16,10 @@ export type Acao =
   | 'formula:escrever'
   | 'match-formulas'
   | 'orcamento:escrever'
-  | 'orcamento:calcular';
+  | 'orcamento:calcular'
+  | 'usuario:gerenciar'
+  | 'config:editar'
+  | 'alerta:gerenciar';
 
 const PERMISSOES: Record<Acao, Role[] | '*'> = {
   'embalagem:escrever': ['admin', 'compras', 'comercial'],
@@ -30,6 +33,9 @@ const PERMISSOES: Record<Acao, Role[] | '*'> = {
   'match-formulas': ['admin', 'comercial', 'pd'],
   'orcamento:escrever': ['admin', 'comercial'],
   'orcamento:calcular': ['admin', 'comercial', 'pd'],
+  'usuario:gerenciar': ['admin'],
+  'config:editar': ['admin'],
+  'alerta:gerenciar': ['admin'],
 };
 
 /** Retorna `can(acao)` para esconder/desabilitar botoes conforme a role do usuario. */

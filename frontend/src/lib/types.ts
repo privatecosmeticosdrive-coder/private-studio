@@ -2,6 +2,7 @@
  * Tipos de dominio compartilhados (espelham os DTOs/entidades do backend).
  * Campos Decimal do Prisma chegam como string no JSON — modelados como Money.
  */
+import type { Role } from '@/auth/auth-context';
 
 /** Valor monetario/decimal serializado pelo Prisma (string) ou nulo. */
 export type Money = string | number | null;
@@ -487,4 +488,63 @@ export interface RefinarIaResposta {
   modo: string;
   custo_estimado_brl: number;
   top_5_reranqueado: Candidata[];
+}
+
+// ----------------------- ADMIN -----------------------
+
+/** Rótulos amigáveis dos papéis (enum Role do backend). */
+export const ROLE_LABEL: Record<Role, string> = {
+  admin: 'Admin',
+  comercial: 'Comercial',
+  pd: 'P&D',
+  compras: 'Compras',
+  producao: 'Produção',
+};
+
+/** Lista de papéis para selects (mesma ordem do enum Prisma). */
+export const ROLES: Role[] = ['admin', 'comercial', 'pd', 'compras', 'producao'];
+
+/** Usuário (GET /users — nunca traz password_hash). */
+export interface Usuario {
+  id: string;
+  nome: string;
+  email: string;
+  role: Role;
+  ativo: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+/** Parâmetros do sistema (GET /system-config). */
+export interface SystemConfig {
+  id: number;
+  mo_folha_mensal: Money;
+  mo_dias_uteis: number;
+  mo_colaboradores: number;
+  imposto_mp_pct: Money;
+  imposto_mo_pct: Money;
+  ipi_pct: Money;
+  desvio_mp_pct: Money;
+  frete_un_brl: Money;
+  alerta_aumento_mp_pct: Money;
+  alertas_ativos: boolean;
+  produtividade_etapas?: unknown;
+  updated_at: string;
+}
+
+export type SeveridadeAlerta = 'info' | 'warn' | 'critical';
+
+/** Alerta (GET /alertas) — `lido` calculado para o usuário atual. */
+export interface Alerta {
+  id: number;
+  tipo: string;
+  titulo: string;
+  mensagem: string | null;
+  entidade_tipo: string | null;
+  entidade_id: number | null;
+  severidade: SeveridadeAlerta | string;
+  resolvido: boolean;
+  created_at: string;
+  lido: boolean;
+  created_for?: string[];
 }
