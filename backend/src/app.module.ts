@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -21,6 +23,13 @@ import { SystemConfigModule } from './system-config/system-config.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // Serve o build do frontend (Vite) e faz fallback de SPA para o index.html.
+    // exclude '/api/...' garante que a API nao seja engolida pelo catch-all do SPA.
+    // rootPath via __dirname (backend/dist) -> ../../frontend/dist, independente do cwd.
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'frontend', 'dist'),
+      exclude: ['/api/{*splat}'],
+    }),
     PrismaModule,
     AuditModule,
     AuthModule,

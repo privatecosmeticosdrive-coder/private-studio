@@ -1,0 +1,13 @@
+{
+  "name": "private-studio",
+  "version": "1.0.0",
+  "description": "Private Studio — orquestrador de monorepo (backend NestJS serve o frontend Vite) para deploy single-service no Railway.",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm --prefix frontend ci --include=dev && npm --prefix frontend run build && npm --prefix backend ci --include=dev && npm --prefix backend run build",
+    "start": "npm --prefix backend run migrate:deploy && node backend/dist/main.js"
+  }
+}
