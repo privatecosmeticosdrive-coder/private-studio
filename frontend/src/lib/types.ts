@@ -250,6 +250,23 @@ export interface VersoesResposta {
   versoes: VersaoFormula[];
 }
 
+/** Item de composição para escrita (espelha ComposicaoItemDto do backend). */
+export interface ComposicaoItemInput {
+  fase?: string;
+  ordem?: number;
+  mp_id?: number;
+  mp_nome_original?: string;
+  concentracao_pct: number;
+  funcao?: string;
+  fornecedor_pref?: string;
+}
+
+/** Payload de nova versão de fórmula (POST /formulas/:id/nova-versao). */
+export interface NovaVersaoPayload {
+  versao_descricao?: string;
+  composicao: ComposicaoItemInput[];
+}
+
 // ----------------------- ORCAMENTOS -----------------------
 
 export const NIVEIS_ORCAMENTO = ['basic', 'inter', 'premium'] as const;

@@ -3,6 +3,7 @@ import type {
   FormulaBuscaItem,
   FormulaDetalhe,
   FormulaListItem,
+  NovaVersaoPayload,
   Paginado,
   VersoesResposta,
 } from '@/lib/types';
@@ -34,6 +35,11 @@ export const formulasApi = {
   },
   versoes: async (id: number) => {
     const { data } = await api.get<VersoesResposta>(`/formulas/${id}/versoes`);
+    return data;
+  },
+  // Cria nova versão (rascunho) na árvore da fórmula-mãe com a composição editada.
+  novaVersao: async (id: number, payload: NovaVersaoPayload) => {
+    const { data } = await api.post<FormulaDetalhe>(`/formulas/${id}/nova-versao`, payload);
     return data;
   },
 };

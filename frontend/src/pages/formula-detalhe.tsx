@@ -1,12 +1,13 @@
 import { Link, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, GitBranch } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { StatusFormulaBadge, OrigemBadge } from '@/components/ui/status-badge';
 import { ScoreThermometer } from '@/components/data/score-thermometer';
+import { useCan } from '@/auth/use-can';
 import { brl } from '@/lib/utils';
 import type { Money } from '@/lib/types';
 import { formulasApi } from '@/lib/services/formulas';
@@ -18,6 +19,7 @@ function pct(v: Money): string {
 
 export default function FormulaDetalhe() {
   const params = useParams<{ id: string }>();
+  const can = useCan();
   const id = Number(params.id);
   const idValido = Number.isInteger(id) && id > 0;
 
@@ -89,27 +91,36 @@ export default function FormulaDetalhe() {
       {voltar}
 
       {/* Cabecalho */}
-      <div className="space-y-2">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-display text-h1 text-ink">{f.nome_produto}</h1>
-          {f.versao_codigo && (
-            <span className="font-mono text-sm text-warm-500">{f.versao_codigo}</span>
-          )}
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="font-display text-h1 text-ink">{f.nome_produto}</h1>
+            {f.versao_codigo && (
+              <span className="font-mono text-sm text-warm-500">{f.versao_codigo}</span>
+            )}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <StatusFormulaBadge status={f.status} />
+            <OrigemBadge origem={f.origem} />
+            {f.categoria && <Badge variant="neutral">{f.categoria}</Badge>}
+            {f.cliente && <span className="text-sm text-muted-foreground">Cliente: {f.cliente.nome}</span>}
+            {f.formula_mae && (
+              <Link
+                to={`/formulas/${f.formula_mae.id}`}
+                className="text-sm text-gold-600 underline-offset-2 hover:underline"
+              >
+                ← Fórmula-mãe: {f.formula_mae.nome_produto}
+              </Link>
+            )}
+          </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <StatusFormulaBadge status={f.status} />
-          <OrigemBadge origem={f.origem} />
-          {f.categoria && <Badge variant="neutral">{f.categoria}</Badge>}
-          {f.cliente && <span className="text-sm text-muted-foreground">Cliente: {f.cliente.nome}</span>}
-          {f.formula_mae && (
-            <Link
-              to={`/formulas/${f.formula_mae.id}`}
-              className="text-sm text-gold-600 underline-offset-2 hover:underline"
-            >
-              ← Fórmula-mãe: {f.formula_mae.nome_produto}
+        {can('formula:escrever') && (
+          <Button asChild variant="outline">
+            <Link to={`/formulas/${f.id}/nova-versao`}>
+              <GitBranch className="size-4" /> Editar composição / Nova versão
             </Link>
-          )}
-        </div>
+          </Button>
+        )}
       </div>
 
       {/* Custo */}
