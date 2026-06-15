@@ -249,3 +249,225 @@ export interface VersoesResposta {
   total: number;
   versoes: VersaoFormula[];
 }
+
+// ----------------------- ORCAMENTOS -----------------------
+
+export const NIVEIS_ORCAMENTO = ['basic', 'inter', 'premium'] as const;
+export type NivelOrcamento = (typeof NIVEIS_ORCAMENTO)[number];
+
+/** Rótulos amigáveis dos níveis (Doc 2d §C). */
+export const NIVEL_ORCAMENTO_LABEL: Record<NivelOrcamento, string> = {
+  basic: 'Basic',
+  inter: 'Intermediário',
+  premium: 'Premium',
+};
+
+/**
+ * Status do orçamento (Doc 2c). Transições de status têm endpoints próprios
+ * (fora do escopo do wizard Dia 11) — aqui usamos só 'rascunho' na criação.
+ */
+export type StatusOrcamento =
+  | 'rascunho'
+  | 'aprovado_interno'
+  | 'enviado'
+  | 'aprovado_cliente'
+  | 'em_amostragem'
+  | 'em_producao'
+  | 'concluido'
+  | 'rejeitado'
+  | 'arquivado';
+
+/** Rótulos dos status para badges. */
+export const STATUS_ORCAMENTO_LABEL: Record<string, string> = {
+  rascunho: 'Rascunho',
+  aprovado_interno: 'Aprovado interno',
+  enviado: 'Enviado',
+  aprovado_cliente: 'Aprovado cliente',
+  em_amostragem: 'Em amostragem',
+  em_producao: 'Em produção',
+  concluido: 'Concluído',
+  rejeitado: 'Rejeitado',
+  arquivado: 'Arquivado',
+};
+
+/** Item da listagem (GET /orcamentos) — inclui cliente resumido. */
+export interface OrcamentoListItem {
+  id: string;
+  numero: number;
+  cliente_id: string | null;
+  produto: string;
+  categoria: string | null;
+  nivel: NivelOrcamento | null;
+  status: StatusOrcamento | string;
+  volume_un: Money;
+  quantidade: number | null;
+  margem_pct: Money;
+  formula_id: number | null;
+  score_global: number | null;
+  preco_sipi: Money;
+  preco_cipi: Money;
+  created_at: string;
+  cliente: { id: string; nome: string } | null;
+}
+
+// ---- JSON_CALC travado (espelha calculo.service.ts → gerarCalculo) ----
+
+export interface CalculoInputs {
+  cmp_base_mp_kg: number;
+  volume_un: number;
+  quantidade: number;
+  un_min: number;
+  margem_pct: number;
+  mp_frag_kg: number;
+  embalagem_un: number;
+}
+
+export interface CalculoParametros {
+  mo_folha_mensal: number;
+  mo_dias_uteis: number;
+  imposto_mp_pct: number;
+  imposto_mo_pct: number;
+  ipi_pct: number;
+  desvio_mp_pct: number;
+  frete_un_brl: number;
+}
+
+export interface CalculoCustoMp {
+  mp_base: number;
+  mp_frag: number;
+  desvio_pct: number;
+  desvio: number;
+  embalagem: number;
+  frete: number;
+  cmp_simp: number;
+  imposto_mp_pct: number;
+  cmp_cimp: number;
+}
+
+export interface CalculoMaoDeObra {
+  mo_folha_mensal: number;
+  mo_dias_uteis: number;
+  mo_diario: number;
+  un_min: number;
+  producao_diaria: number;
+  dias_necessarios: number;
+  mo_lote: number;
+  mo_un: number;
+  imposto_mo_pct: number;
+  cmo_cimp: number;
+}
+
+export interface CalculoResultado {
+  custo_total: number;
+  margem_pct: number;
+  preco_sipi: number;
+  ipi_pct: number;
+  ipi_un: number;
+  preco_cipi: number;
+}
+
+/** Snapshot do cálculo determinístico travado no orçamento (Fase 1, Doc 2d). */
+export interface CalculoJson {
+  _mode: string;
+  _modelo_versao: string;
+  _gerado_em: string;
+  _preliminar?: boolean;
+  _aviso?: string;
+  inputs: CalculoInputs;
+  parametros: CalculoParametros;
+  custo_mp: CalculoCustoMp;
+  mao_de_obra: CalculoMaoDeObra;
+  resultado: CalculoResultado;
+  score_global: number;
+  faixa: string;
+  formula_usada: {
+    id: number;
+    nome: string;
+    versao: string | null;
+    status: string;
+    origem: string;
+  } | null;
+  embalagem: {
+    id?: number;
+    nome?: string;
+    tipo?: string;
+    preco_un_brl?: number | null;
+    fornecedor?: string | null;
+    preco_estimado?: boolean;
+  } | null;
+  ingredientes: {
+    nome: string | null;
+    mp_codigo: number | null;
+    concentracao_pct: number;
+    preco_kg_atual: number | null;
+    custo_na_formula: number | null;
+    score: number;
+    fase: string | null;
+  }[];
+}
+
+/** Detalhe do orçamento (GET /orcamentos/:id). */
+export interface OrcamentoDetalhe {
+  id: string;
+  numero: number;
+  cliente_id: string | null;
+  produto: string;
+  categoria: string | null;
+  nivel: NivelOrcamento | null;
+  volume_un: Money;
+  quantidade: number | null;
+  margem_pct: Money;
+  formula_id: number | null;
+  embalagem: string | null;
+  budget_mp: Money;
+  produto_referencia: string | null;
+  status: StatusOrcamento | string;
+  un_min: Money;
+  embalagem_id: number | null;
+  embalagem_snapshot: CalculoJson['embalagem'] | null;
+  sem_embalagem: boolean;
+  calculo: CalculoJson | null;
+  formula_versao_codigo: string | null;
+  formula_status_momento: string | null;
+  requer_amostra: boolean;
+  amostra_status: string;
+  amostra_qtd: number | null;
+  score_global: number | null;
+  preco_sipi: Money;
+  preco_cipi: Money;
+  created_at: string;
+  updated_at: string;
+  cliente: { id: string; nome: string } | null;
+  formula: { id: number; nome_produto: string; versao_codigo: string | null; status: string } | null;
+}
+
+// ---- Match de fórmulas (POST /orcamentos/match-formulas) ----
+
+/** Candidata ranqueada do match híbrido (custo R$0) — Doc 2d §C2. */
+export interface Candidata {
+  formula_id: number;
+  nome_produto: string;
+  categoria: string | null;
+  status: string;
+  versao_codigo: string | null;
+  custo_mp_kg: number | null;
+  n_orcamentos: number;
+  rank_textual: number;
+  validada_recente: boolean;
+  score: number;
+  justificativa_ia?: string;
+}
+
+export interface MatchResposta {
+  match_id: number;
+  modo: string;
+  custo: number;
+  candidatas: Candidata[];
+}
+
+export interface RefinarIaResposta {
+  match_id: number;
+  modo: string;
+  custo_estimado_brl: number;
+  top_5_reranqueado: Candidata[];
+}

@@ -8,6 +8,9 @@ import MateriasPrimas from '@/pages/materias-primas';
 import Clientes from '@/pages/clientes';
 import Formulas from '@/pages/formulas';
 import FormulaDetalhe from '@/pages/formula-detalhe';
+import Orcamentos from '@/pages/orcamentos';
+import OrcamentoWizard from '@/pages/orcamento-wizard';
+import OrcamentoDetalhe from '@/pages/orcamento-detalhe';
 import Placeholder from '@/pages/placeholder';
 
 export default function App() {
@@ -18,7 +21,9 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/orcamentos" element={<Placeholder title="Orçamentos" dia="Dia 9-10" />} />
+          <Route path="/orcamentos" element={<Orcamentos />} />
+          <Route path="/orcamentos/novo" element={<OrcamentoWizard />} />
+          <Route path="/orcamentos/:id" element={<OrcamentoDetalhe />} />
           <Route path="/formulas" element={<Formulas />} />
           <Route path="/formulas/:id" element={<FormulaDetalhe />} />
           <Route path="/materias-primas" element={<MateriasPrimas />} />

@@ -1,6 +1,23 @@
 import { Badge, type BadgeProps } from '@/components/ui/badge';
+import { STATUS_ORCAMENTO_LABEL } from '@/lib/types';
 
 type Variant = NonNullable<BadgeProps['variant']>;
+
+/** Status do orçamento (Doc 2c). */
+export function StatusOrcamentoBadge({ status }: { status: string }) {
+  const mapa: Record<string, Variant> = {
+    rascunho: 'neutral',
+    aprovado_interno: 'info',
+    enviado: 'info',
+    aprovado_cliente: 'success',
+    em_amostragem: 'warning',
+    em_producao: 'info',
+    concluido: 'success',
+    rejeitado: 'error',
+    arquivado: 'neutral',
+  };
+  return <Badge variant={mapa[status] ?? 'neutral'}>{STATUS_ORCAMENTO_LABEL[status] ?? status}</Badge>;
+}
 
 /** Status de formula: validada / rascunho / arquivada. */
 export function StatusFormulaBadge({ status }: { status: string }) {

@@ -77,14 +77,21 @@ export class CalculoService {
     const calc = calcularCustoPrivate(inputs, cfg);
     const score_global = formula ? formula.score_global : 55; // sem formula => baixa confianca
 
+    // Blindagem: sem base de MP (R$0/kg) o preco vira so MO — sinaliza preliminar.
+    const semBaseMp = cmp_base_mp_kg === 0;
+    const preliminar = emb.preliminar || semBaseMp;
+    const aviso = semBaseMp
+      ? 'Calculo sem base de materia-prima (R$0/kg). Defina uma formula ou informe o budget de MP para um valor real.'
+      : emb.preliminar
+        ? 'Embalagem sem cotacao — custo usa R$0 e o orcamento e preliminar (Doc 2d §B4).'
+        : undefined;
+
     const calculo = {
       _mode: 'deterministico',
       _modelo_versao: '2.0',
       _gerado_em: new Date().toISOString(),
-      _preliminar: emb.preliminar || undefined,
-      _aviso: emb.preliminar
-        ? 'Embalagem sem cotacao — custo usa R$0 e o orcamento e preliminar (Doc 2d §B4).'
-        : undefined,
+      _preliminar: preliminar || undefined,
+      _aviso: aviso,
       inputs,
       parametros: cfg,
       custo_mp: calc.custo_mp,
