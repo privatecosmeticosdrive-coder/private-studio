@@ -58,6 +58,7 @@ model User {
   nome          String
   password_hash String
   role          Role
+  pode_ver_custos Boolean @default(false) // F1 — acesso a Matriz de Custo (admin ignora a flag)
   ativo         Boolean  @default(true)
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
@@ -75,6 +76,7 @@ model User {
   embalagens_criadas   Embalagem[]         @relation("EmbalagemCreatedBy")
   emb_historico_reg    EmbHistoricoPreco[] @relation("EmbHistoricoRegistradoPor")
   audit_logs           AuditLog[]
+  matriz_historico     MatrizCustoHistorico[] // F1 — relation virtual (sem coluna em users)
 
   @@map("users")
 }
@@ -156,6 +158,7 @@ model Formula {
   responsavel  String?
   custo_mp_kg  Decimal?  @db.Decimal(10, 2)
   categoria    String?
+  ncm_id       Int? // F1 — nullable, nao quebra as 815 formulas; backfill na F3.5
   observacoes  String?
 
   // VERSIONAMENTO / LABORATORIO VIVO (Doc 2b §A7)
@@ -182,6 +185,7 @@ model Formula {
   updated_at DateTime @updatedAt
 
   cliente     Cliente?            @relation(fields: [cliente_id], references: [id])
+  ncm         Ncm?                @relation(fields: [ncm_id], references: [id]) // F1
   criado_por  User?               @relation("FormulaCreatedBy", fields: [created_by], references: [id])
   validador   User?               @relation("FormulaValidadaPor", fields: [validada_por], references: [id])
   formula_mae Formula?            @relation("FormulaMae", fields: [formula_mae_id], references: [id])
@@ -195,6 +199,7 @@ model Formula {
   @@index([origem])
   @@index([formula_mae_id])
   @@index([status])
+  @@index([ncm_id]) // F1
   @@map("formulas")
 }
 
@@ -363,6 +368,17 @@ model SystemConfig {
   ipi_pct              Decimal @default(4.55) @db.Decimal(6, 3)
   desvio_mp_pct        Decimal @default(10) @db.Decimal(6, 3)
   frete_un_brl         Decimal @default(0.10) @db.Decimal(8, 4)
+
+  // ---- MATRIZ DE CUSTO (F1) — aditivo. mo_folha_mensal e ipi_pct seguem legados ate F6. ----
+  custo_fixo_mensal         Decimal  @default(120240) @db.Decimal(12, 2) // substitui conceitualmente mo_folha_mensal
+  horas_dia                 Decimal  @default(8)       @db.Decimal(4, 2) // permite fracionario (ex.: 7.5)
+  eficiencia_linha          Decimal  @default(0.75)    @db.Decimal(4, 3)
+  margem_padrao_pct         Decimal  @default(30)      @db.Decimal(5, 2) // so PADRAO; comercial ajusta por orcamento
+  icms_regime               Decimal  @default(18)      @db.Decimal(5, 2) // 12 ou 18; valor real no backfill F2
+  encomendante_simples      Boolean  @default(false)
+  pis_cofins_monofasico_pct Decimal? @db.Decimal(6, 3) // NULLABLE: null = nao configurado (falha visivel, nunca imposto 0 silencioso)
+  pis_cofins_servico_pct    Decimal? @db.Decimal(6, 3) // NULLABLE: idem
+
   produtividade_etapas Json? // regras un/min e un/dia por faixa de etapas
 
   // ALERTAS DE PRECO (Doc 2b §B6)
@@ -372,6 +388,45 @@ model SystemConfig {
   updated_at DateTime @updatedAt
 
   @@map("system_config")
+}
+
+// ----------------------- MATRIZ DE CUSTO — NCM (F1) -----------------------
+// Tabela de NCMs: IPI e monofasico por NCM. Formula associa via ncm_id (nullable).
+
+model Ncm {
+  id         Int      @id @default(autoincrement())
+  ncm        String   @unique
+  descricao  String
+  ipi_pct    Decimal  @db.Decimal(6, 3)
+  monofasico Boolean  @default(false)
+  ativo      Boolean  @default(true) // soft-delete: NCM ja usada nunca e apagada
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  formulas Formula[]
+
+  @@map("ncm")
+}
+
+// ----------------------- MATRIZ DE CUSTO — LOG DE AUDITORIA (F1) -----------------------
+// Historico granular por campo (antes -> depois). Permanente, consultavel por data.
+
+model MatrizCustoHistorico {
+  id           Int      @id @default(autoincrement())
+  user_id      String?  @db.Uuid
+  bloco        String // operacional | fiscal | ncm
+  entidade     String // system_config | ncm
+  entidade_id  String? // '1' p/ config, ou id da linha NCM
+  campo        String
+  valor_antes  String?
+  valor_depois String?
+  created_at   DateTime @default(now())
+
+  user User? @relation(fields: [user_id], references: [id])
+
+  @@index([entidade, entidade_id])
+  @@index([created_at])
+  @@map("matriz_custo_historico")
 }
 
 // ----------------------- HISTORICO DE PRECOS DE MP (Doc 2b §B5) -----------------------
