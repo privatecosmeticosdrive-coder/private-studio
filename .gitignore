@@ -11,6 +11,7 @@ frontend/dist/
 .env.local
 .env.*.local
 backend/.env
+*.env
 
 # Prisma
 backend/prisma/*.db
