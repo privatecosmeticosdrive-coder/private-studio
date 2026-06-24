@@ -27,7 +27,8 @@
     "baseline:precos": "ts-node --transpile-only -P prisma/tsconfig.json prisma/baseline-historico-precos.ts",
     "fix:extracao": "ts-node --transpile-only -P prisma/tsconfig.json prisma/fix-extracao-trocada.ts",
     "knowledge": "ts-node --transpile-only -P prisma/tsconfig.json prisma/gerar-knowledge.ts",
-    "backfill:categorias": "node prisma/backfill-categorias.cjs"
+    "backfill:categorias": "node prisma/backfill-categorias.cjs",
+    "backfill:matriz": "node prisma/backfill-matriz-valores.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
