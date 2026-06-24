@@ -378,6 +378,7 @@ model SystemConfig {
   encomendante_simples      Boolean  @default(false)
   pis_cofins_monofasico_pct Decimal? @db.Decimal(6, 3) // NULLABLE: null = nao configurado (falha visivel, nunca imposto 0 silencioso)
   pis_cofins_servico_pct    Decimal? @db.Decimal(6, 3) // NULLABLE: idem
+  fiscais_provisorios       Boolean  @default(true) // F2-prep — fiscais pendentes de validacao contabil; badge na tela le este campo
 
   produtividade_etapas Json? // regras un/min e un/dia por faixa de etapas
 
@@ -400,6 +401,7 @@ model Ncm {
   ipi_pct    Decimal  @db.Decimal(6, 3)
   monofasico Boolean  @default(false)
   ativo      Boolean  @default(true) // soft-delete: NCM ja usada nunca e apagada
+  provisorio Boolean  @default(true) // F2-prep — NCM pendente de validacao contabil (valida-se linha a linha)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
