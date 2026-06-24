@@ -240,6 +240,7 @@ model Orcamento {
   quantidade         Int?
   margem_pct         Decimal?        @db.Decimal(5, 2)
   formula_id         Int?
+  ncm_id             Int? // F3-prep — override de NCM do orcamento (herda da formula se null; regra na F4)
   embalagem          String? // legado (texto livre) — substituido por embalagem_id (Doc 2d §B)
   budget_mp          Decimal?        @db.Decimal(10, 2)
   produto_referencia String?
@@ -297,6 +298,7 @@ model Orcamento {
 
   cliente             Cliente?        @relation(fields: [cliente_id], references: [id])
   formula             Formula?        @relation(fields: [formula_id], references: [id])
+  ncm                 Ncm?            @relation(fields: [ncm_id], references: [id]) // F3-prep
   embalagem_catalogo  Embalagem?      @relation(fields: [embalagem_id], references: [id])
   criado_por          User?           @relation("OrcamentoCreatedBy", fields: [created_by], references: [id])
   amostra_solicitante User?           @relation("AmostraSolicitadaPor", fields: [amostra_solicitada_por], references: [id])
@@ -308,6 +310,7 @@ model Orcamento {
   @@index([cliente_id])
   @@index([amostra_status])
   @@index([amostra_responsavel_id])
+  @@index([ncm_id]) // F3-prep
   @@map("orcamentos")
 }
 
@@ -405,7 +408,8 @@ model Ncm {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  formulas Formula[]
+  formulas   Formula[]
+  orcamentos Orcamento[] // F3-prep — relation virtual (override de NCM por orcamento)
 
   @@map("ncm")
 }
