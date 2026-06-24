@@ -39,6 +39,11 @@ export class CreateOrcamentoDto {
   @IsOptional() @IsInt()
   formula_id?: number;
 
+  // Override de NCM do orcamento (F3). Opcional: se ausente, herda da formula
+  // no consumo (ver resolverNcmEfetivo). NAO congela snapshot aqui.
+  @IsOptional() @IsInt() @Min(1)
+  ncm_id?: number;
+
   @IsOptional() @IsString()
   embalagem?: string;
 

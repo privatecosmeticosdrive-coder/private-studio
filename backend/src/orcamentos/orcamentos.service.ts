@@ -12,6 +12,7 @@ import { PdfService } from './pdf.service';
 import { CreateOrcamentoDto } from './dto/create-orcamento.dto';
 import { UpdateOrcamentoDto } from './dto/update-orcamento.dto';
 import { CalcularDto } from './dto/calcular.dto';
+import { resolverNcmEfetivo } from './ncm-efetivo.util';
 
 export interface ListarOrcamentoQuery {
   status?: string;
@@ -57,11 +58,26 @@ export class OrcamentosService {
       where: { id },
       include: {
         cliente: { select: { id: true, nome: true } },
-        formula: { select: { id: true, nome_produto: true, versao_codigo: true, status: true } },
+        formula: {
+          select: {
+            id: true, nome_produto: true, versao_codigo: true, status: true,
+            ncm_id: true,
+            ncm: { select: { id: true, ncm: true, descricao: true, ipi_pct: true, monofasico: true } },
+          },
+        },
+        // override de NCM do proprio orcamento (F3)
+        ncm: { select: { id: true, ncm: true, descricao: true, ipi_pct: true, monofasico: true } },
       },
     });
     if (!orc) throw new NotFoundException('Orcamento nao encontrado');
-    return orc;
+
+    // NCM efetivo: READ-ONLY computado, NUNCA persistido (snapshot stale). A F4
+    // usa a MESMA resolverNcmEfetivo no engine. override do orcamento vence.
+    const ncm_efetivo = resolverNcmEfetivo(orc.ncm_id, orc.formula?.ncm_id ?? null);
+    const ncm_efetivo_origem =
+      orc.ncm_id != null ? 'orcamento' : orc.formula?.ncm_id != null ? 'formula' : null;
+
+    return { ...orc, ncm_efetivo, ncm_efetivo_origem };
   }
 
   create(dto: CreateOrcamentoDto, userId: string) {
@@ -75,6 +91,7 @@ export class OrcamentosService {
         quantidade: dto.quantidade,
         margem_pct: dto.margem_pct,
         formula_id: dto.formula_id,
+        ncm_id: dto.ncm_id, // override cru (Opcao A); herda da formula no consumo
         embalagem: dto.embalagem,
         un_min: dto.un_min,
         embalagem_id: dto.embalagem_id,
@@ -106,6 +123,7 @@ export class OrcamentosService {
         quantidade: o.quantidade,
         margem_pct: o.margem_pct,
         formula_id: o.formula_id,
+        ncm_id: o.ncm_id, // preserva o override de NCM ao duplicar
         embalagem: o.embalagem,
         un_min: o.un_min,
         embalagem_id: o.embalagem_id,

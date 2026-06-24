@@ -41,6 +41,10 @@ export class UpdateOrcamentoDto {
   @IsOptional() @IsInt()
   formula_id?: number;
 
+  // Override de NCM do orcamento (F3). Herda da formula no consumo se ausente.
+  @IsOptional() @IsInt() @Min(1)
+  ncm_id?: number;
+
   @IsOptional() @IsString()
   embalagem?: string;
 

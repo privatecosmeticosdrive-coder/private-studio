@@ -12,6 +12,7 @@ function sanitizar(user: User) {
     email: user.email,
     role: user.role,
     ativo: user.ativo,
+    pode_ver_custos: user.pode_ver_custos, // F3 — front decide se mostra a Matriz (nao viaja no JWT)
   };
 }
 

@@ -19,6 +19,7 @@ import { MatchFormulasModule } from './match-formulas/match-formulas.module';
 import { AmostrasModule } from './amostras/amostras.module';
 import { CotacoesModule } from './cotacoes/cotacoes.module';
 import { SystemConfigModule } from './system-config/system-config.module';
+import { MatrizCustoModule } from './matriz-custo/matriz-custo.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { SystemConfigModule } from './system-config/system-config.module';
     AmostrasModule,
     CotacoesModule,
     SystemConfigModule,
+    MatrizCustoModule,
     HealthModule,
   ],
   controllers: [AppController],
