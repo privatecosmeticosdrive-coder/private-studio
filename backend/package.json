@@ -28,7 +28,8 @@
     "fix:extracao": "ts-node --transpile-only -P prisma/tsconfig.json prisma/fix-extracao-trocada.ts",
     "knowledge": "ts-node --transpile-only -P prisma/tsconfig.json prisma/gerar-knowledge.ts",
     "backfill:categorias": "node prisma/backfill-categorias.cjs",
-    "backfill:matriz": "node prisma/backfill-matriz-valores.cjs"
+    "backfill:matriz": "node prisma/backfill-matriz-valores.cjs",
+    "backfill:ncm": "node prisma/backfill-ncm-formulas.cjs"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
