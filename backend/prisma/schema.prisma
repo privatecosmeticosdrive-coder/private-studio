@@ -159,6 +159,7 @@ model Formula {
   custo_mp_kg  Decimal?  @db.Decimal(10, 2)
   categoria    String?
   ncm_id       Int? // F1 — nullable, nao quebra as 815 formulas; backfill na F3.5
+  ncm_revisado Boolean @default(false) // F3.5-prep — humano confirmou a ASSOCIACAO formula->NCM (eixo distinto de ncm.provisorio, que e a aliquota validada pelo contador). Backfill grava o NCM derivado mantendo false; vira true na revisao humana (F5).
   observacoes  String?
 
   // VERSIONAMENTO / LABORATORIO VIVO (Doc 2b §A7)
