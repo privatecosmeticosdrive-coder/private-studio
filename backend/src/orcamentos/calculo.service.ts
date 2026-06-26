@@ -7,6 +7,7 @@ import {
 } from './custo-engine';
 import { scoreCotacao, faixaScore } from '../formulas/score.util';
 import { lerParametrosCusto } from './params.util';
+import { calcularMoMatriz } from './mo-matriz.util';
 import { CalcularDto } from './dto/calcular.dto';
 
 type FormulaComCusto = {
@@ -121,6 +122,69 @@ export class CalculoService {
       formula_versao_codigo: formula?.versao_codigo ?? null,
       formula_status_momento: formula?.status ?? null,
       formula_composicao_snapshot: formula?.composicao_snapshot ?? null,
+    };
+  }
+
+  /**
+   * F4 passo 2 — COMPARADOR read-only dos dois modelos de MO.
+   * Roda o engine VIGENTE (intocado) e recompõe um preço alternativo trocando
+   * SÓ o cmo_cimp pelo do modelo Matriz, reusando o MESMO cmp_cimp/margem/IPI.
+   * NÃO grava nada, NÃO altera o fluxo de calcular.
+   */
+  async compararMo(orcamentoId: string) {
+    const r2 = (n: number) => Number(n.toFixed(2));
+
+    // 1) caminho VIGENTE, intocado — fonte da verdade do preço atual
+    const atual = await this.gerarCalculo(orcamentoId, {});
+    const calc = atual.calculo;
+    const cmp_cimp = calc.custo_mp.cmp_cimp; // r4, reusado igual
+    const cmo_cimp_atual = calc.mao_de_obra.cmo_cimp; // r4
+    const margem = calc.resultado.margem_pct;
+    const ipi_pct = calc.parametros.ipi_pct;
+    const imposto_mo_pct = calc.parametros.imposto_mo_pct;
+    const un_min = calc.inputs.un_min;
+
+    // 2) campos da Matriz (mesma system_config) — leitura read-only
+    const c = await this.prisma.systemConfig.findUnique({ where: { id: 1 } });
+    const moMatriz = calcularMoMatriz(
+      {
+        custo_fixo_mensal: c ? Number(c.custo_fixo_mensal) : 120240,
+        mo_dias_uteis: c ? c.mo_dias_uteis : 22,
+        horas_dia: c ? Number(c.horas_dia) : 8,
+        imposto_mo_pct,
+      },
+      un_min,
+    );
+
+    // 3) recompõe SÓ trocando o cmo_cimp; mesma disciplina de arredondamento do engine
+    const custo_total_matriz = cmp_cimp + moMatriz.cmo_cimp;
+    const preco_sipi_matriz_full = custo_total_matriz / (1 - margem / 100);
+    const preco_cipi_matriz_full = preco_sipi_matriz_full * (1 + ipi_pct / 100);
+    const preco_sipi_matriz = r2(preco_sipi_matriz_full);
+    const preco_cipi_matriz = r2(preco_cipi_matriz_full);
+
+    const preco_sipi_atual = calc.resultado.preco_sipi; // engine nativo
+    const preco_cipi_atual = calc.resultado.preco_cipi;
+    const delta_abs = r2(preco_cipi_matriz - preco_cipi_atual);
+    const delta_pct =
+      preco_cipi_atual > 0 ? r2((delta_abs / preco_cipi_atual) * 100) : null;
+
+    return {
+      orcamento_id: orcamentoId,
+      un_min,
+      preco_sipi_atual,
+      preco_sipi_matriz,
+      preco_cipi_atual,
+      preco_cipi_matriz,
+      delta_abs,
+      delta_pct,
+      mo_atual: { cmo_cimp: cmo_cimp_atual }, // modelo vigente (folha/dias×ceil)
+      mo_matriz: {
+        // modelo Matriz (custo_fixo/min bruto)
+        custo_minuto_bruto: moMatriz.custo_minuto_bruto,
+        mo_un: moMatriz.mo_un,
+        cmo_cimp: moMatriz.cmo_cimp,
+      },
     };
   }
 

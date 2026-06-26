@@ -169,6 +169,11 @@ export class OrcamentosService {
     return atualizado;
   }
 
+  /** F4 passo 2 — comparador read-only dos dois modelos de MO (não grava). */
+  compararMo(id: string) {
+    return this.calculo.compararMo(id);
+  }
+
   /** FASE 2 — formata as 4 paginas a partir do JSON_CALC travado. */
   async formatar(id: string, userId: string) {
     await this.ensure(id);
