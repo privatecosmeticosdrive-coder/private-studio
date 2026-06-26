@@ -49,6 +49,11 @@ O plano de 15 dias original está em **`docs/03_plano_implementacao.md`**. Os ma
 
 ## 6. Dívidas conhecidas
 
-- **`custo_minuto` duplicado (F3/F4):** hoje calculado na tela só para leitura; na F4 deve virar util compartilhada com o custo-engine (senão tela e cálculo divergem).
+- **F4 = reconciliar dois modelos de MO (não "deduplicar"):** o engine de orçamento (`custo-engine.ts`) e a Matriz usam filosofias DIFERENTES de custo de mão de obra, lendo campos diferentes da mesma `system_config`:
+  - Engine atual: `mo_folha_mensal ÷ mo_dias_uteis`, distribuído por produtividade do lote (`un_min × 480`, com 8h cravado no código).
+  - Matriz: `custo_fixo_mensal ÷ minutos_produtivos` (usa `horas_dia` + `eficiencia_linha`).
+  - Os dois dão números potencialmente DIFERENTES. Qual reflete o custo real da Private é decisão de NEGÓCIO (Gabriel + contador), não técnica. O engine não usa `custo_minuto` hoje.
+- **Estratégia F4 (paralelo, nunca troca às cegas):** (1) util de parâmetros canônico [não toca preço]; (2) rodar os dois modelos de MO lado a lado em orçamentos reais e COMPARAR os preços, atrás de flag [não troca o vigente]; (3) imposto granular (ICMS+PIS/COFINS+NCM) validado contra os flats atuais; (4) cortar pro modelo novo só quando Gabriel aprovar a diferença. Gate: preço novo == preço velho OU divergência explicada e aprovada.
+- **Hardcode a corrigir:** o "480" (8h) cravado no engine não lê `horas_dia` da config.
 - **541 fórmulas sem NCM:** caem no fallback do híbrido; revisão manual na **F5 Bloco C**.
 - **Gating do menu Matriz por `pode_ver_custos`:** pendente no **Bloco D**.
