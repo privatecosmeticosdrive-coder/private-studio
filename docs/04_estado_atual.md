@@ -35,11 +35,12 @@
 **Pronto:**
 - **F1–F3.5 (backend):** módulo `matriz-custo`, guard de acesso (`AcessoCustoGuard` + `pode_ver_custos`), config operacional/fiscal, NCM (CRUD + seed), valores fiscais provisórios, override de NCM por orçamento, backfill de `ncm_id` por token e `formulas.ncm_revisado`.
 - **F5 Bloco A (frontend):** tela `matriz-custo` — gate de acesso, 2 forms (Operacional/Fiscal), derivados read-only, ajuste de layout do campo. Commit `7112c50`.
+- **F5 Parte 3 (backend + frontend):** banner de `fiscais_provisorios` + regra "só admin altera" (gate por campo, role do banco). Commits `8ba5b22` (backend) + `9c02735` (frontend).
 
 **Falta:**
-- **F5 Parte 3:** banner de `fiscais_provisorios` + regra "só admin altera".
 - **F5 Blocos B/C/D:** (C inclui revisão manual de NCM; D inclui gating do menu).
 - **F4 engine:** ponto único de verdade do cálculo de custo (unificar com o derivado da tela). **Depende de validação do contador.**
+- **Preço estimado na ficha da fórmula** (ideia): expor um "preço estimado" (não só custo de MP/kg) direto na tela de detalhe da fórmula, sem abrir o wizard. **Depende da F4** — é consumidora do engine de preço (custo MP + MO + embalagem + impostos + margem). Hoje a tela já mostra custo de MP/kg (`GET /formulas/:id/custo`); falta o preço completo, que só existe no fluxo de orçamento. Quando a F4 existir: endpoint `GET /formulas/:id/preco` reusando o engine + card "Preço estimado" na tela. **Não** construir um cálculo paralelo (recriaria a dívida do `custo_minuto` duplicado).
 - **F6 limpeza:** remoção de provisórios/dados de transição. **Destrutivo** — só após F4 validada.
 
 ## 5. Roadmap original (referência)
