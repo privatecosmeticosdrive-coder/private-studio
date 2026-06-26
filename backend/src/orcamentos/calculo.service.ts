@@ -6,6 +6,7 @@ import {
   ParametrosCusto,
 } from './custo-engine';
 import { scoreCotacao, faixaScore } from '../formulas/score.util';
+import { lerParametrosCusto } from './params.util';
 import { CalcularDto } from './dto/calcular.dto';
 
 type FormulaComCusto = {
@@ -126,15 +127,7 @@ export class CalculoService {
   // ---------------- parametros de custo (system_config) ----------------
   private async getParametros(): Promise<ParametrosCusto> {
     const c = await this.prisma.systemConfig.findUnique({ where: { id: 1 } });
-    return {
-      mo_folha_mensal: c ? Number(c.mo_folha_mensal) : 75000,
-      mo_dias_uteis: c ? c.mo_dias_uteis : 20,
-      imposto_mp_pct: c ? Number(c.imposto_mp_pct) : 37.5,
-      imposto_mo_pct: c ? Number(c.imposto_mo_pct) : 9.25,
-      ipi_pct: c ? Number(c.ipi_pct) : 4.55,
-      desvio_mp_pct: c ? Number(c.desvio_mp_pct) : 10,
-      frete_un_brl: c ? Number(c.frete_un_brl) : 0.1,
-    };
+    return lerParametrosCusto(c);
   }
 
   // ---------------- embalagem do catalogo (Doc 2d §B4) ----------------
