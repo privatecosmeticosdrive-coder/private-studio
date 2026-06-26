@@ -13,6 +13,7 @@ import Orcamentos from '@/pages/orcamentos';
 import OrcamentoWizard from '@/pages/orcamento-wizard';
 import OrcamentoDetalhe from '@/pages/orcamento-detalhe';
 import Admin from '@/pages/admin';
+import MatrizCusto from '@/pages/matriz-custo';
 import Placeholder from '@/pages/placeholder';
 
 export default function App() {
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/cotacoes" element={<Placeholder title="Cotações" dia="Dia 11" />} />
           <Route path="/clientes" element={<Clientes />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/matriz-custo" element={<MatrizCusto />} />
           <Route index element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>

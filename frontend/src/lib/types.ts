@@ -548,3 +548,55 @@ export interface Alerta {
   lido: boolean;
   created_for?: string[];
 }
+
+// ----------------------- MATRIZ DE CUSTO (F5) -----------------------
+
+/**
+ * Visão da Matriz de Custo (GET /matriz-custo → montarView).
+ * Numéricos já chegam como number (o backend converte Decimal via toNum) — não
+ * são string como nos demais Money. `mo_dias_uteis` e `encomendante_simples` vêm
+ * crus (Int/bool). `fiscais_provisorios` é irmão de operacional/fiscal, NÃO está
+ * dentro de fiscal. `derivados` é READ-ONLY (recalculado pelo backend).
+ */
+export interface MatrizCustoView {
+  operacional: {
+    custo_fixo_mensal: number | null;
+    mo_dias_uteis: number; // Int cru (não passa por toNum)
+    horas_dia: number | null;
+    eficiencia_linha: number | null; // fração 0..1, não %
+    desvio_mp_pct: number | null;
+    frete_un_brl: number | null;
+    margem_padrao_pct: number | null;
+  };
+  fiscal: {
+    icms_regime: number | null;
+    encomendante_simples: boolean;
+    pis_cofins_monofasico_pct: number | null;
+    pis_cofins_servico_pct: number | null;
+  };
+  fiscais_provisorios: boolean;
+  derivados: {
+    minutos_produtivos: number | null;
+    custo_minuto: number | null;
+  };
+}
+
+/** PATCH /matriz-custo/operacional (espelha UpdateOperacionalDto — parcial). */
+export interface UpdateOperacionalPayload {
+  custo_fixo_mensal?: number;
+  mo_dias_uteis?: number;
+  horas_dia?: number;
+  eficiencia_linha?: number;
+  desvio_mp_pct?: number;
+  frete_un_brl?: number;
+  margem_padrao_pct?: number;
+}
+
+/** PATCH /matriz-custo/fiscal (espelha UpdateFiscalDto — parcial). */
+export interface UpdateFiscalPayload {
+  icms_regime?: number;
+  encomendante_simples?: boolean;
+  pis_cofins_monofasico_pct?: number;
+  pis_cofins_servico_pct?: number;
+  fiscais_provisorios?: boolean;
+}

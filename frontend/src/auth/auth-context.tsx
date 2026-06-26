@@ -8,6 +8,7 @@ export interface AuthUser {
   email: string;
   role: Role;
   ativo: boolean;
+  pode_ver_custos: boolean; // F5 — só UX (mostrar/esconder Matriz); autoridade é o AcessoCustoGuard
 }
 
 interface AuthContextValue {
