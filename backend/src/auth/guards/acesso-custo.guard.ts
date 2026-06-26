@@ -50,6 +50,11 @@ export class AcessoCustoGuard implements CanActivate {
       (user.role === Role.admin || user.pode_ver_custos === true);
 
     if (!liberado) throw new ForbiddenException('Acesso restrito a custos');
+
+    // Anexa a permissão (do BANCO) ao request para regras de campo a jusante
+    // (ex.: só admin altera fiscais_provisorios). Mesma fonte autoritativa,
+    // sem segundo hit no banco.
+    req.acessoCusto = { role: user!.role, pode_ver_custos: user!.pode_ver_custos };
     return true;
   }
 }

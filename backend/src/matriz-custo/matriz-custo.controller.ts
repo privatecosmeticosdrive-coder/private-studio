@@ -18,6 +18,7 @@ import { UpdateNcmDto } from './dto/update-ncm.dto';
 import { AcessoCustoGuard } from '../auth/guards/acesso-custo.guard';
 import { RequerAcessoCusto } from '../auth/decorators/requer-acesso-custo.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { AcessoCusto } from '../auth/decorators/acesso-custo.decorator';
 
 /**
  * Matriz de Custo (backend F3). Acesso: admin OU pode_ver_custos (ver E editar),
@@ -42,8 +43,12 @@ export class MatrizCustoController {
   }
 
   @Patch('fiscal')
-  updateFiscal(@Body() dto: UpdateFiscalDto, @CurrentUser('sub') userId: string) {
-    return this.matriz.updateFiscal(dto, userId);
+  updateFiscal(
+    @Body() dto: UpdateFiscalDto,
+    @CurrentUser('sub') userId: string,
+    @AcessoCusto('role') role: string,
+  ) {
+    return this.matriz.updateFiscal(dto, userId, role);
   }
 
   @Get('ncm')

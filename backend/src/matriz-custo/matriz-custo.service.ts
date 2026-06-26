@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { MatrizHistoricoService } from './matriz-historico.service';
 import { UpdateOperacionalDto } from './dto/update-operacional.dto';
@@ -98,7 +99,15 @@ export class MatrizCustoService {
     return this.aplicarConfig(dto, CAMPOS_OPERACIONAL, 'operacional', userId);
   }
 
-  async updateFiscal(dto: UpdateFiscalDto, userId: string) {
+  async updateFiscal(dto: UpdateFiscalDto, userId: string, role: string) {
+    // Regra de CAMPO (não do endpoint): só admin pode tocar em
+    // fiscais_provisorios ("validado pelo contador"). Os demais campos fiscais
+    // seguem editáveis por quem tem pode_ver_custos.
+    if (dto.fiscais_provisorios !== undefined && role !== Role.admin) {
+      throw new ForbiddenException(
+        'Apenas administradores podem validar os parâmetros fiscais',
+      );
+    }
     return this.aplicarConfig(dto, CAMPOS_FISCAL, 'fiscal', userId);
   }
 
