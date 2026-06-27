@@ -172,6 +172,8 @@ export class CalculoService {
     return {
       orcamento_id: orcamentoId,
       un_min,
+      dias_necessarios: calc.mao_de_obra.dias_necessarios,
+      quantidade: calc.inputs.quantidade,
       preco_sipi_atual,
       preco_sipi_matriz,
       preco_cipi_atual,
