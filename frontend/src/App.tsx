@@ -14,6 +14,7 @@ import OrcamentoWizard from '@/pages/orcamento-wizard';
 import OrcamentoDetalhe from '@/pages/orcamento-detalhe';
 import Admin from '@/pages/admin';
 import MatrizCusto from '@/pages/matriz-custo';
+import NcmPage from '@/pages/ncm';
 import Placeholder from '@/pages/placeholder';
 
 export default function App() {
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/clientes" element={<Clientes />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/matriz-custo" element={<MatrizCusto />} />
+          <Route path="/ncm" element={<NcmPage />} />
           <Route index element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>

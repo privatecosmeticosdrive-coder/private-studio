@@ -600,3 +600,14 @@ export interface UpdateFiscalPayload {
   pis_cofins_servico_pct?: number;
   fiscais_provisorios?: boolean;
 }
+
+/** Linha de NCM (GET /matriz-custo/ncm). Soft-delete via ativo=false. */
+export interface Ncm {
+  id: number;
+  ncm: string;
+  descricao: string;
+  ipi_pct: number;
+  monofasico: boolean;
+  provisorio: boolean;
+  ativo: boolean;
+}
