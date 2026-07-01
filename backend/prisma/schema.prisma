@@ -160,6 +160,8 @@ model Formula {
   categoria    String?
   ncm_id       Int? // F1 — nullable, nao quebra as 815 formulas; backfill na F3.5
   ncm_revisado Boolean @default(false) // F3.5-prep — humano confirmou a ASSOCIACAO formula->NCM (eixo distinto de ncm.provisorio, que e a aliquota validada pelo contador). Backfill grava o NCM derivado mantendo false; vira true na revisao humana (F5).
+  ncm_revisado_em  DateTime? // F5 Bloco C — quando a associacao formula->NCM foi confirmada por humano
+  ncm_revisado_por String?   @db.Uuid // F5 Bloco C — quem confirmou (user.sub); escalar puro, sem relation
   observacoes  String?
 
   // VERSIONAMENTO / LABORATORIO VIVO (Doc 2b §A7)
