@@ -10,6 +10,7 @@ import { CreateFormulaDto } from './dto/create-formula.dto';
 import { UpdateFormulaDto } from './dto/update-formula.dto';
 import { NovaVersaoDto } from './dto/nova-versao.dto';
 import { ValidarFormulaDto } from './dto/validar-formula.dto';
+import { RevisarNcmDto } from './dto/revisar-ncm.dto';
 import { SugerirSimilarDto } from './dto/sugerir-similar.dto';
 import { scoreCotacao, faixaScore } from './score.util';
 
@@ -329,6 +330,71 @@ export class FormulasService {
     await this.ensure(id);
     await this.prisma.formula.update({ where: { id }, data: { status: 'arquivada' } });
     return { id, status: 'arquivada' };
+  }
+
+  // ----------------------- NCM: FILA DE REVISAO (F5 Bloco C) -----------------------
+  /**
+   * Lista as formulas com NCM derivado pendente de revisao humana (as 274):
+   * ncm_revisado=false E ncm_id != null. Payload traz o NCM sugerido.
+   */
+  async pendentesNcm(query: { q?: string; page?: number; pageSize?: number }) {
+    const page = Math.max(1, query.page ?? 1);
+    const pageSize = Math.min(200, Math.max(1, query.pageSize ?? 50));
+    const where: Prisma.FormulaWhereInput = { ncm_revisado: false, ncm_id: { not: null } };
+    if (query.q) where.nome_produto = { contains: query.q, mode: 'insensitive' };
+
+    const [data, total] = await Promise.all([
+      this.prisma.formula.findMany({
+        where,
+        orderBy: { nome_produto: 'asc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        select: {
+          id: true,
+          nome_produto: true,
+          versao_codigo: true,
+          categoria: true,
+          status: true,
+          ncm_id: true,
+          ncm: {
+            select: { id: true, ncm: true, descricao: true, ipi_pct: true, monofasico: true, ativo: true },
+          },
+        },
+      }),
+      this.prisma.formula.count({ where }),
+    ]);
+    return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+  }
+
+  /**
+   * Confirma (ou troca) o NCM da formula e carimba a revisao humana.
+   * Espelha o validar; SEM guard de idempotencia (re-revisar p/ corrigir e permitido).
+   */
+  async revisarNcm(id: number, dto: RevisarNcmDto, userId: string) {
+    const f = await this.ensure(id);
+    const novoNcmId = dto.ncm_id ?? f.ncm_id;
+    if (novoNcmId == null) {
+      throw new BadRequestException('Sem NCM para confirmar. Informe ncm_id para associar.');
+    }
+    // Troca: valida que o NCM existe E esta ativo (soft-delete do Bloco B = nao usar).
+    if (dto.ncm_id != null && dto.ncm_id !== f.ncm_id) {
+      const ncm = await this.prisma.ncm.findUnique({
+        where: { id: dto.ncm_id },
+        select: { id: true, ativo: true },
+      });
+      if (!ncm) throw new BadRequestException('NCM informado nao existe.');
+      if (!ncm.ativo) throw new BadRequestException('NCM informado esta inativo.');
+    }
+    await this.prisma.formula.update({
+      where: { id },
+      data: {
+        ncm_id: novoNcmId,
+        ncm_revisado: true,
+        ncm_revisado_em: new Date(),
+        ncm_revisado_por: userId,
+      },
+    });
+    return this.findOne(id);
   }
 
   // ----------------------- BUSCA FUZZY (GIN tsvector) -----------------------
