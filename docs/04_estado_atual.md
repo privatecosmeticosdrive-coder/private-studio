@@ -39,8 +39,11 @@
 - **F5 Bloco B (CRUD de NCM, frontend):** tela `ncm` — lista, criar/editar/excluir (soft-delete) + reativar, toggle "incluir inativos", badge "provisório". Reusa endpoints NCM da F1. Commit `dc57d83`.
 - **F5 Bloco C (revisão fórmula→NCM):** schema aditivo `ncm_revisado_em`/`_por` (migration aplicada no produção — `8a3cf2f`); backend `GET /formulas/pendentes-ncm` + `PATCH /formulas/:id/revisar-ncm` (confirma/troca + carimbo in-row, guard de NCM inativo — `39197a2`); frontend tela `revisao-ncm` (fila das 274 pendentes, confirmar/trocar via seletor de NCM ativo, menu gated `admin/pd` — `2f48b04`). **Fronteira validada em runtime:** revisar o NCM NÃO altera orçamento já calculado (preço congelado no snapshot + engine lê IPI global, não o NCM da fórmula).
 
+- **F5 Bloco D (gating + NCM no orçamento):** D1 — flag `custos?` no `NavItem` esconde Matriz e NCM de quem não tem `pode_ver_custos` (ou admin), commit `59f8fd8`. D2 — NCM editável no orçamento: campo read-only no Briefing (efetivo + origem) + botão "Editar NCM" gated, modal com Select de NCMs ativos (setar override) e "usar o NCM da fórmula" (limpa via `ncm_id: null`), commit `a5284d6`. Backend já aceitava o override (F3); **null-clear validado em runtime** (reversível, sem lixo).
+
+> **F5 planejada COMPLETA** — Blocos A, Parte 3, B, C e D entregues. O que resta da Matriz (F4/F6) depende de negócio/contador, não de código.
+
 **Falta:**
-- **F5 Bloco D:** gating do menu Matriz/NCM por `pode_ver_custos` (hoje o menu NCM está aberto e o Matriz também; só o "Revisão NCM" já entrou gated por `roles:['admin','pd']`).
 - **F4 engine:** ponto único de verdade do cálculo de custo (unificar com o derivado da tela). **Depende de validação do contador.**
 - **Preço estimado na ficha da fórmula** (ideia): expor um "preço estimado" (não só custo de MP/kg) direto na tela de detalhe da fórmula, sem abrir o wizard. **Depende da F4** — é consumidora do engine de preço (custo MP + MO + embalagem + impostos + margem). Hoje a tela já mostra custo de MP/kg (`GET /formulas/:id/custo`); falta o preço completo, que só existe no fluxo de orçamento. Quando a F4 existir: endpoint `GET /formulas/:id/preco` reusando o engine + card "Preço estimado" na tela. **Não** construir um cálculo paralelo (recriaria a dívida do `custo_minuto` duplicado).
 - **F6 limpeza:** remoção de provisórios/dados de transição. **Destrutivo** — só após F4 validada.
@@ -59,14 +62,12 @@ O plano de 15 dias original está em **`docs/03_plano_implementacao.md`**. Os ma
 - **F4 — etapa futura: modelo de MO de 3 componentes + auditoria do histórico financeiro.** A análise do passo 2 (comparador, rodado sobre os orçamentos reais + simulação paramétrica de quantidade) revelou que a divergência grande entre os modelos (−8% a −50%) é ARTEFATO do `ceil` de dia inteiro em lotes pequenos — toda a base real hoje é sub-lote de 1 dia. A diferença ESTRUTURAL real entre vigente e Matriz, com o desperdício do `ceil` diluído (lotes grandes), é ~4,7% e estável (os modelos convergem e até invertem: Matriz fica levemente mais caro em escala). Conclusão de NEGÓCIO: o alvo não é escolher vigente vs Matriz, e sim um modelo de 3 partes — (a) **MP** direto; (b) taxa de **SETUP** por ordem (setup real medido ≈ 1h/troca de SKU, fixa por pedido — protege o lote pequeno sem a régua grosseira do `ceil`); (c) taxa de **CORRIDA** proporcional ao tempo real, calculada sobre **capacidade NORMAL** (não plena), pra embutir a sazonalidade (Private tem meses ociosos). Validação pendente: cruzar com o histórico financeiro real (faturamento/mês, custo fixo, volume) via o agente financeiro, pra medir onde a precificação atual peca (super ou subfaturamento) e a margem orçada vs realizada. **Esta etapa é posterior** à entrega da Matriz funcionando.
 - **Hardcode a corrigir:** o "480" (8h) cravado no engine não lê `horas_dia` da config.
 - **541 fórmulas sem NCM (atribuição do zero):** o Bloco C cobriu só as **274 COM NCM derivado** (confirmar/trocar). As 541 sem `ncm_id` precisam de ATRIBUIÇÃO (escolher NCM, não confirmar) — ficou como **fase separada**, ainda pendente.
-- **Gating de menu por `pode_ver_custos` (Bloco D):** Matriz e NCM ainda abertos no menu (gate real na página). O `NavItem` só suporta `roles?: Role[]`, não `pode_ver_custos` — o Bloco D precisa estender o `NavItem` OU aceitar o gate só na página.
 - **Revisão de NCM ainda não tem "dentes" no preço:** o engine de orçamento lê o `ipi_pct` da `system_config` (global), NÃO o NCM da fórmula (`carregarFormula` nem inclui a relação `ncm`). Por isso revisar/trocar NCM hoje é só classificação/auditoria — não muda preço. Quando a **F4** ligar NCM→IPI (Opção A, `resolverNcmEfetivo` no consumo — util já existe, falta chamar no engine), a revisão passa a influenciar **recálculos futuros** (nunca resultados já congelados).
 
 ### PENDÊNCIAS NO RADAR (não feitas — por prioridade)
 
 *Lista consolidada para retomar sem perder contexto (algumas detalhadas acima).*
 
-- **F5 Bloco D:** (a) gating de menu por `pode_ver_custos` — estender o `NavItem` (hoje só `roles?`); (b) campo NCM editável no orçamento (expor `ncm_efetivo`/`ncm_efetivo_origem` na UI, hoje read-only).
 - **F4 passo 3:** imposto granular (ICMS + PIS/COFINS + NCM) validado contra os flats atuais.
 - **F4 passo 4:** corte do engine pro modelo novo — **DEPENDE do contador + decisão de modelo**.
 - **F4 etapa futura:** modelo de MO de 3 componentes (MP + setup/ordem + corrida s/ capacidade normal) + auditoria do histórico financeiro (detalhada acima).
