@@ -23,6 +23,7 @@ interface NavItem {
   label: string;
   icon: LucideIcon;
   roles?: Role[]; // se ausente, todos
+  custos?: boolean; // requer pode_ver_custos (ou admin) — espelha o gate das páginas
 }
 
 const ITENS: NavItem[] = [
@@ -34,15 +35,20 @@ const ITENS: NavItem[] = [
   { to: '/amostras', label: 'Amostras', icon: TestTubes },
   { to: '/cotacoes', label: 'Cotações', icon: ClipboardList },
   { to: '/clientes', label: 'Clientes', icon: Users },
-  { to: '/matriz-custo', label: 'Matriz de Custo', icon: Calculator },
-  { to: '/ncm', label: 'NCM', icon: Barcode },
+  { to: '/matriz-custo', label: 'Matriz de Custo', icon: Calculator, custos: true },
+  { to: '/ncm', label: 'NCM', icon: Barcode, custos: true },
   { to: '/revisao-ncm', label: 'Revisão NCM', icon: ClipboardCheck, roles: ['admin', 'pd'] },
   { to: '/admin', label: 'Admin', icon: Settings, roles: ['admin'] },
 ];
 
 export function Sidebar() {
   const { user } = useAuth();
-  const itens = ITENS.filter((i) => !i.roles || (user && i.roles.includes(user.role)));
+  const podeVerCustos = !!user && (user.pode_ver_custos || user.role === 'admin');
+  const itens = ITENS.filter((i) => {
+    if (i.roles && !(user && i.roles.includes(user.role))) return false;
+    if (i.custos && !podeVerCustos) return false;
+    return true;
+  });
 
   return (
     <aside className="flex h-full w-64 flex-col bg-ink text-sand">
