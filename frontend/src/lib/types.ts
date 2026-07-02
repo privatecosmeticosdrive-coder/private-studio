@@ -456,7 +456,21 @@ export interface OrcamentoDetalhe {
   created_at: string;
   updated_at: string;
   cliente: { id: string; nome: string } | null;
-  formula: { id: number; nome_produto: string; versao_codigo: string | null; status: string } | null;
+  formula:
+    | {
+        id: number;
+        nome_produto: string;
+        versao_codigo: string | null;
+        status: string;
+        ncm_id: number | null;
+        ncm: Pick<Ncm, 'id' | 'ncm' | 'descricao' | 'ipi_pct' | 'monofasico'> | null;
+      }
+    | null;
+  // NCM (F3 override + F5 Bloco D) — efetivo computado READ-ONLY pelo findOne
+  ncm_id: number | null; // override do próprio orçamento (null = herda da fórmula)
+  ncm: Pick<Ncm, 'id' | 'ncm' | 'descricao' | 'ipi_pct' | 'monofasico'> | null; // objeto do override
+  ncm_efetivo: number | null; // override ?? formula ?? null
+  ncm_efetivo_origem: 'orcamento' | 'formula' | null;
 }
 
 // ---- Match de fórmulas (POST /orcamentos/match-formulas) ----

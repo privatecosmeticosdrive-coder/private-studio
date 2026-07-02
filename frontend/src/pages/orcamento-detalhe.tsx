@@ -3,15 +3,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import { ArrowLeft, FileDown, FlaskConical, Package } from 'lucide-react';
+import { ArrowLeft, FileDown, FlaskConical, Package, Barcode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
 import { StatusOrcamentoBadge } from '@/components/ui/status-badge';
 import { ResultadoCalculo } from '@/components/orcamento/resultado-calculo';
 import { brl } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 import { NIVEL_ORCAMENTO_LABEL, type OrcamentoDetalhe } from '@/lib/types';
 import { orcamentosApi } from '@/lib/services/orcamentos';
+import { useAuth } from '@/auth/auth-context';
+import { EditarNcmOrcamentoModal } from '@/components/data/editar-ncm-orcamento';
 
 /** Item rótulo → valor do resumo do briefing. */
 function Campo({ rotulo, valor }: { rotulo: string; valor: React.ReactNode }) {
@@ -23,7 +26,15 @@ function Campo({ rotulo, valor }: { rotulo: string; valor: React.ReactNode }) {
   );
 }
 
-function ResumoBriefing({ orc }: { orc: OrcamentoDetalhe }) {
+function ResumoBriefing({
+  orc,
+  podeVerCustos,
+  onEditarNcm,
+}: {
+  orc: OrcamentoDetalhe;
+  podeVerCustos: boolean;
+  onEditarNcm: () => void;
+}) {
   const formula = orc.formula
     ? `${orc.formula.nome_produto}${orc.formula.versao_codigo ? ` ${orc.formula.versao_codigo}` : ''}`
     : 'Sem fórmula';
@@ -31,9 +42,25 @@ function ResumoBriefing({ orc }: { orc: OrcamentoDetalhe }) {
     ? 'A granel (sem embalagem)'
     : orc.embalagem_snapshot?.nome ?? '—';
 
+  // NCM efetivo: objeto do override (origem 'orcamento') ou da fórmula ('formula').
+  const ncmObj = orc.ncm_efetivo_origem === 'orcamento' ? orc.ncm : orc.formula?.ncm ?? null;
+  const origemLabel =
+    orc.ncm_efetivo_origem === 'orcamento'
+      ? 'deste orçamento'
+      : orc.ncm_efetivo_origem === 'formula'
+        ? 'da fórmula'
+        : null;
+
   return (
     <Card className="p-6">
-      <h2 className="mb-4 font-display text-h3 text-ink">Briefing</h2>
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h2 className="font-display text-h3 text-ink">Briefing</h2>
+        {podeVerCustos && (
+          <Button variant="ghost" size="sm" onClick={onEditarNcm}>
+            <Barcode className="size-4" /> Editar NCM
+          </Button>
+        )}
+      </div>
       <dl className="grid grid-cols-2 gap-x-6 gap-y-4 md:grid-cols-3">
         <Campo rotulo="Produto" valor={orc.produto} />
         <Campo rotulo="Cliente" valor={orc.cliente?.nome} />
@@ -69,6 +96,15 @@ function ResumoBriefing({ orc }: { orc: OrcamentoDetalhe }) {
         <Campo rotulo="Margem" valor={orc.margem_pct != null ? `${String(orc.margem_pct)}%` : '—'} />
         <Campo rotulo="Produto de referência" valor={orc.produto_referencia} />
         <Campo rotulo="Requer amostra" valor={orc.requer_amostra ? 'Sim' : 'Não'} />
+        <Campo
+          rotulo="NCM"
+          valor={
+            <span className="inline-flex items-center gap-2">
+              <span className="font-mono">{ncmObj ? ncmObj.ncm : '—'}</span>
+              {origemLabel && <Badge variant="neutral">{origemLabel}</Badge>}
+            </span>
+          }
+        />
       </dl>
     </Card>
   );
@@ -77,8 +113,11 @@ function ResumoBriefing({ orc }: { orc: OrcamentoDetalhe }) {
 export default function OrcamentoDetalhe() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const podeVerCustos = !!user && (user.pode_ver_custos || user.role === 'admin');
 
   const [baixando, setBaixando] = useState(false);
+  const [editandoNcm, setEditandoNcm] = useState(false);
 
   const { data: orc, isLoading, isError, refetch } = useQuery({
     queryKey: ['orcamentos', 'detalhe', id],
@@ -175,7 +214,11 @@ export default function OrcamentoDetalhe() {
         </span>
       </div>
 
-      <ResumoBriefing orc={orc} />
+      <ResumoBriefing
+        orc={orc}
+        podeVerCustos={podeVerCustos}
+        onEditarNcm={() => setEditandoNcm(true)}
+      />
 
       <Card className="p-6">
         <h2 className="mb-4 font-display text-h3 text-ink">Cálculo</h2>
@@ -187,6 +230,12 @@ export default function OrcamentoDetalhe() {
           </p>
         )}
       </Card>
+
+      <EditarNcmOrcamentoModal
+        open={editandoNcm}
+        orcamento={orc}
+        onClose={() => setEditandoNcm(false)}
+      />
     </div>
   );
 }

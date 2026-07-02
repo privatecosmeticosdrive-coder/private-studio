@@ -26,6 +26,7 @@ export interface CriarOrcamentoPayload {
   quantidade?: number;
   margem_pct?: number;
   formula_id?: number;
+  ncm_id?: number | null; // override de NCM; null limpa (volta a herdar da fórmula)
   un_min?: number;
   embalagem_id?: number;
   sem_embalagem?: boolean;
