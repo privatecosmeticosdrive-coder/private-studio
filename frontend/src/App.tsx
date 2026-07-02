@@ -15,6 +15,7 @@ import OrcamentoDetalhe from '@/pages/orcamento-detalhe';
 import Admin from '@/pages/admin';
 import MatrizCusto from '@/pages/matriz-custo';
 import NcmPage from '@/pages/ncm';
+import RevisaoNcm from '@/pages/revisao-ncm';
 import Placeholder from '@/pages/placeholder';
 
 export default function App() {
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="/admin" element={<Admin />} />
           <Route path="/matriz-custo" element={<MatrizCusto />} />
           <Route path="/ncm" element={<NcmPage />} />
+          <Route path="/revisao-ncm" element={<RevisaoNcm />} />
           <Route index element={<Navigate to="/dashboard" replace />} />
         </Route>
       </Route>

@@ -3,6 +3,7 @@ import type {
   FormulaBuscaItem,
   FormulaDetalhe,
   FormulaListItem,
+  FormulaPendenteNcm,
   NovaVersaoPayload,
   Paginado,
   VersoesResposta,
@@ -17,6 +18,10 @@ export interface ListarFormulasParams {
   maes?: boolean;
   page?: number;
   pageSize?: number;
+}
+
+export interface RevisarNcmPayload {
+  ncm_id?: number; // se ausente, confirma o NCM atual; se presente, troca
 }
 
 export const formulasApi = {
@@ -40,6 +45,16 @@ export const formulasApi = {
   // Cria nova versão (rascunho) na árvore da fórmula-mãe com a composição editada.
   novaVersao: async (id: number, payload: NovaVersaoPayload) => {
     const { data } = await api.post<FormulaDetalhe>(`/formulas/${id}/nova-versao`, payload);
+    return data;
+  },
+  // Fila de revisão da associação fórmula->NCM (F5 Bloco C).
+  listarPendentesNcm: async (params: { q?: string; page?: number; pageSize?: number }) => {
+    const { data } = await api.get<Paginado<FormulaPendenteNcm>>('/formulas/pendentes-ncm', { params });
+    return data;
+  },
+  // Confirma (sem ncm_id) ou troca (com ncm_id) + carimbo; retorna a fórmula atualizada.
+  revisarNcm: async (id: number, payload: RevisarNcmPayload) => {
+    const { data } = await api.patch<FormulaDetalhe>(`/formulas/${id}/revisar-ncm`, payload);
     return data;
   },
 };

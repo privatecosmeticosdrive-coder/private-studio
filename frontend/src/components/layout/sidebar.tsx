@@ -11,6 +11,7 @@ import {
   Settings,
   Calculator,
   Barcode,
+  ClipboardCheck,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -35,6 +36,7 @@ const ITENS: NavItem[] = [
   { to: '/clientes', label: 'Clientes', icon: Users },
   { to: '/matriz-custo', label: 'Matriz de Custo', icon: Calculator },
   { to: '/ncm', label: 'NCM', icon: Barcode },
+  { to: '/revisao-ncm', label: 'Revisão NCM', icon: ClipboardCheck, roles: ['admin', 'pd'] },
   { to: '/admin', label: 'Admin', icon: Settings, roles: ['admin'] },
 ];
 

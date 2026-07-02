@@ -611,3 +611,14 @@ export interface Ncm {
   provisorio: boolean;
   ativo: boolean;
 }
+
+/** Item da fila de revisão fórmula->NCM (GET /formulas/pendentes-ncm). */
+export interface FormulaPendenteNcm {
+  id: number;
+  nome_produto: string;
+  versao_codigo: string | null;
+  categoria: string | null;
+  status: string;
+  ncm_id: number;
+  ncm: Pick<Ncm, 'id' | 'ncm' | 'descricao' | 'ipi_pct' | 'monofasico' | 'ativo'>;
+}
