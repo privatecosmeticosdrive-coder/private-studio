@@ -4,6 +4,7 @@ import type {
   NivelOrcamento,
   OrcamentoDetalhe,
   OrcamentoListItem,
+  OrcamentoStats,
   Paginado,
   RefinarIaResposta,
 } from '@/lib/types';
@@ -57,6 +58,11 @@ export interface MatchFormulasPayload {
 export const orcamentosApi = {
   listar: async (params: ListarOrcamentosParams) => {
     const { data } = await api.get<Paginado<OrcamentoListItem>>('/orcamentos', { params });
+    return data;
+  },
+  // Dashboard — agregações (por status + volume mensal dos últimos 12 meses).
+  stats: async () => {
+    const { data } = await api.get<OrcamentoStats>('/orcamentos/stats');
     return data;
   },
   obter: async (id: string) => {

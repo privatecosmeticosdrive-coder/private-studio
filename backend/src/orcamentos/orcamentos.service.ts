@@ -53,6 +53,25 @@ export class OrcamentosService {
     return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
   }
 
+  // Dashboard — agregações (por status + volume mensal dos últimos 12 meses).
+  async stats() {
+    const [porStatusRaw, por_mes] = await Promise.all([
+      this.prisma.orcamento.groupBy({ by: ['status'], _count: true }),
+      this.prisma.$queryRaw<Array<{ mes: string; count: number }>>`
+        SELECT to_char(date_trunc('month', created_at), 'YYYY-MM') AS mes,
+               COUNT(*)::int AS count
+        FROM orcamentos
+        WHERE created_at >= date_trunc('month', now()) - interval '11 months'
+        GROUP BY 1
+        ORDER BY 1
+      `,
+    ]);
+    const por_status = porStatusRaw
+      .map((g) => ({ status: g.status, count: g._count }))
+      .sort((a, b) => b.count - a.count);
+    return { por_status, por_mes };
+  }
+
   async findOne(id: string) {
     const orc = await this.prisma.orcamento.findUnique({
       where: { id },

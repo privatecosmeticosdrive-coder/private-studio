@@ -38,6 +38,11 @@ export class OrcamentosController {
     });
   }
 
+  @Get('stats')
+  stats() {
+    return this.orcamentos.stats();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orcamentos.findOne(id);

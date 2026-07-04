@@ -473,6 +473,27 @@ export interface OrcamentoDetalhe {
   ncm_efetivo_origem: 'orcamento' | 'formula' | null;
 }
 
+// ---- Dashboard — stats de orçamentos (GET /orcamentos/stats) ----
+export interface OrcamentoStats {
+  por_status: { status: string; count: number }[];
+  por_mes: { mes: string; count: number }[];
+}
+
+// ---- Amostras (pipeline — GET /amostras/pipeline) ----
+export interface AmostraPipelineItem {
+  id: string;
+  numero: number;
+  produto: string;
+  amostra_status: string;
+  amostra_qtd: number | null;
+  cliente: { id: string; nome: string } | null;
+  amostra_responsavel: { nome: string } | null;
+}
+export interface AmostraPipeline {
+  total: number;
+  grupos: { status: string; itens: AmostraPipelineItem[] }[];
+}
+
 // ---- Match de fórmulas (POST /orcamentos/match-formulas) ----
 
 /** Candidata ranqueada do match híbrido (custo R$0) — Doc 2d §C2. */
