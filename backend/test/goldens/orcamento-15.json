@@ -1,0 +1,55 @@
+{
+  "_fonte": "orcamento 15 (id a3df4b04-52ae-4514-8b8b-a0047935d5dd), JSON_CALC versao 2.0",
+  "_gerado_de": "2026-06-15T23:32:45.658Z",
+  "inputs": {
+    "un_min": 6,
+    "volume_un": 300,
+    "margem_pct": 30,
+    "mp_frag_kg": 0,
+    "quantidade": 1000,
+    "embalagem_un": 0,
+    "cmp_base_mp_kg": 5.8234
+  },
+  "parametros": {
+    "ipi_pct": 4.55,
+    "frete_un_brl": 0.1,
+    "desvio_mp_pct": 10,
+    "mo_dias_uteis": 20,
+    "imposto_mo_pct": 9.25,
+    "imposto_mp_pct": 37.5,
+    "mo_folha_mensal": 75000
+  },
+  "esperado": {
+    "custo_mp": {
+      "frete": 0.1,
+      "desvio": 0.1747,
+      "mp_base": 1.747,
+      "mp_frag": 0,
+      "cmp_cimp": 2.7799,
+      "cmp_simp": 2.0217,
+      "embalagem": 0,
+      "desvio_pct": 10,
+      "imposto_mp_pct": 37.5
+    },
+    "mao_de_obra": {
+      "mo_un": 3.75,
+      "un_min": 6,
+      "mo_lote": 3750,
+      "cmo_cimp": 4.0969,
+      "mo_diario": 3750,
+      "mo_dias_uteis": 20,
+      "imposto_mo_pct": 9.25,
+      "mo_folha_mensal": 75000,
+      "producao_diaria": 2880,
+      "dias_necessarios": 1
+    },
+    "resultado": {
+      "ipi_un": 0.45,
+      "ipi_pct": 4.55,
+      "margem_pct": 30,
+      "preco_cipi": 10.27,
+      "preco_sipi": 9.82,
+      "custo_total": 6.8767
+    }
+  }
+}
