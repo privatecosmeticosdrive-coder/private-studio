@@ -1,6 +1,6 @@
 # Estado Atual — Private Studio v9
 
-**Data:** 2026-07-01
+**Data:** 2026-07-04
 **Nota:** Este documento reflete o **código real** (não o plano). Atualizar a cada marco.
 
 ---
@@ -26,7 +26,7 @@
 
 ## 3. Incompleto
 
-- **Dashboard:** stub (tela de boas-vindas, sem KPIs/gráficos/últimos orçamentos). **Frente ATIVA pendente:** montar e validar as telas de dashboard do Studio (KPIs, indicadores) — ainda não iniciada.
+- **Dashboard:** COMPLETO (commit `5565c1f`) — endpoint `/orcamentos/stats` + camada de dados + página com 4 cards (recentes, volume, status, pendentes). Aprovado em smoke visual.
 
 ## 4. Em andamento — Matriz de Custo
 
@@ -72,7 +72,7 @@ O plano de 15 dias original está em **`docs/03_plano_implementacao.md`**. Os ma
 - **F4 passo 4:** corte do engine pro modelo novo — **DEPENDE do contador + decisão de modelo**.
 - **F4 etapa futura:** modelo de MO de 3 componentes (MP + setup/ordem + corrida s/ capacidade normal) + auditoria do histórico financeiro (detalhada acima).
 - **F6:** remover `system_config` antiga + campos legados/provisórios — **destrutivo, por último**, só após F4 validada.
-- **Dashboard do Studio:** montar e validar as telas (KPIs, indicadores).
+- **Golden files de regressão de preço (EM ANDAMENTO):** suite que congela o comportamento atual do engine de preço, pré-requisito do corte da F4 (gate "preço novo == preço velho OU divergência explicada").
 - **273 associações fórmula→NCM restantes** a revisar na fila (`revisao-ncm`) — a 280 "Shampoo Organika" foi revisada no smoke test desta sessão.
 - **541 fórmulas sem NCM:** atribuição do zero (escolher NCM) — fase separada do Bloco C.
 - **Guard de inativo do `revisar-ncm`:** código revisado + branch "não existe" testada (400); caminho "NCM inativo" NÃO exercitado em runtime (0 inativos no banco). Testar quando houver um.
