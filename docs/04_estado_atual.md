@@ -1,6 +1,6 @@
 # Estado Atual — Private Studio v9
 
-**Data:** 2026-07-04
+**Data:** 2026-07-05
 **Nota:** Este documento reflete o **código real** (não o plano). Atualizar a cada marco.
 
 ---
@@ -43,8 +43,11 @@
 
 > **F5 planejada COMPLETA** — Blocos A, Parte 3, B, C e D entregues. O que resta da Matriz (F4/F6) depende de negócio/contador, não de código.
 
+**Pronto (F4 Fase A — 2026-07-05, gate técnico-fiscal aprovado pelo conselheiro):**
+- **Engine fiscal granular de SAÍDA em paralelo** (commits `0bb9d9d`→`376eb1f`): NCM+EX+tratamento+vigência no cadastro (36 linhas validadas pelo contador, parecer em `docs/fiscal/`); `parametro_fiscal` versionado (D4 — vigência + fundamento, CRUD admin); perfil fiscal do cliente (D3); `modo_operacao` no orçamento (D2); matriz fiscal pura com fundamentos auditáveis + specs (DANFE Memoire reconstruída); engine v3 SEM os flats 37,5%/9,25%, tributos por dentro por parcela, IPI real por NCM — atrás do comparador read-only `/orcamentos/:id/comparar-fiscal`. **Engine vigente INTOCADO; corte pendente de OK final do Gabriel.** Diff A/B 15/15: ΔA médio +37,9% (perfil típico RPA) — dominado por ICMS+PIS/COFINS monofásico que o vigente nunca precificou; benefícios (art.34) ligaram só no perfil elegível. Regras de classificação NCM do titular em `docs/fiscal/regras-classificacao-private.md`.
+
 **Falta:**
-- **F4 engine:** ponto único de verdade do cálculo de custo (unificar com o derivado da tela). **Depende de validação do contador.**
+- **F4 corte:** engine v3 vira o vigente + banner `fiscais_provisorios` apaga + re-baseline goldens v2 (incl. 2 sintéticos: híbrido + industrialização). **Aguarda verificações A/B de integração + OK final do Gabriel.**
 - **Preço estimado na ficha da fórmula** (ideia): expor um "preço estimado" (não só custo de MP/kg) direto na tela de detalhe da fórmula, sem abrir o wizard. **Depende da F4** — é consumidora do engine de preço (custo MP + MO + embalagem + impostos + margem). Hoje a tela já mostra custo de MP/kg (`GET /formulas/:id/custo`); falta o preço completo, que só existe no fluxo de orçamento. Quando a F4 existir: endpoint `GET /formulas/:id/preco` reusando o engine + card "Preço estimado" na tela. **Não** construir um cálculo paralelo (recriaria a dívida do `custo_minuto` duplicado).
 - **F6 limpeza:** remoção de provisórios/dados de transição. **Destrutivo** — só após F4 validada.
 
@@ -68,11 +71,14 @@ O plano de 15 dias original está em **`docs/03_plano_implementacao.md`**. Os ma
 
 *Lista consolidada para retomar sem perder contexto (algumas detalhadas acima).*
 
-- **F4 passo 3:** imposto granular (ICMS + PIS/COFINS + NCM) validado contra os flats atuais.
-- **F4 passo 4:** corte do engine pro modelo novo — **DEPENDE do contador + decisão de modelo**.
+- **F4 corte final:** v3→vigente + goldens v2 (3 modos) — aguarda OK explícito do Gabriel (Fase A entregue e aprovada no gate técnico).
+- **Perfil fiscal dos demais clientes:** só o "Teste Agente" tem perfil preenchido; os demais caem no conservador (sem art.34) até serem preenchidos.
+- **Goldens com orçamentos REAIS:** os 15 atuais são de cliente fictício/full_service — quando houver orçamentos representativos (incl. híbrido/industrialização), rodar novo diff comercial e re-baseline.
+- **DIFAL/interestadual:** FORA da Fase A por decisão explícita — matriz cobre SP interno.
+- **DELETE de orçamento não existe:** limpeza de smoke foi via prisma com guarda; avaliar endpoint (ou decisão de nunca deletar).
 - **F4 etapa futura:** modelo de MO de 3 componentes (MP + setup/ordem + corrida s/ capacidade normal) + auditoria do histórico financeiro (detalhada acima).
 - **F6:** remover `system_config` antiga + campos legados/provisórios — **destrutivo, por último**, só após F4 validada.
-- **Golden files de regressão de preço (EM ANDAMENTO):** suite que congela o comportamento atual do engine de preço, pré-requisito do corte da F4 (gate "preço novo == preço velho OU divergência explicada").
+- **Golden files v1 ATIVOS** (commit `3942eb2`): 15/15 congelam o engine vigente (`npx jest custo-engine.golden`). Viram v2 no corte da F4 (com os preços novos aprovados + 2 sintéticos de modo).
 - **273 associações fórmula→NCM restantes** a revisar na fila (`revisao-ncm`) — a 280 "Shampoo Organika" foi revisada no smoke test desta sessão.
 - **541 fórmulas sem NCM:** atribuição do zero (escolher NCM) — fase separada do Bloco C.
 - **Guard de inativo do `revisar-ncm`:** código revisado + branch "não existe" testada (400); caminho "NCM inativo" NÃO exercitado em runtime (0 inativos no banco). Testar quando houver um.
