@@ -111,6 +111,7 @@ export class OrcamentosService {
         margem_pct: dto.margem_pct,
         formula_id: dto.formula_id,
         ncm_id: dto.ncm_id, // override cru (Opcao A); herda da formula no consumo
+        modo_operacao: dto.modo_operacao, // F4 Fase A (D2); null = full_service
         embalagem: dto.embalagem,
         un_min: dto.un_min,
         embalagem_id: dto.embalagem_id,
@@ -143,6 +144,7 @@ export class OrcamentosService {
         margem_pct: o.margem_pct,
         formula_id: o.formula_id,
         ncm_id: o.ncm_id, // preserva o override de NCM ao duplicar
+        modo_operacao: o.modo_operacao, // preserva o modo fiscal ao duplicar
         embalagem: o.embalagem,
         un_min: o.un_min,
         embalagem_id: o.embalagem_id,
@@ -191,6 +193,11 @@ export class OrcamentosService {
   /** F4 passo 2 — comparador read-only dos dois modelos de MO (não grava). */
   compararMo(id: string) {
     return this.calculo.compararMo(id);
+  }
+
+  /** F4 Fase A — comparador read-only vigente × engine fiscal v3 (não grava). */
+  compararFiscal(id: string) {
+    return this.calculo.compararFiscal(id);
   }
 
   /** FASE 2 — formata as 4 paginas a partir do JSON_CALC travado. */

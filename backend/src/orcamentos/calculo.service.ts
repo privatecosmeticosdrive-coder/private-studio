@@ -9,6 +9,11 @@ import { scoreCotacao, faixaScore } from '../formulas/score.util';
 import { lerParametrosCusto } from './params.util';
 import { calcularMoMatriz } from './mo-matriz.util';
 import { CalcularDto } from './dto/calcular.dto';
+import { resolverNcmEfetivo } from './ncm-efetivo.util';
+import { lerParametrosFiscaisVigentes } from './params-fiscais.util';
+import { calcularCustoFiscal } from './custo-engine-fiscal';
+import type { ModoOperacao, NcmFiscal, PerfilClienteFiscal } from './matriz-fiscal.util';
+import { resolverTributosSaida } from './matriz-fiscal.util';
 
 type FormulaComCusto = {
   id: number;
@@ -187,6 +192,117 @@ export class CalculoService {
         mo_un: moMatriz.mo_un,
         cmo_cimp: moMatriz.cmo_cimp,
       },
+    };
+  }
+
+  /**
+   * F4 FASE A — COMPARADOR read-only vigente × engine fiscal v3.
+   * Mesmo padrão do compararMo: o caminho VIGENTE (gerarCalculo) fica INTOCADO;
+   * o v3 roda ao lado com (modo_operacao × perfil do cliente × NCM efetivo ×
+   * parâmetros fiscais vigentes). NÃO grava nada.
+   */
+  async compararFiscal(orcamentoId: string) {
+    const r2 = (n: number) => Number(n.toFixed(2));
+
+    // 1) caminho VIGENTE, intocado
+    const atual = await this.gerarCalculo(orcamentoId, {});
+    const calc = atual.calculo;
+
+    // 2) contexto fiscal: orçamento + cliente + NCM efetivo
+    const orc = await this.prisma.orcamento.findUnique({
+      where: { id: orcamentoId },
+      include: { cliente: true },
+    });
+    if (!orc) throw new NotFoundException('Orcamento nao encontrado');
+
+    const formula = orc.formula_id
+      ? await this.prisma.formula.findUnique({
+          where: { id: orc.formula_id },
+          select: { ncm_id: true },
+        })
+      : null;
+    const ncmId = resolverNcmEfetivo(orc.ncm_id, formula?.ncm_id ?? null);
+    const ncmRow = ncmId ? await this.prisma.ncm.findUnique({ where: { id: ncmId } }) : null;
+
+    // FALHA VISÍVEL: sem NCM não existe IPI conhecido — não estimamos (regra 6).
+    if (!ncmRow) {
+      return {
+        orcamento_id: orcamentoId,
+        comparavel: false,
+        motivo: 'sem_ncm',
+        mensagem:
+          'Orçamento sem NCM efetivo (nem override, nem NCM na fórmula) — o engine fiscal exige NCM para o IPI. Atribua um NCM para comparar.',
+        preco_sipi_atual: calc.resultado.preco_sipi,
+        preco_cipi_atual: calc.resultado.preco_cipi,
+      };
+    }
+
+    // 3) matriz fiscal (parâmetros versionados + flag de caracterização)
+    const { params, caracterizacao } = await lerParametrosFiscaisVigentes(this.prisma);
+    const modo = (orc.modo_operacao ?? 'full_service') as ModoOperacao;
+    const perfil: PerfilClienteFiscal = {
+      regime_fiscal: (orc.cliente?.regime_fiscal ?? null) as PerfilClienteFiscal['regime_fiscal'],
+      finalidade: (orc.cliente?.finalidade_padrao ?? null) as PerfilClienteFiscal['finalidade'],
+      uf: orc.cliente?.uf ?? null,
+      contribuinte_icms: orc.cliente?.contribuinte_icms ?? null,
+    };
+    const ncmFiscal: NcmFiscal = {
+      ncm: ncmRow.ncm,
+      ex_tipi: ncmRow.ex_tipi,
+      ipi_pct: Number(ncmRow.ipi_pct),
+      monofasico: ncmRow.monofasico,
+      tratamento: ncmRow.tratamento as NcmFiscal['tratamento'],
+      icms_nominal_pct: ncmRow.icms_nominal_pct != null ? Number(ncmRow.icms_nominal_pct) : null,
+    };
+    const tributos = resolverTributosSaida(modo, perfil, ncmFiscal, params, caracterizacao);
+
+    // 4) engine v3 sobre os MESMOS inputs do cálculo vigente
+    const novo = calcularCustoFiscal(
+      {
+        cmp_base_mp_kg: calc.inputs.cmp_base_mp_kg,
+        volume_un: calc.inputs.volume_un,
+        quantidade: calc.inputs.quantidade,
+        un_min: calc.inputs.un_min,
+        margem_pct: calc.inputs.margem_pct,
+        embalagem_un: calc.inputs.embalagem_un,
+      },
+      {
+        mo_folha_mensal: calc.parametros.mo_folha_mensal,
+        mo_dias_uteis: calc.parametros.mo_dias_uteis,
+        desvio_mp_pct: calc.parametros.desvio_mp_pct,
+        frete_un_brl: calc.parametros.frete_un_brl,
+      },
+      tributos,
+    );
+
+    // 5) decomposição da causa (D6 — o diff explica, não só aponta)
+    const colchao_mp_un = r2(calc.custo_mp.cmp_cimp - calc.custo_mp.cmp_simp);
+    const flat_mo_un = r2(calc.mao_de_obra.cmo_cimp - calc.mao_de_obra.mo_un);
+    const delta_cipi = r2(novo.resultado.preco_cipi - calc.resultado.preco_cipi);
+
+    return {
+      orcamento_id: orcamentoId,
+      comparavel: true,
+      modo_operacao: modo,
+      ncm: `${ncmRow.ncm}${ncmRow.ex_tipi ? ' ' + ncmRow.ex_tipi : ''}`,
+      caracterizacao_ligada: caracterizacao.industrializacao_caracterizada,
+      preco_sipi_atual: calc.resultado.preco_sipi,
+      preco_cipi_atual: calc.resultado.preco_cipi,
+      preco_sipi_novo: novo.resultado.preco_sipi,
+      preco_cipi_novo: novo.resultado.preco_cipi,
+      delta_cipi_abs: delta_cipi,
+      delta_cipi_pct:
+        calc.resultado.preco_cipi > 0 ? r2((delta_cipi / calc.resultado.preco_cipi) * 100) : null,
+      decomposicao: {
+        colchao_mp_removido_un: colchao_mp_un, // 37,5% flat que saiu do custo
+        flat_mo_removido_un: flat_mo_un, // 9,25% flat que saiu do custo de MO
+        ipi_flat_atual: { pct: calc.parametros.ipi_pct, un: calc.resultado.ipi_un },
+        ipi_real_novo: { pct: novo.resultado.ipi_pct, base: novo.resultado.base_ipi, un: novo.resultado.ipi_un },
+        icms_sobre_ipi_un: novo.resultado.icms_sobre_ipi,
+        tributos_por_dentro: novo.parcelas,
+      },
+      fundamentos: novo.fundamentos,
+      calculo_novo: novo,
     };
   }
 

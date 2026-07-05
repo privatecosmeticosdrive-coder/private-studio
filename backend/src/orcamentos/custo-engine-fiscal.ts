@@ -1,0 +1,169 @@
+/**
+ * ENGINE FISCAL v3 (F4 Fase A) — DETERMINÍSTICO e PURO. NÃO substitui o
+ * custo-engine vigente: roda em PARALELO atrás do comparador até o corte
+ * aprovado (D6/gate). Diferenças estruturais vs vigente:
+ *
+ *  - D1: SEM o flat de 37,5% sobre a MP (o custo de material entra pelo valor
+ *    da cotação; o "colchão" sai e os tributos de SAÍDA entram corretos).
+ *  - SEM o flat de 9,25% sobre a MO como "imposto de custo" (parecer: encargos
+ *    de folha são custo operacional, não alíquota; PIS/COFINS incidem sobre a
+ *    RECEITA e entram por dentro do preço, por parcela).
+ *  - IPI por NCM+EX+tratamento e por MODO (base total vs material), por fora.
+ *  - Tributos "por dentro": preço da parcela = custo / (1 − margem − icms −
+ *    pis − cofins). ICMS diferido não onera o preço (responsabilidade segue
+ *    pro encomendante — análise §4.4).
+ *  - Quando o IPI integra a base do ICMS (perfil do cliente), o ICMS sobre o
+ *    IPI é somado por fora como componente EXPLÍCITO (icms_sobre_ipi) — nada
+ *    embutido silenciosamente.
+ *
+ * MO usa o MESMO modelo do vigente (folha/dias × ceil de dia) — o modelo de
+ * 3 componentes é etapa futura (04_estado_atual §6); esta fase muda IMPOSTO,
+ * não filosofia de MO — mantém o diff dos goldens interpretável.
+ */
+import { producaoDiaria } from './custo-engine';
+import type { TributosSaida, TributosParcela } from './matriz-fiscal.util';
+
+export interface InputsFiscal {
+  cmp_base_mp_kg: number; // custo de MP por kg (cotação — SEM colchão)
+  volume_un: number; // mL/g por unidade
+  quantidade: number;
+  un_min: number;
+  margem_pct: number;
+  embalagem_un?: number;
+}
+
+/** Parâmetros OPERACIONAIS (não fiscais) — mesmos campos que o vigente usa. */
+export interface ParametrosOperacionaisFiscal {
+  mo_folha_mensal: number;
+  mo_dias_uteis: number;
+  desvio_mp_pct: number;
+  frete_un_brl: number;
+}
+
+const r2 = (n: number) => Number(n.toFixed(2));
+const r4 = (n: number) => Number(n.toFixed(4));
+
+/** % de tributos "por dentro" de uma parcela (diferido/zero não oneram). */
+function taxaPorDentro(t: TributosParcela): number {
+  const icms = t.icms.tipo === 'tributado' ? t.icms.pct : 0;
+  return icms + t.pis_pct + t.cofins_pct;
+}
+
+/** preço da parcela com margem e tributos por dentro (gross-up). */
+function precoParcela(custo: number, margem: number, taxa: number): number {
+  const divisor = 1 - (margem + taxa) / 100;
+  if (divisor <= 0.01) {
+    throw new Error(`margem (${margem}%) + tributos (${taxa}%) inviabilizam o preço (divisor <= 1%)`);
+  }
+  return custo / divisor;
+}
+
+export function calcularCustoFiscal(
+  inputs: InputsFiscal,
+  oper: ParametrosOperacionaisFiscal,
+  tributos: TributosSaida,
+) {
+  const volume_kg = inputs.volume_un / 1000;
+  const quantidade = Math.max(1, inputs.quantidade);
+  const margem = Math.min(99, Math.max(0, inputs.margem_pct));
+
+  // ---- custo de material por unidade (SEM flat de imposto — D1) ----
+  const mp_base = inputs.cmp_base_mp_kg * volume_kg;
+  const desvio = mp_base * (oper.desvio_mp_pct / 100);
+  const embalagem = inputs.embalagem_un ?? 0;
+  const frete = oper.frete_un_brl;
+  const custo_material_un = mp_base + desvio + embalagem + frete;
+
+  // ---- custo de MO por unidade (modelo vigente, SEM flat de 9,25%) ----
+  const mo_diario = oper.mo_folha_mensal / oper.mo_dias_uteis;
+  const un_dia = producaoDiaria(inputs.un_min);
+  const dias_necessarios = Math.ceil(quantidade / un_dia);
+  const mo_un = (mo_diario * dias_necessarios) / quantidade;
+
+  // ---- parcelas por modo ----
+  // industrializacao: custo de material próprio residual (se houver) entra como
+  // CUSTO da parcela de execução — não existe parcela de receita de material.
+  const parcelas: {
+    material: null | { custo_un: number; taxa_pct: number; preco_un: number };
+    mo: null | { custo_un: number; taxa_pct: number; preco_un: number };
+  } = { material: null, mo: null };
+
+  if (tributos.modo === 'full_service') {
+    const taxa = taxaPorDentro(tributos.material!);
+    const custo = custo_material_un + mo_un;
+    parcelas.material = { custo_un: custo, taxa_pct: taxa, preco_un: precoParcela(custo, margem, taxa) };
+  } else if (tributos.modo === 'hibrido') {
+    const taxaMat = taxaPorDentro(tributos.material!);
+    const taxaMo = taxaPorDentro(tributos.mo!);
+    parcelas.material = {
+      custo_un: custo_material_un,
+      taxa_pct: taxaMat,
+      preco_un: precoParcela(custo_material_un, margem, taxaMat),
+    };
+    parcelas.mo = { custo_un: mo_un, taxa_pct: taxaMo, preco_un: precoParcela(mo_un, margem, taxaMo) };
+  } else {
+    const taxaMo = taxaPorDentro(tributos.mo!);
+    const custo = custo_material_un + mo_un; // material residual vira custo da execução
+    parcelas.mo = { custo_un: custo, taxa_pct: taxaMo, preco_un: precoParcela(custo, margem, taxaMo) };
+  }
+
+  const preco_sipi =
+    (parcelas.material?.preco_un ?? 0) + (parcelas.mo?.preco_un ?? 0);
+
+  // ---- IPI por fora, na base correta do modo ----
+  const parcelaIpi = tributos.material; // IPI só existe onde há parcela de produto
+  const ipi_pct = parcelaIpi?.ipi.tipo === 'tributado' ? parcelaIpi.ipi.pct : 0;
+  const base_ipi_valor =
+    tributos.base_ipi === 'total' ? preco_sipi
+    : tributos.base_ipi === 'material' ? (parcelas.material?.preco_un ?? 0)
+    : 0;
+  const ipi_un = base_ipi_valor * (ipi_pct / 100);
+
+  // ---- ICMS sobre o IPI (quando o IPI integra a base do ICMS) — explícito ----
+  const icms_sobre_ipi =
+    parcelaIpi && parcelaIpi.icms_base_inclui_ipi && parcelaIpi.icms.tipo === 'tributado'
+      ? ipi_un * (parcelaIpi.icms.pct / 100)
+      : 0;
+
+  const preco_cipi = preco_sipi + ipi_un + icms_sobre_ipi;
+
+  return {
+    material: {
+      mp_base: r4(mp_base),
+      desvio: r4(desvio),
+      embalagem: r4(embalagem),
+      frete: r2(frete),
+      custo_material_un: r4(custo_material_un),
+    },
+    mao_de_obra: {
+      mo_diario: r2(mo_diario),
+      producao_diaria: r2(un_dia),
+      dias_necessarios,
+      mo_un: r4(mo_un),
+    },
+    parcelas: {
+      material: parcelas.material && {
+        custo_un: r4(parcelas.material.custo_un),
+        taxa_pct: r4(parcelas.material.taxa_pct),
+        preco_un: r4(parcelas.material.preco_un),
+      },
+      mo: parcelas.mo && {
+        custo_un: r4(parcelas.mo.custo_un),
+        taxa_pct: r4(parcelas.mo.taxa_pct),
+        preco_un: r4(parcelas.mo.preco_un),
+      },
+    },
+    resultado: {
+      margem_pct: margem,
+      preco_sipi: r2(preco_sipi),
+      ipi_pct,
+      base_ipi: tributos.base_ipi,
+      ipi_un: r2(ipi_un),
+      icms_sobre_ipi: r2(icms_sobre_ipi),
+      preco_cipi: r2(preco_cipi),
+    },
+    fundamentos: tributos.fundamentos,
+  };
+}
+
+export type CalculoCustoFiscal = ReturnType<typeof calcularCustoFiscal>;
