@@ -72,6 +72,8 @@ O plano de 15 dias original está em **`docs/03_plano_implementacao.md`**. Os ma
 
 *Lista consolidada para retomar sem perder contexto (algumas detalhadas acima).*
 
+- **🔴 PDF do orçamento QUEBRADO após o corte v3 (URGENTE — antes da equipe usar pra cliente):** `backend/src/orcamentos/pdf.service.ts` lê a forma v1 (`custo_mp.cmp_cimp`, `mao_de_obra.cmo_cimp`, `imposto_mp_pct`, `imposto_mo_pct`) — campos que sumiram no corte. Orçamento calculado no engine novo gera PDF com valores vazios/errados. Atualizar o template pro shape fiscal v3 (enquadramento, parcelas com tributos por dentro, IPI real, fundamentos); tolerar v1 como histórico, igual ao renderer da tela. **Correlato:** a saída da fatia do wizard já verifica; o PDF é o mesmo padrão v1→v3.
+- **🔴 FRENTE ESTRUTURAL — atribuir NCM às 540 fórmulas validadas sem NCM (66% do total, bloqueador operacional):** confirmado nesta sessão (814 validadas, 540 sem `ncm_id`). Cada uma dessas cai no bloqueio de NCM ao virar orçamento — a saída do wizard (botão Atribuir NCM, commit `a0ca9d1`) destrava caso a caso, mas a solução estrutural é atribuição em LOTE/assistida por categoria+palavra-chave (reusar a whitelist do `backfill-categorias`). Conecta com a Jornada de Laboratório (fórmula nova deveria nascer com NCM).
 - **🧪 FRENTE NOVA — Jornada de Laboratório (pós-F4, revelada no smoke do corte):** orçamento sem fórmula/NCM TRAVA o cálculo (falha visível, correto). Falta o fluxo que destrava: botão "Solicitar ao Laboratório" com **urgência** (mesmo dia / 2–3 dias / 7 dias), gerando pendência com status pro time do lab (desenvolver fórmula → atribuir NCM → devolver ao orçamento). É a ponte entre "cliente pediu" e "dá pra precificar". Candidata a próxima frente grande.
 - **Busca de fórmulas — sem match confunde:** quando nenhuma fórmula corresponde, a tela mostra uma sequência-padrão (parece resultado). Ajustar pra estado vazio claro: "nenhuma fórmula corresponde". Fatia rápida.
 - **Renomear menu "Cotações" → "Cotações externas"** (desambiguar de Orçamentos). Fatia rápida (label + rota).
@@ -83,7 +85,7 @@ O plano de 15 dias original está em **`docs/03_plano_implementacao.md`**. Os ma
 - **F4 etapa futura:** modelo de MO de 3 componentes (MP + setup/ordem + corrida s/ capacidade normal) + auditoria do histórico financeiro (detalhada acima).
 - **F6:** remover colunas fiscais legadas da `system_config` + `FormFiscal` inerte da Matriz + campos provisórios — **destrutivo, por último**.
 - **273 associações fórmula→NCM restantes** a revisar na fila (`revisao-ncm`) — a 280 "Shampoo Organika" foi revisada no smoke test desta sessão.
-- **541 fórmulas sem NCM:** atribuição do zero (escolher NCM) — fase separada do Bloco C.
+- **541→540 fórmulas sem NCM:** ver a FRENTE ESTRUTURAL no topo do radar (deixou de ser backlog de classificação e virou bloqueador operacional pós-corte).
 - **Guard de inativo do `revisar-ncm`:** código revisado + branch "não existe" testada (400); caminho "NCM inativo" NÃO exercitado em runtime (0 inativos no banco). Testar quando houver um.
 - **Hardening opcional do modal de troca:** travar o botão quando o NCM selecionado não está entre os ativos (1 linha) — hoje depende do 400 do backend.
 - **🔐 AÇÃO DE SEGURANÇA (Gabriel):** ROTACIONAR A SENHA DO ADMIN — usada várias vezes nos testes desta sessão. Trocar o quanto antes.
