@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsEnum,
+  IsIn,
   IsInt,
   IsNumber,
   IsOptional,
@@ -11,6 +12,9 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
+
+/** Modos de operação fiscal (F4 Fase A, D2). null/ausente = full_service (conservador). */
+export const MODOS_OPERACAO = ['full_service', 'hibrido', 'industrializacao'] as const;
 import { OrcamentoNivel } from '@prisma/client';
 
 export class CreateOrcamentoDto {
@@ -43,6 +47,10 @@ export class CreateOrcamentoDto {
   // no consumo (ver resolverNcmEfetivo). NAO congela snapshot aqui.
   @IsOptional() @IsInt() @Min(1)
   ncm_id?: number;
+
+  // Modo de operação fiscal (F4 Fase A, D2). Decide a matriz de tributos.
+  @IsOptional() @IsIn(MODOS_OPERACAO as unknown as string[])
+  modo_operacao?: string;
 
   @IsOptional() @IsString()
   embalagem?: string;

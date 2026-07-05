@@ -28,6 +28,7 @@ export interface CriarOrcamentoPayload {
   margem_pct?: number;
   formula_id?: number;
   ncm_id?: number | null; // override de NCM; null limpa (volta a herdar da fórmula)
+  modo_operacao?: 'full_service' | 'hibrido' | 'industrializacao'; // F4 Fase A (D2)
   un_min?: number;
   embalagem_id?: number;
   sem_embalagem?: boolean;

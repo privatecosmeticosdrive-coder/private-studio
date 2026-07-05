@@ -16,6 +16,8 @@ export interface OrcamentoForm {
   produto_referencia: string;
   requer_amostra: boolean;
   amostra_qtd: string;
+  // F4 Fase A (D2) — modo de operação fiscal (decide a matriz de tributos)
+  modo_operacao: 'full_service' | 'hibrido' | 'industrializacao';
 
   // Etapa 2 — Match / fórmula (usada como está; editor de composição é Dia 12)
   formula_id: number | null;
@@ -44,6 +46,7 @@ export const FORM_INICIAL: OrcamentoForm = {
   produto_referencia: '',
   requer_amostra: true,
   amostra_qtd: '',
+  modo_operacao: 'full_service', // default conservador (D4)
   formula_id: null,
   formula_nome: '',
   sem_formula: false,

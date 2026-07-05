@@ -124,6 +124,22 @@ export function EtapaBriefing({ form, patch }: EtapaProps) {
       </div>
 
       <div className="space-y-2">
+        <Label htmlFor="modo_operacao">Modo de operação (fiscal)</Label>
+        <Select
+          id="modo_operacao"
+          value={form.modo_operacao}
+          onChange={(e) => patch({ modo_operacao: e.target.value as typeof form.modo_operacao })}
+        >
+          <option value="full_service">Full service — venda do produto acabado</option>
+          <option value="hibrido">Híbrido — material próprio + industrialização</option>
+          <option value="industrializacao">Industrialização — só mão de obra (insumos do cliente)</option>
+        </Select>
+        <p className="text-caption text-warm-500">
+          Define o enquadramento tributário do cálculo. Na dúvida, mantenha full service (conservador).
+        </p>
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="produto_referencia">Produto de referência</Label>
         <Input
           id="produto_referencia"

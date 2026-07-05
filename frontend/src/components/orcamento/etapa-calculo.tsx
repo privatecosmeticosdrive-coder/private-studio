@@ -42,6 +42,7 @@ function montarPayload(form: OrcamentoForm): CriarOrcamentoPayload {
     produto_referencia: form.produto_referencia || undefined,
     requer_amostra: form.requer_amostra,
     amostra_qtd: form.requer_amostra ? num(form.amostra_qtd) : undefined,
+    modo_operacao: form.modo_operacao,
     un_min: num(form.un_min),
     formula_id: form.sem_formula ? undefined : form.formula_id ?? undefined,
     embalagem_id: form.sem_embalagem ? undefined : form.embalagem_id ?? undefined,

@@ -1,6 +1,7 @@
 import {
   IsBoolean,
   IsEnum,
+  IsIn,
   IsInt,
   IsNumber,
   IsOptional,
@@ -11,6 +12,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { OrcamentoNivel } from '@prisma/client';
+import { MODOS_OPERACAO } from './create-orcamento.dto';
 
 /**
  * Atualiza campos do briefing. NAO altera status (transicoes de status e
@@ -44,6 +46,10 @@ export class UpdateOrcamentoDto {
   // Override de NCM do orcamento (F3). Herda da formula no consumo se ausente.
   @IsOptional() @IsInt() @Min(1)
   ncm_id?: number;
+
+  // Modo de operação fiscal (F4 Fase A, D2).
+  @IsOptional() @IsIn(MODOS_OPERACAO as unknown as string[])
+  modo_operacao?: string;
 
   @IsOptional() @IsString()
   embalagem?: string;
