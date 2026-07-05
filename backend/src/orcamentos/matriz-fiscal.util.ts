@@ -86,6 +86,7 @@ export function resolverTributosSaida(
   caracterizacao: CaracterizacaoFiscal,
 ): TributosSaida {
   const fundamentos: string[] = [];
+  const fMaterial: string[] = []; // só entram no output quando há parcela de material
 
   // ---------- perfil efetivo (null = pior caso, D3/D4) ----------
   const regime = perfil.regime_fiscal;
@@ -101,7 +102,7 @@ export function resolverTributosSaida(
   const art34 = regime === 'lucro_real_presumido' && !consumidorFinal && revendaOuInd;
   const icmsNominal = ncm.icms_nominal_pct ?? params.icms_nominal_padrao_pct;
   const icmsMaterialPct = art34 ? params.icms_carga_art34_pct : icmsNominal;
-  fundamentos.push(
+  fMaterial.push(
     art34
       ? `ICMS do material: carga efetiva ${params.icms_carga_art34_pct}% (art. 34, Anexo II, RICMS/SP — cliente RPA, finalidade ${perfil.finalidade}).`
       : `ICMS do material: alíquota nominal ${icmsMaterialPct}% (art. 34 não aplicável: ${regime === 'simples' ? 'cliente do Simples' : consumidorFinal ? 'consumidor final' : 'perfil não elegível/não informado'}).`,
@@ -111,7 +112,7 @@ export function resolverTributosSaida(
   // revenda/industrialização (§4.3). Conservador: integra nos demais casos.
   const ipiForaDaBase = perfil.contribuinte_icms === true && revendaOuInd;
   if (!ipiForaDaBase) {
-    fundamentos.push('IPI integra a base do ICMS (destinatário não-contribuinte, consumidor final ou perfil não informado).');
+    fMaterial.push('IPI integra a base do ICMS (destinatário não-contribuinte, consumidor final ou perfil não informado).');
   }
 
   // ---------- PIS/COFINS ----------
@@ -119,7 +120,7 @@ export function resolverTributosSaida(
   const pisCofinsMaterial = ncm.monofasico
     ? { pis: params.pis_monofasico_pct, cofins: params.cofins_monofasico_pct }
     : { pis: params.pis_comum_pct, cofins: params.cofins_comum_pct };
-  fundamentos.push(
+  fMaterial.push(
     ncm.monofasico
       ? `PIS/COFINS do material: monofásico ${params.pis_monofasico_pct}%+${params.cofins_monofasico_pct}% (Lei 10.147/2000 — NCM ${ncm.ncm}${ncm.ex_tipi ? ' ' + ncm.ex_tipi : ''} abrangido).`
       : `PIS/COFINS do material: regime comum ${params.pis_comum_pct}%+${params.cofins_comum_pct}% (NCM não monofásico).`,
@@ -127,7 +128,7 @@ export function resolverTributosSaida(
 
   const ipi = ipiPorTratamento(ncm);
   if (ipi.tipo !== 'tributado') {
-    fundamentos.push(`IPI: ${ipi.tipo} (tratamento do NCM ${ncm.ncm}${ncm.ex_tipi ? ' ' + ncm.ex_tipi : ''} na TIPI).`);
+    fMaterial.push(`IPI: ${ipi.tipo} (tratamento do NCM ${ncm.ncm}${ncm.ex_tipi ? ' ' + ncm.ex_tipi : ''} na TIPI).`);
   }
 
   const parcelaMaterial: TributosParcela = {
@@ -138,18 +139,19 @@ export function resolverTributosSaida(
     ipi,
   };
 
-  // ---------- FULL SERVICE: parcela única ----------
+  // ---------- FULL SERVICE: parcela única (material) ----------
   if (modo === 'full_service') {
-    fundamentos.push('Full service: tributação integral da venda do produto (parcela única).');
+    fundamentos.push(...fMaterial, 'Full service: tributação integral da venda do produto (parcela única).');
     return { modo, material: parcelaMaterial, mo: null, base_ipi: ipi.tipo === 'tributado' ? 'total' : 'nao_aplica', fundamentos };
   }
 
   // ---------- MÃO DE OBRA (hibrido e industrializacao) ----------
+  const fMo: string[] = [];
   const caract = caracterizacao.industrializacao_caracterizada;
   if (!caract) {
-    fundamentos.push('Industrialização por encomenda NÃO caracterizada (flag OFF) — MO tributada de forma conservadora.');
+    fMo.push('Industrialização por encomenda NÃO caracterizada (flag OFF) — MO tributada de forma conservadora.');
   } else if (caracterizacao.fundamento) {
-    fundamentos.push(`Industrialização caracterizada: ${caracterizacao.fundamento}`);
+    fMo.push(`Industrialização caracterizada: ${caracterizacao.fundamento}`);
   }
 
   // Diferimento paulista da MO (Portaria CAT 22/2007 + art. 402 RICMS/SP):
@@ -160,7 +162,7 @@ export function resolverTributosSaida(
     regime === 'lucro_real_presumido' &&
     perfil.contribuinte_icms === true &&
     !consumidorFinal;
-  fundamentos.push(
+  fMo.push(
     diferimento
       ? 'ICMS da MO: DIFERIDO (Portaria CAT 22/2007 — SP interno, cliente RPA contribuinte, industrialização caracterizada).'
       : 'ICMS da MO: tributado (condições do diferimento CAT 22/2007 não atendidas).',
@@ -169,7 +171,7 @@ export function resolverTributosSaida(
   // PIS/COFINS da MO: 0% na execução de encomenda de produto MONOFÁSICO
   // caracterizada (Cosit 53/2022); senão regime comum.
   const moZero = caract && ncm.monofasico;
-  fundamentos.push(
+  fMo.push(
     moZero
       ? 'PIS/COFINS da MO: 0% (Cosit 53/2022 — execução de industrialização por encomenda de produto monofásico).'
       : `PIS/COFINS da MO: regime comum ${params.pis_comum_pct}%+${params.cofins_comum_pct}%.`,
@@ -185,9 +187,12 @@ export function resolverTributosSaida(
     ipi: { tipo: 'nao_tributado', pct: 0 }, // linha de MO: IPI não tributado (D2)
   };
 
-  // ---------- INDUSTRIALIZAÇÃO PURA: só MO ----------
+  // ---------- INDUSTRIALIZAÇÃO PURA: só MO (SEM fundamentos de material) ----------
   if (modo === 'industrializacao') {
-    fundamentos.push('Industrialização pura: sem parcela de material próprio (insumos do cliente retornam com suspensão, sem receita).');
+    fundamentos.push(
+      ...fMo,
+      'Industrialização pura: sem parcela de material próprio (insumos do cliente retornam com suspensão, sem receita).',
+    );
     return { modo, material: null, mo: parcelaMo, base_ipi: 'nao_aplica', fundamentos };
   }
 
@@ -197,13 +202,13 @@ export function resolverTributosSaida(
   // documentada, IPI incide só sobre o material próprio.
   const baseIpi: TributosSaida['base_ipi'] =
     ipi.tipo !== 'tributado' ? 'nao_aplica' : caract ? 'material' : 'total';
-  fundamentos.push(
+  const fBaseIpi =
     baseIpi === 'total'
       ? 'Base do IPI: valor TOTAL da operação (sem suspensão caracterizada — RIPI/Decreto 7.212/2010; conservador).'
       : baseIpi === 'material'
         ? 'Base do IPI: apenas material próprio (suspensão da parcela de encomenda caracterizada e documentada).'
-        : 'IPI não tributado nesta operação.',
-  );
+        : 'IPI não tributado nesta operação.';
+  fundamentos.push(...fMaterial, ...fMo, fBaseIpi);
 
   return { modo, material: parcelaMaterial, mo: parcelaMo, base_ipi: baseIpi, fundamentos };
 }

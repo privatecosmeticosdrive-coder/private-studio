@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { FieldErrors, FieldValues, Path, UseFormRegister } from 'react-hook-form';
-import { AlertTriangle, ShieldCheck } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -12,7 +11,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAuth } from '@/auth/auth-context';
 import { matrizCustoApi, parametroFiscalApi } from '@/lib/services/matriz-custo';
 import type {
@@ -206,117 +204,6 @@ function FormFiscal({ fiscal }: { fiscal: MatrizCustoView['fiscal'] }) {
         </Button>
       </div>
     </form>
-  );
-}
-
-// ============================ BANNER FISCAIS (Parte 3) ============================
-
-// fiscais_provisorios=true  => provisório (aguardando contador)
-// fiscais_provisorios=false => validado pelo contador
-// VALIDAR mexe para false; REVERTER mexe para true. Botões só para admin
-// (gate visual; o backend é a proteção real via AcessoCustoGuard + regra de campo).
-function BannerFiscais({
-  fiscaisProvisorios,
-  isAdmin,
-}: {
-  fiscaisProvisorios: boolean;
-  isAdmin: boolean;
-}) {
-  const queryClient = useQueryClient();
-  // null = nenhum modal aberto; 'validar' | 'reverter' = qual confirmação está aberta
-  const [acao, setAcao] = useState<null | 'validar' | 'reverter'>(null);
-
-  const mutation = useMutation({
-    mutationFn: (p: UpdateFiscalPayload) => matrizCustoApi.atualizarFiscal(p),
-    onSuccess: (view) => {
-      queryClient.setQueryData(['matriz-custo'], view);
-      setAcao(null);
-      toast.success(
-        view.fiscais_provisorios
-          ? 'Parâmetros fiscais revertidos para provisório'
-          : 'Parâmetros fiscais validados',
-      );
-    },
-    onError: (err: AxiosError<{ message?: string | string[] }>) => {
-      // cobre o 403 do backend (admin rebaixado entre o load e o clique)
-      toast.error(msgErro(err, 'Falha ao atualizar o estado fiscal.'));
-    },
-  });
-
-  return (
-    <>
-      {fiscaisProvisorios ? (
-        <div className="flex items-start gap-3 rounded-lg border border-warning/30 bg-warning-soft p-4">
-          <AlertTriangle className="mt-0.5 size-5 shrink-0 text-warning" />
-          <div className="flex-1 space-y-1">
-            <p className="font-medium text-ink">Parâmetros fiscais provisórios</p>
-            <p className="text-sm text-warm-700">
-              Aguardando validação do contador — os valores fiscais ainda não foram conferidos.
-            </p>
-          </div>
-          {isAdmin && (
-            <Button size="sm" onClick={() => setAcao('validar')}>
-              Marcar como validado
-            </Button>
-          )}
-        </div>
-      ) : (
-        <div className="flex items-start gap-3 rounded-lg border border-success/30 bg-success-soft p-4">
-          <ShieldCheck className="mt-0.5 size-5 shrink-0 text-success" />
-          <div className="flex-1 space-y-1">
-            <p className="font-medium text-ink">Parâmetros fiscais validados pelo contador</p>
-            <p className="text-sm text-warm-700">
-              Os valores fiscais foram conferidos e estão liberados para o cálculo de preço.
-            </p>
-          </div>
-          {isAdmin && (
-            <Button variant="outline" size="sm" onClick={() => setAcao('reverter')}>
-              Reverter para provisório
-            </Button>
-          )}
-        </div>
-      )}
-
-      {/* Modal VALIDAR — fiscais_provisorios: false (deixa de ser provisório) */}
-      <ConfirmDialog
-        open={acao === 'validar'}
-        onClose={() => setAcao(null)}
-        onConfirm={() => mutation.mutate({ fiscais_provisorios: false })}
-        loading={mutation.isPending}
-        title="Validar parâmetros fiscais"
-        confirmLabel="Sim, validar"
-        description={
-          <div className="space-y-2">
-            <p>
-              Ao validar, você confirma que os valores fiscais (ICMS, PIS/COFINS e regime
-              tributário) foram conferidos e estão corretos perante a legislação vigente.
-            </p>
-            <p>
-              Esses parâmetros alimentam o <strong className="text-ink">cálculo de preço</strong>{' '}
-              dos orçamentos. A ação pode ser revertida depois.
-            </p>
-          </div>
-        }
-      />
-
-      {/* Modal REVERTER — fiscais_provisorios: true (volta a provisório) */}
-      <ConfirmDialog
-        open={acao === 'reverter'}
-        onClose={() => setAcao(null)}
-        onConfirm={() => mutation.mutate({ fiscais_provisorios: true })}
-        loading={mutation.isPending}
-        destructive
-        title="Reverter para provisório"
-        confirmLabel="Reverter"
-        description={
-          <p>
-            Os parâmetros fiscais voltarão ao estado{' '}
-            <strong className="text-ink">provisório</strong> (não validado), sinalizando que ainda
-            dependem de conferência do contador antes de serem usados com confiança no cálculo.
-          </p>
-        }
-      />
-    </>
   );
 }
 
@@ -590,10 +477,6 @@ export default function MatrizCusto() {
       />
       <FormOperacional op={data.operacional} />
       <FormFiscal fiscal={data.fiscal} />
-      <BannerFiscais
-        fiscaisProvisorios={data.fiscais_provisorios}
-        isAdmin={user?.role === 'admin'}
-      />
       <SecaoParametrosFiscais isAdmin={user?.role === 'admin'} />
       <CardDerivados derivados={data.derivados} />
     </div>

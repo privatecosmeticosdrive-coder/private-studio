@@ -1,36 +1,45 @@
 /**
- * REGRESSÃO DE PREÇO — golden files (pré-requisito do corte da F4).
+ * REGRESSÃO DE PREÇO v2 (F4 Fase A — pós-corte). Cada golden em test/goldens/
+ * congela o contexto fiscal completo de um orçamento (inputs, oper, modo,
+ * perfil, ncm, params, caracterizacao) + o esperado. Este spec RECONSTRÓI os
+ * tributos (matriz fiscal) e RECOMPUTA o preço (engine fiscal) sobre as MESMAS
+ * entradas, exigindo igualdade campo a campo, tolerância ZERO.
  *
- * Cada golden em test/goldens/ congela inputs + parametros + saídas de um
- * orçamento real (gerados por prisma/gerar-goldens.ts, validados contra o
- * JSON_CALC do banco). Este spec re-roda o engine puro sobre as MESMAS
- * entradas e exige igualdade campo a campo, tolerância ZERO.
+ * Cobre os 3 modos: orcamento-*.json (full_service, 15 reais) +
+ * sintetico-hibrido.json + sintetico-industrializacao.json.
  *
- * Se este teste quebrar, o engine mudou de comportamento: gate da F4 —
- * "preço novo == preço velho OU divergência explicada e aprovada".
- * Sem banco, sem Nest — só o engine puro.
+ * Se quebrar, o engine fiscal OU a matriz mudou de comportamento — gate da F4.
+ * Sem banco, sem Nest: só as funções puras.
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { calcularCustoPrivate } from './custo-engine';
+import { calcularCustoFiscal } from './custo-engine-fiscal';
+import { resolverTributosSaida } from './matriz-fiscal.util';
 
 const GOLDENS_DIR = path.join(__dirname, '..', '..', 'test', 'goldens');
 
-const arquivos = fs
-  .readdirSync(GOLDENS_DIR)
-  .filter((f) => f.endsWith('.json'))
-  .sort();
+const arquivos = fs.readdirSync(GOLDENS_DIR).filter((f) => f.endsWith('.json')).sort();
 
-describe('custo-engine — golden files de regressão de preço', () => {
-  it('existe pelo menos um golden', () => {
-    expect(arquivos.length).toBeGreaterThan(0);
+describe('engine fiscal — golden files de regressão de preço (3 modos)', () => {
+  it('existe ao menos um golden de cada modo', () => {
+    const modos = new Set(
+      arquivos.map((a) => JSON.parse(fs.readFileSync(path.join(GOLDENS_DIR, a), 'utf8')).modo_operacao),
+    );
+    expect(modos.has('full_service')).toBe(true);
+    expect(modos.has('hibrido')).toBe(true);
+    expect(modos.has('industrializacao')).toBe(true);
   });
 
   it.each(arquivos)('%s reproduz o preço congelado', (arquivo) => {
-    const golden = JSON.parse(
-      fs.readFileSync(path.join(GOLDENS_DIR, arquivo), 'utf8'),
-    );
-    const vivo = calcularCustoPrivate(golden.inputs, golden.parametros);
-    expect(vivo).toEqual(golden.esperado);
+    const g = JSON.parse(fs.readFileSync(path.join(GOLDENS_DIR, arquivo), 'utf8'));
+    const tributos = resolverTributosSaida(g.modo_operacao, g.perfil, g.ncm, g.params, g.caracterizacao);
+    const vivo = calcularCustoFiscal(g.inputs, g.oper, tributos);
+    expect({
+      material: vivo.material,
+      mao_de_obra: vivo.mao_de_obra,
+      parcelas: vivo.parcelas,
+      resultado: vivo.resultado,
+      fundamentos: vivo.fundamentos,
+    }).toEqual(g.esperado);
   });
 });

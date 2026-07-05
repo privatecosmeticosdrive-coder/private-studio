@@ -344,51 +344,63 @@ export interface CalculoInputs {
   quantidade: number;
   un_min: number;
   margem_pct: number;
-  mp_frag_kg: number;
   embalagem_un: number;
 }
 
-export interface CalculoParametros {
+export interface CalculoParametrosOperacionais {
   mo_folha_mensal: number;
   mo_dias_uteis: number;
-  imposto_mp_pct: number;
-  imposto_mo_pct: number;
-  ipi_pct: number;
   desvio_mp_pct: number;
   frete_un_brl: number;
 }
 
-export interface CalculoCustoMp {
+export interface CalculoParametrosFiscais {
+  pis_monofasico_pct: number;
+  cofins_monofasico_pct: number;
+  pis_comum_pct: number;
+  cofins_comum_pct: number;
+  icms_carga_art34_pct: number;
+  icms_nominal_padrao_pct: number;
+}
+
+export interface CalculoNcm {
+  codigo: string;
+  ex_tipi: string;
+  ipi_pct: number;
+  monofasico: boolean;
+  tratamento: string;
+}
+
+/** Custo de material por unidade (SEM colchão de imposto — F4 corte). */
+export interface CalculoMaterial {
   mp_base: number;
-  mp_frag: number;
-  desvio_pct: number;
   desvio: number;
   embalagem: number;
   frete: number;
-  cmp_simp: number;
-  imposto_mp_pct: number;
-  cmp_cimp: number;
+  custo_material_un: number;
 }
 
 export interface CalculoMaoDeObra {
-  mo_folha_mensal: number;
-  mo_dias_uteis: number;
   mo_diario: number;
-  un_min: number;
   producao_diaria: number;
   dias_necessarios: number;
-  mo_lote: number;
   mo_un: number;
-  imposto_mo_pct: number;
-  cmo_cimp: number;
+}
+
+/** Parcela precificada (material ou MO): custo, tributos "por dentro", preço. */
+export interface CalculoParcela {
+  custo_un: number;
+  taxa_pct: number;
+  preco_un: number;
 }
 
 export interface CalculoResultado {
-  custo_total: number;
   margem_pct: number;
   preco_sipi: number;
   ipi_pct: number;
+  base_ipi: 'total' | 'material' | 'nao_aplica';
   ipi_un: number;
+  icms_sobre_ipi: number;
   preco_cipi: number;
 }
 
@@ -400,10 +412,21 @@ export interface CalculoJson {
   _preliminar?: boolean;
   _aviso?: string;
   inputs: CalculoInputs;
-  parametros: CalculoParametros;
-  custo_mp: CalculoCustoMp;
+  modo_operacao: 'full_service' | 'hibrido' | 'industrializacao';
+  ncm: CalculoNcm;
+  perfil_fiscal: {
+    regime_fiscal: string | null;
+    finalidade: string | null;
+    uf: string | null;
+    contribuinte_icms: boolean | null;
+  };
+  parametros_operacionais: CalculoParametrosOperacionais;
+  parametros_fiscais: CalculoParametrosFiscais;
+  material: CalculoMaterial;
   mao_de_obra: CalculoMaoDeObra;
+  parcelas: { material: CalculoParcela | null; mo: CalculoParcela | null };
   resultado: CalculoResultado;
+  fundamentos: string[];
   score_global: number;
   faixa: string;
   formula_usada: {
@@ -432,6 +455,50 @@ export interface CalculoJson {
   }[];
 }
 
+/**
+ * Forma LEGADA do JSON_CALC (engine pré-corte F4, _modelo_versao 2.0). Orçamentos
+ * calculados antes do corte guardam esta forma; NUNCA são reescritos (fronteira
+ * fiscal×preço, tese 2). O renderer os exibe como histórico, sem quebrar.
+ */
+export interface CalculoJsonLegacy {
+  _mode: string;
+  _modelo_versao: string;
+  _gerado_em?: string;
+  _preliminar?: boolean;
+  _aviso?: string;
+  custo_mp: {
+    mp_base: number;
+    desvio_pct: number;
+    desvio: number;
+    embalagem: number;
+    frete: number;
+    imposto_mp_pct: number;
+    cmp_cimp: number;
+  };
+  mao_de_obra: {
+    producao_diaria: number;
+    dias_necessarios: number;
+    mo_un: number;
+    imposto_mo_pct: number;
+    cmo_cimp: number;
+  };
+  resultado: {
+    custo_total: number;
+    margem_pct: number;
+    preco_sipi: number;
+    ipi_pct: number;
+    ipi_un: number;
+    preco_cipi: number;
+  };
+  parametros: { ipi_pct: number; imposto_mp_pct: number; imposto_mo_pct: number };
+  score_global: number;
+}
+
+/** Discrimina v3 (fiscal granular, tem `material`+`ncm`) de v1 legado. */
+export function isCalculoV3(c: CalculoJson | CalculoJsonLegacy): c is CalculoJson {
+  return (c as CalculoJson).material !== undefined && (c as CalculoJson).ncm !== undefined;
+}
+
 /** Detalhe do orçamento (GET /orcamentos/:id). */
 export interface OrcamentoDetalhe {
   id: string;
@@ -453,7 +520,7 @@ export interface OrcamentoDetalhe {
   embalagem_id: number | null;
   embalagem_snapshot: CalculoJson['embalagem'] | null;
   sem_embalagem: boolean;
-  calculo: CalculoJson | null;
+  calculo: CalculoJson | CalculoJsonLegacy | null;
   formula_versao_codigo: string | null;
   formula_status_momento: string | null;
   requer_amostra: boolean;

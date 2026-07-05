@@ -1,55 +1,81 @@
 {
-  "_fonte": "orcamento 12 (id ba1c56af-7c23-4132-b8ff-94a597e17480), JSON_CALC versao 2.0",
-  "_gerado_de": "2026-06-15T03:44:13.252Z",
+  "_fonte": "orcamento 12 (id ba1c56af-7c23-4132-b8ff-94a597e17480) — engine fiscal 3.0",
+  "modo_operacao": "full_service",
   "inputs": {
-    "un_min": 2,
+    "cmp_base_mp_kg": 0,
     "volume_un": 30,
-    "margem_pct": 30,
-    "mp_frag_kg": 0,
     "quantidade": 1000,
-    "embalagem_un": 0,
-    "cmp_base_mp_kg": 0
+    "un_min": 2,
+    "margem_pct": 30,
+    "embalagem_un": 0
   },
-  "parametros": {
-    "ipi_pct": 4.55,
-    "frete_un_brl": 0.1,
+  "oper": {
+    "mo_folha_mensal": 75000,
+    "mo_dias_uteis": 22,
     "desvio_mp_pct": 10,
-    "mo_dias_uteis": 20,
-    "imposto_mo_pct": 9.25,
-    "imposto_mp_pct": 37.5,
-    "mo_folha_mensal": 75000
+    "frete_un_brl": 0.1
+  },
+  "perfil": {
+    "regime_fiscal": "lucro_real_presumido",
+    "finalidade": "industrializacao",
+    "uf": "SP",
+    "contribuinte_icms": true
+  },
+  "ncm": {
+    "ncm": "3304.99.90",
+    "ex_tipi": "",
+    "ipi_pct": 14.3,
+    "monofasico": true,
+    "tratamento": "tributado",
+    "icms_nominal_pct": null
+  },
+  "params": {
+    "pis_monofasico_pct": 2.2,
+    "cofins_monofasico_pct": 10.3,
+    "pis_comum_pct": 1.65,
+    "cofins_comum_pct": 7.6,
+    "icms_carga_art34_pct": 12,
+    "icms_nominal_padrao_pct": 18
+  },
+  "caracterizacao": {
+    "industrializacao_caracterizada": true,
+    "fundamento": "Suspensao caracterizada - parecer do contador 04/07/2026 (analise da operacao hibrida) + confirmacao operacional do Gabriel; Cosit 53/2022 e CAT 22/2007 quando condicoes atendidas"
   },
   "esperado": {
-    "custo_mp": {
-      "frete": 0.1,
-      "desvio": 0,
+    "material": {
       "mp_base": 0,
-      "mp_frag": 0,
-      "cmp_cimp": 0.1375,
-      "cmp_simp": 0.1,
+      "desvio": 0,
       "embalagem": 0,
-      "desvio_pct": 10,
-      "imposto_mp_pct": 37.5
+      "frete": 0.1,
+      "custo_material_un": 0.1
     },
     "mao_de_obra": {
-      "mo_un": 7.5,
-      "un_min": 2,
-      "mo_lote": 7500,
-      "cmo_cimp": 8.1937,
-      "mo_diario": 3750,
-      "mo_dias_uteis": 20,
-      "imposto_mo_pct": 9.25,
-      "mo_folha_mensal": 75000,
+      "mo_diario": 3409.09,
       "producao_diaria": 960,
-      "dias_necessarios": 2
+      "dias_necessarios": 2,
+      "mo_un": 6.8182
+    },
+    "parcelas": {
+      "material": {
+        "custo_un": 6.9182,
+        "taxa_pct": 24.5,
+        "preco_un": 15.2048
+      },
+      "mo": null
     },
     "resultado": {
-      "ipi_un": 0.54,
-      "ipi_pct": 4.55,
       "margem_pct": 30,
-      "preco_cipi": 12.44,
-      "preco_sipi": 11.9,
-      "custo_total": 8.3312
-    }
+      "preco_sipi": 15.2,
+      "ipi_pct": 14.3,
+      "base_ipi": "total",
+      "ipi_un": 2.17,
+      "icms_sobre_ipi": 0,
+      "preco_cipi": 17.38
+    },
+    "fundamentos": [
+      "ICMS do material: carga efetiva 12% (art. 34, Anexo II, RICMS/SP — cliente RPA, finalidade industrializacao).",
+      "PIS/COFINS do material: monofásico 2.2%+10.3% (Lei 10.147/2000 — NCM 3304.99.90 abrangido).",
+      "Full service: tributação integral da venda do produto (parcela única)."
+    ]
   }
 }

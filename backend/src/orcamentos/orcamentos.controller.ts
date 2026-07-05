@@ -95,20 +95,6 @@ export class OrcamentosController {
     return this.orcamentos.calcular(id, dto, user.sub);
   }
 
-  // F4 passo 2 — comparador read-only dos dois modelos de MO (diagnóstico).
-  @Get(':id/comparar-mo')
-  @Roles(Role.admin, Role.comercial, Role.pd)
-  compararMo(@Param('id') id: string) {
-    return this.orcamentos.compararMo(id);
-  }
-
-  // F4 Fase A — comparador read-only vigente × engine fiscal v3 (diagnóstico).
-  @Get(':id/comparar-fiscal')
-  @Roles(Role.admin, Role.comercial, Role.pd)
-  compararFiscal(@Param('id') id: string) {
-    return this.orcamentos.compararFiscal(id);
-  }
-
   // Fase 2 — formatação das 4 páginas. admin, comercial, pd
   @Post(':id/formatar')
   @Roles(Role.admin, Role.comercial, Role.pd)

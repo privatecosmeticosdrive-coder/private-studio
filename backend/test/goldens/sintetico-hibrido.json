@@ -1,9 +1,9 @@
 {
-  "_fonte": "orcamento 19 (id 5e5e707b-d557-428e-80c4-64d27749bbf7) — engine fiscal 3.0",
-  "modo_operacao": "full_service",
+  "_fonte": "orcamento hibrido (id 703425a1-638f-4884-8a69-2141f5a4be1a) — engine fiscal 3.0",
+  "modo_operacao": "hibrido",
   "inputs": {
-    "cmp_base_mp_kg": 14.9775,
-    "volume_un": 100,
+    "cmp_base_mp_kg": 50,
+    "volume_un": 200,
     "quantidade": 1000,
     "un_min": 4,
     "margem_pct": 30,
@@ -22,9 +22,9 @@
     "contribuinte_icms": true
   },
   "ncm": {
-    "ncm": "3304.99.90",
+    "ncm": "3305.10.00",
     "ex_tipi": "",
-    "ipi_pct": 14.3,
+    "ipi_pct": 4.55,
     "monofasico": true,
     "tratamento": "tributado",
     "icms_nominal_pct": null
@@ -43,11 +43,11 @@
   },
   "esperado": {
     "material": {
-      "mp_base": 1.4977,
-      "desvio": 0.1498,
+      "mp_base": 10,
+      "desvio": 1,
       "embalagem": 0,
       "frete": 0.1,
-      "custo_material_un": 1.7475
+      "custo_material_un": 11.1
     },
     "mao_de_obra": {
       "mo_diario": 3409.09,
@@ -57,25 +57,32 @@
     },
     "parcelas": {
       "material": {
-        "custo_un": 5.1566,
+        "custo_un": 11.1,
         "taxa_pct": 24.5,
-        "preco_un": 11.3332
+        "preco_un": 24.3956
       },
-      "mo": null
+      "mo": {
+        "custo_un": 3.4091,
+        "taxa_pct": 0,
+        "preco_un": 4.8701
+      }
     },
     "resultado": {
       "margem_pct": 30,
-      "preco_sipi": 11.33,
-      "ipi_pct": 14.3,
-      "base_ipi": "total",
-      "ipi_un": 1.62,
+      "preco_sipi": 29.27,
+      "ipi_pct": 4.55,
+      "base_ipi": "material",
+      "ipi_un": 1.11,
       "icms_sobre_ipi": 0,
-      "preco_cipi": 12.95
+      "preco_cipi": 30.38
     },
     "fundamentos": [
       "ICMS do material: carga efetiva 12% (art. 34, Anexo II, RICMS/SP — cliente RPA, finalidade industrializacao).",
-      "PIS/COFINS do material: monofásico 2.2%+10.3% (Lei 10.147/2000 — NCM 3304.99.90 abrangido).",
-      "Full service: tributação integral da venda do produto (parcela única)."
+      "PIS/COFINS do material: monofásico 2.2%+10.3% (Lei 10.147/2000 — NCM 3305.10.00 abrangido).",
+      "Industrialização caracterizada: Suspensao caracterizada - parecer do contador 04/07/2026 (analise da operacao hibrida) + confirmacao operacional do Gabriel; Cosit 53/2022 e CAT 22/2007 quando condicoes atendidas",
+      "ICMS da MO: DIFERIDO (Portaria CAT 22/2007 — SP interno, cliente RPA contribuinte, industrialização caracterizada).",
+      "PIS/COFINS da MO: 0% (Cosit 53/2022 — execução de industrialização por encomenda de produto monofásico).",
+      "Base do IPI: apenas material próprio (suspensão da parcela de encomenda caracterizada e documentada)."
     ]
   }
 }
