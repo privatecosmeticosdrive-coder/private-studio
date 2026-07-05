@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
-import { ArrowLeft, Calculator, Check } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Calculator, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import { useCan } from '@/auth/use-can';
 import { cn } from '@/lib/utils';
 import type { OrcamentoDetalhe } from '@/lib/types';
 import { orcamentosApi, type CriarOrcamentoPayload } from '@/lib/services/orcamentos';
+import { EditarNcmOrcamentoModal } from '@/components/data/editar-ncm-orcamento';
 import { ResultadoCalculo } from './resultado-calculo';
 import type { EtapaProps, OrcamentoForm } from './wizard-types';
 
@@ -59,6 +60,11 @@ export function EtapaCalculo({ form, patch, onVoltar }: EtapaCalculoProps) {
   // id do orçamento já criado nesta sessão (recalcula no mesmo registro).
   const [orcId, setOrcId] = React.useState<string | null>(null);
   const [resultado, setResultado] = React.useState<OrcamentoDetalhe | null>(null);
+  // bloqueio de NCM (F4): o calcular falhou por falta de NCM efetivo — oferece a saída.
+  const [bloqueioNcm, setBloqueioNcm] = React.useState(false);
+  const [ncmModalAberto, setNcmModalAberto] = React.useState(false);
+  // detalhe completo do orçamento criado (contrato do modal de NCM — não relaxado).
+  const [detalheNcm, setDetalheNcm] = React.useState<OrcamentoDetalhe | null>(null);
 
   const unMin = num(form.un_min);
   const margem = num(form.margem_pct);
@@ -76,6 +82,10 @@ export function EtapaCalculo({ form, patch, onVoltar }: EtapaCalculoProps) {
       const orc = orcId
         ? await orcamentosApi.atualizar(orcId, payload)
         : await orcamentosApi.criar(payload);
+      // Captura o id ANTES do calcular: se o cálculo falhar (ex.: sem NCM), o
+      // retry REUSA este orçamento — sem isso, cada tentativa criava um
+      // rascunho novo no banco (bug do rascunho duplicado).
+      if (!orcId) setOrcId(orc.id);
       const calculado = await orcamentosApi.calcular(orc.id, {
         un_min: unMin,
         margem_pct: margem,
@@ -85,14 +95,46 @@ export function EtapaCalculo({ form, patch, onVoltar }: EtapaCalculoProps) {
     onSuccess: (orc) => {
       setOrcId(orc.id);
       setResultado(orc);
+      setBloqueioNcm(false);
       queryClient.invalidateQueries({ queryKey: ['orcamentos'] });
       toast.success(`Orçamento #${orc.numero} calculado.`);
     },
     onError: (err: AxiosError<{ message?: string | string[] }>) => {
       const m = err.response?.data?.message;
-      toast.error(Array.isArray(m) ? m[0] : m || 'Falha ao calcular o orçamento.');
+      const msg = Array.isArray(m) ? m[0] : m || 'Falha ao calcular o orçamento.';
+      // Bloqueio de NCM (F4, falha visível): oferece a saída no ponto do erro.
+      // Qualquer OUTRO erro mantém o comportamento atual (toast, sem botão).
+      setBloqueioNcm(/sem NCM efetivo/i.test(msg));
+      toast.error(msg);
     },
   });
+
+  /** Abre o modal de NCM com o detalhe completo do orçamento já criado (F5-D2). */
+  const abrirModalNcm = async () => {
+    if (!orcId) return;
+    try {
+      setDetalheNcm(await orcamentosApi.obter(orcId));
+      setNcmModalAberto(true);
+    } catch {
+      toast.error('Não foi possível carregar o orçamento para editar o NCM.');
+    }
+  };
+
+  /** Ao fechar o modal: se o NCM efetivo passou a existir, recalcula sozinho. */
+  const fecharModalNcm = async () => {
+    setNcmModalAberto(false);
+    if (!orcId) return;
+    try {
+      const det = await orcamentosApi.obter(orcId);
+      setDetalheNcm(det);
+      if (det.ncm_efetivo_origem !== null) {
+        setBloqueioNcm(false);
+        calcular.mutate(); // re-dispara automaticamente após o override salvar
+      }
+    } catch {
+      /* usuário cancelou/offline — mantém o bloqueio visível */
+    }
+  };
 
   const calc = resultado?.calculo ?? null;
 
@@ -169,6 +211,22 @@ export function EtapaCalculo({ form, patch, onVoltar }: EtapaCalculoProps) {
             Sem fórmula: informe o custo base de MP (R$/kg) na Etapa 2 para calcular.
           </p>
         )}
+        {/* Bloqueio de NCM (F4): a saída no ponto do erro — só para ESTE erro. */}
+        {bloqueioNcm && orcId && (
+          <div className="mt-3 flex items-start gap-3 rounded-lg border border-warning/30 bg-warning-soft p-4">
+            <AlertTriangle className="mt-0.5 size-5 shrink-0 text-warning" />
+            <div className="flex-1 space-y-1">
+              <p className="text-sm font-medium text-ink">Sem NCM — o cálculo fiscal precisa de um</p>
+              <p className="text-caption text-warm-700">
+                A fórmula selecionada não tem NCM e o orçamento não tem override. Atribua um NCM
+                para destravar o cálculo (o orçamento já foi salvo como rascunho).
+              </p>
+            </div>
+            <Button size="sm" onClick={abrirModalNcm}>
+              Atribuir NCM
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Resultado (somente leitura) */}
@@ -191,6 +249,13 @@ export function EtapaCalculo({ form, patch, onVoltar }: EtapaCalculoProps) {
           <Check className="size-4" /> Salvar e finalizar
         </Button>
       </div>
+
+      {/* Modal de override de NCM (F5-D2, reuso) — abre a partir do bloqueio acima. */}
+      <EditarNcmOrcamentoModal
+        open={ncmModalAberto}
+        onClose={fecharModalNcm}
+        orcamento={detalheNcm}
+      />
     </div>
   );
 }
