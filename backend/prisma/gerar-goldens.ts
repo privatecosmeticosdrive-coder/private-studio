@@ -19,7 +19,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import {
   calcularCustoPrivate,
   InputsCusto,
@@ -49,7 +49,7 @@ function diffCampos(banco: any, engine: any, prefixo: string): Divergencia[] {
 async function main() {
   const prisma = new PrismaClient();
   const rows = await prisma.orcamento.findMany({
-    where: { calculo: { not: null } },
+    where: { calculo: { not: Prisma.AnyNull } },
     select: { id: true, numero: true, calculo: true },
     orderBy: { numero: 'asc' },
   });

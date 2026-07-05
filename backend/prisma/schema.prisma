@@ -90,6 +90,13 @@ model Cliente {
   email       String?
   telefone    String?
   observacoes String?
+
+  // ---- F4 Fase A (D3) — perfil fiscal do cliente. null = nao informado ->
+  // a matriz fiscal trata como PIOR CASO (conservador): sem art.34, sem diferimento.
+  regime_fiscal     String? // simples | lucro_real_presumido | consumidor_final_cpf
+  finalidade_padrao String? // revenda | industrializacao | uso_proprio
+  uf                String? // UF do cliente (diferimento exige SP interno)
+  contribuinte_icms Boolean?
   created_at  DateTime @default(now())
   created_by  String?  @db.Uuid
 
@@ -244,6 +251,7 @@ model Orcamento {
   margem_pct         Decimal?        @db.Decimal(5, 2)
   formula_id         Int?
   ncm_id             Int? // F3-prep — override de NCM do orcamento (herda da formula se null; regra na F4)
+  modo_operacao      String? // F4 Fase A (D2): full_service | hibrido | industrializacao. null = full_service (conservador)
   embalagem          String? // legado (texto livre) — substituido por embalagem_id (Doc 2d §B)
   budget_mp          Decimal?        @db.Decimal(10, 2)
   produto_referencia String?
@@ -402,7 +410,7 @@ model SystemConfig {
 
 model Ncm {
   id         Int      @id @default(autoincrement())
-  ncm        String   @unique
+  ncm        String
   descricao  String
   ipi_pct    Decimal  @db.Decimal(6, 3)
   monofasico Boolean  @default(false)
@@ -411,10 +419,38 @@ model Ncm {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  // ---- F4 Fase A (D5/A1/A2) — cadastro fiscal completo por NCM+EX ----
+  // ex_tipi NOT NULL default '': PG 13 (KingHost) nao tem UNIQUE NULLS NOT DISTINCT; '' = sem EX.
+  ex_tipi          String    @default("")
+  tratamento       String    @default("tributado") // tributado|aliquota_zero|suspenso|isento|nao_tributado
+  icms_nominal_pct Decimal?  @db.Decimal(5, 2) // A2: nominal do NCM (ex.: 3303.00.10=25); null -> parametro_fiscal icms_nominal_padrao_pct
+  vigencia_inicio  DateTime? @db.Date
+  vigencia_fim     DateTime? @db.Date
+  fundamento_legal String?
+
   formulas   Formula[]
   orcamentos Orcamento[] // F3-prep — relation virtual (override de NCM por orcamento)
 
+  @@unique([ncm, ex_tipi])
   @@map("ncm")
+}
+
+// ----------------------- F4 FASE A — PARAMETROS FISCAIS VERSIONADOS (D4) -----------------------
+// Parametro fiscal NUNCA e hardcoded nem sobrescrito: nova vigencia = nova linha.
+// Vigente = maior vigencia_inicio <= hoje com (vigencia_fim null ou >= hoje).
+
+model ParametroFiscal {
+  id               Int       @id @default(autoincrement())
+  chave            String // pis_monofasico_pct | cofins_monofasico_pct | pis_comum_pct | cofins_comum_pct | icms_carga_art34_pct | icms_nominal_padrao_pct
+  valor            Decimal   @db.Decimal(8, 4)
+  vigencia_inicio  DateTime  @db.Date
+  vigencia_fim     DateTime? @db.Date
+  fundamento_legal String
+  criado_por       String?   @db.Uuid
+  created_at       DateTime  @default(now())
+
+  @@index([chave, vigencia_inicio])
+  @@map("parametro_fiscal")
 }
 
 // ----------------------- MATRIZ DE CUSTO — LOG DE AUDITORIA (F1) -----------------------
