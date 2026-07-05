@@ -139,6 +139,9 @@ export interface FormulaQueUsa {
 
 // ----------------------- CLIENTES -----------------------
 
+export type RegimeFiscalCliente = 'simples' | 'lucro_real_presumido' | 'consumidor_final_cpf';
+export type FinalidadeCliente = 'revenda' | 'industrializacao' | 'uso_proprio';
+
 export interface Cliente {
   id: string;
   nome: string;
@@ -147,6 +150,11 @@ export interface Cliente {
   telefone: string | null;
   observacoes: string | null;
   created_by: string | null;
+  // F4 Fase A (D3) — perfil fiscal. null = não informado (matriz trata como pior caso)
+  regime_fiscal: RegimeFiscalCliente | null;
+  finalidade_padrao: FinalidadeCliente | null;
+  uf: string | null;
+  contribuinte_icms: boolean | null;
 }
 
 export interface ClienteDetalhe extends Cliente {
@@ -436,6 +444,7 @@ export interface OrcamentoDetalhe {
   quantidade: number | null;
   margem_pct: Money;
   formula_id: number | null;
+  modo_operacao: 'full_service' | 'hibrido' | 'industrializacao' | null; // F4 Fase A; null = full_service
   embalagem: string | null;
   budget_mp: Money;
   produto_referencia: string | null;
@@ -645,6 +654,29 @@ export interface Ncm {
   monofasico: boolean;
   provisorio: boolean;
   ativo: boolean;
+  // F4 Fase A (D5) — cadastro fiscal completo
+  ex_tipi: string; // '' = sem EX
+  tratamento: 'tributado' | 'aliquota_zero' | 'suspenso' | 'isento' | 'nao_tributado';
+  icms_nominal_pct: number | null;
+  fundamento_legal: string | null;
+}
+
+/** Parâmetro fiscal versionado (F4 Fase A, D4). Nova vigência = nova linha. */
+export interface ParametroFiscal {
+  id: number;
+  chave: string;
+  valor: number;
+  vigencia_inicio: string;
+  vigencia_fim: string | null;
+  fundamento_legal: string;
+  vigente: boolean;
+}
+
+export interface CreateParametroFiscalPayload {
+  chave: string;
+  valor: number;
+  vigencia_inicio: string;
+  fundamento_legal: string;
 }
 
 /** Item da fila de revisão fórmula->NCM (GET /formulas/pendentes-ncm). */

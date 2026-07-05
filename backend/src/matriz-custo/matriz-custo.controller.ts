@@ -15,6 +15,7 @@ import { UpdateOperacionalDto } from './dto/update-operacional.dto';
 import { UpdateFiscalDto } from './dto/update-fiscal.dto';
 import { CreateNcmDto } from './dto/create-ncm.dto';
 import { UpdateNcmDto } from './dto/update-ncm.dto';
+import { CreateParametroFiscalDto } from './dto/create-parametro-fiscal.dto';
 import { AcessoCustoGuard } from '../auth/guards/acesso-custo.guard';
 import { RequerAcessoCusto } from '../auth/decorators/requer-acesso-custo.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -49,6 +50,21 @@ export class MatrizCustoController {
     @AcessoCusto('role') role: string,
   ) {
     return this.matriz.updateFiscal(dto, userId, role);
+  }
+
+  // ---- parametros fiscais versionados (F4 Fase A) — estaticas ANTES de ncm/:id ----
+  @Get('parametros-fiscais')
+  listParametrosFiscais() {
+    return this.matriz.listParametrosFiscais();
+  }
+
+  @Post('parametros-fiscais')
+  createParametroFiscal(
+    @Body() dto: CreateParametroFiscalDto,
+    @CurrentUser('sub') userId: string,
+    @AcessoCusto('role') role: string,
+  ) {
+    return this.matriz.createParametroFiscal(dto, userId, role);
   }
 
   @Get('ncm')

@@ -4,6 +4,8 @@ import type {
   UpdateOperacionalPayload,
   UpdateFiscalPayload,
   Ncm,
+  ParametroFiscal,
+  CreateParametroFiscalPayload,
 } from '@/lib/types';
 
 /**
@@ -22,6 +24,21 @@ export const matrizCustoApi = {
   },
   atualizarFiscal: async (payload: UpdateFiscalPayload) => {
     const { data } = await api.patch<MatrizCustoView>('/matriz-custo/fiscal', payload);
+    return data;
+  },
+};
+
+/**
+ * Parâmetros fiscais versionados (F4 Fase A). Leitura para quem tem acesso a
+ * custos; POST (nova vigência) é só admin — o backend rejeita com 403.
+ */
+export const parametroFiscalApi = {
+  listar: async () => {
+    const { data } = await api.get<ParametroFiscal[]>('/matriz-custo/parametros-fiscais');
+    return data;
+  },
+  criar: async (payload: CreateParametroFiscalPayload) => {
+    const { data } = await api.post<ParametroFiscal>('/matriz-custo/parametros-fiscais', payload);
     return data;
   },
 };

@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { useAuth } from '@/auth/auth-context';
-import { matrizCustoApi } from '@/lib/services/matriz-custo';
+import { matrizCustoApi, parametroFiscalApi } from '@/lib/services/matriz-custo';
 import type {
   MatrizCustoView,
   UpdateOperacionalPayload,
@@ -320,6 +320,183 @@ function BannerFiscais({
   );
 }
 
+// ================= PARÂMETROS FISCAIS VERSIONADOS (F4 Fase A) =================
+
+const CHAVES_PF: { chave: string; rotulo: string }[] = [
+  { chave: 'pis_monofasico_pct', rotulo: 'PIS monofásico (%)' },
+  { chave: 'cofins_monofasico_pct', rotulo: 'COFINS monofásico (%)' },
+  { chave: 'pis_comum_pct', rotulo: 'PIS comum (%)' },
+  { chave: 'cofins_comum_pct', rotulo: 'COFINS comum (%)' },
+  { chave: 'icms_carga_art34_pct', rotulo: 'ICMS carga art.34 (%)' },
+  { chave: 'icms_nominal_padrao_pct', rotulo: 'ICMS nominal padrão (%)' },
+  { chave: 'industrializacao_caracterizada', rotulo: 'Industrialização caracterizada (0/1)' },
+];
+const rotuloPF = (chave: string) => CHAVES_PF.find((c) => c.chave === chave)?.rotulo ?? chave;
+
+const schemaPF = z.object({
+  chave: z.string().min(1, 'Escolha o parâmetro'),
+  valor: num.min(0, 'Não pode ser negativo').max(100, 'Máximo 100'),
+  vigencia_inicio: z.string().min(10, 'Informe a data'),
+  fundamento_legal: z.string().min(10, 'Fundamento legal obrigatório (mín. 10 caracteres)'),
+});
+type PFValues = z.infer<typeof schemaPF>;
+
+function SecaoParametrosFiscais({ isAdmin }: { isAdmin: boolean }) {
+  const queryClient = useQueryClient();
+  const [mostrarHistorico, setMostrarHistorico] = useState(false);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['parametros-fiscais'],
+    queryFn: () => parametroFiscalApi.listar(),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<PFValues>({
+    resolver: zodResolver(schemaPF),
+    defaultValues: { chave: '', valor: 0, vigencia_inicio: '', fundamento_legal: '' },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (p: PFValues) => parametroFiscalApi.criar(p),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['parametros-fiscais'] });
+      reset();
+      toast.success('Nova vigência registrada');
+    },
+    onError: (err: AxiosError<{ message?: string | string[] }>) => {
+      toast.error(msgErro(err, 'Falha ao registrar a nova vigência.'));
+    },
+  });
+
+  const visiveis = (data ?? []).filter((p) => mostrarHistorico || p.vigente);
+
+  return (
+    <div className="space-y-4 rounded-lg border border-border bg-surface p-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-medium text-ink">Parâmetros fiscais versionados</h3>
+          <p className="text-caption text-warm-500">
+            Nova vigência cria uma linha nova — o histórico nunca é sobrescrito.
+          </p>
+        </div>
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-warm-700">
+          <input
+            type="checkbox"
+            className="size-4 accent-gold-500"
+            checked={mostrarHistorico}
+            onChange={(e) => setMostrarHistorico(e.target.checked)}
+          />
+          Mostrar histórico
+        </label>
+      </div>
+
+      {isLoading && (
+        <div className="flex items-center gap-2 py-4 text-muted-foreground">
+          <Spinner /> <span className="text-sm">Carregando parâmetros fiscais…</span>
+        </div>
+      )}
+      {isError && <p className="py-4 text-sm text-error">Não foi possível carregar os parâmetros fiscais.</p>}
+      {!isLoading && !isError && visiveis.length === 0 && (
+        <p className="py-4 text-sm text-muted-foreground">Sem parâmetros cadastrados.</p>
+      )}
+
+      {visiveis.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border text-left text-caption text-warm-500">
+                <th className="py-2 pr-4">Parâmetro</th>
+                <th className="py-2 pr-4">Valor</th>
+                <th className="py-2 pr-4">Vigência</th>
+                <th className="py-2 pr-4">Fundamento legal</th>
+                <th className="py-2">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visiveis.map((p) => (
+                <tr key={p.id} className="border-b border-border/50">
+                  <td className="py-2 pr-4 font-medium text-ink">{rotuloPF(p.chave)}</td>
+                  <td className="py-2 pr-4">{p.valor.toLocaleString('pt-BR')}%</td>
+                  <td className="py-2 pr-4 whitespace-nowrap">
+                    {new Date(p.vigencia_inicio).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
+                    {' → '}
+                    {p.vigencia_fim
+                      ? new Date(p.vigencia_fim).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                      : 'aberta'}
+                  </td>
+                  <td className="max-w-md py-2 pr-4 text-warm-700">{p.fundamento_legal}</td>
+                  <td className="py-2">
+                    {p.vigente ? (
+                      <span className="rounded bg-success-soft px-2 py-0.5 text-caption text-success">vigente</span>
+                    ) : (
+                      <span className="rounded bg-warm-100 px-2 py-0.5 text-caption text-warm-500">encerrada</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {isAdmin && (
+        <form
+          onSubmit={handleSubmit((d) => mutation.mutate(d))}
+          className="space-y-4 rounded-md border border-border/60 bg-warm-50/50 p-4"
+          noValidate
+        >
+          <h4 className="text-sm font-medium text-ink">Nova vigência (admin)</h4>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="space-y-2">
+              <Label htmlFor="chave">Parâmetro</Label>
+              <select
+                id="chave"
+                className="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm"
+                {...register('chave')}
+              >
+                <option value="">Selecione…</option>
+                {CHAVES_PF.map((c) => (
+                  <option key={c.chave} value={c.chave}>{c.rotulo}</option>
+                ))}
+              </select>
+              {errors.chave && <p className="text-caption text-error">{errors.chave.message}</p>}
+            </div>
+            <Campo register={register} errors={errors} name="valor" label="Valor" sufixo="%" step="0.0001" />
+            <div className="space-y-2">
+              <Label htmlFor="vigencia_inicio">Início da vigência</Label>
+              <Input id="vigencia_inicio" type="date" {...register('vigencia_inicio')} />
+              {errors.vigencia_inicio && (
+                <p className="text-caption text-error">{errors.vigencia_inicio.message}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="fundamento_legal">Fundamento legal</Label>
+              <Input
+                id="fundamento_legal"
+                placeholder="Lei/artigo/portaria que sustenta o valor"
+                {...register('fundamento_legal')}
+              />
+              {errors.fundamento_legal && (
+                <p className="text-caption text-error">{errors.fundamento_legal.message}</p>
+              )}
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button type="submit" disabled={mutation.isPending}>
+              {mutation.isPending && <Spinner className="text-sand" />}
+              Registrar vigência
+            </Button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
+
 // ============================ DERIVADOS (RO) ============================
 
 /**
@@ -417,6 +594,7 @@ export default function MatrizCusto() {
         fiscaisProvisorios={data.fiscais_provisorios}
         isAdmin={user?.role === 'admin'}
       />
+      <SecaoParametrosFiscais isAdmin={user?.role === 'admin'} />
       <CardDerivados derivados={data.derivados} />
     </div>
   );

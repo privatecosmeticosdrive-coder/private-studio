@@ -6,6 +6,7 @@ import { UpdateOperacionalDto } from './dto/update-operacional.dto';
 import { UpdateFiscalDto } from './dto/update-fiscal.dto';
 import { CreateNcmDto } from './dto/create-ncm.dto';
 import { UpdateNcmDto } from './dto/update-ncm.dto';
+import { CreateParametroFiscalDto } from './dto/create-parametro-fiscal.dto';
 
 const CAMPOS_OPERACIONAL = [
   'custo_fixo_mensal', 'mo_dias_uteis', 'horas_dia', 'eficiencia_linha',
@@ -220,6 +221,67 @@ export class MatrizCustoService {
         tx,
       );
       return u;
+    });
+  }
+
+  // ---------------- parametros fiscais versionados (F4 Fase A, D4) ----------------
+  // NUNCA sobrescreve: nova vigencia = nova linha; a vigencia aberta anterior e
+  // encerrada no dia anterior ao inicio da nova. Historico completo por chave.
+  async listParametrosFiscais() {
+    const rows = await this.prisma.parametroFiscal.findMany({
+      orderBy: [{ chave: 'asc' }, { vigencia_inicio: 'desc' }],
+    });
+    const hoje = new Date();
+    return rows.map((r) => ({
+      ...r,
+      valor: toNum(r.valor),
+      vigente:
+        r.vigencia_inicio <= hoje && (r.vigencia_fim === null || r.vigencia_fim >= hoje),
+    }));
+  }
+
+  async createParametroFiscal(dto: CreateParametroFiscalDto, userId: string, role: string) {
+    if (role !== Role.admin) {
+      throw new ForbiddenException('Apenas administradores alteram parâmetros fiscais');
+    }
+    const inicio = new Date(dto.vigencia_inicio);
+
+    return this.prisma.$transaction(async (tx) => {
+      // encerra a vigencia aberta anterior (se houver) no dia anterior
+      const aberta = await tx.parametroFiscal.findFirst({
+        where: { chave: dto.chave, vigencia_fim: null },
+        orderBy: { vigencia_inicio: 'desc' },
+      });
+      if (aberta) {
+        if (aberta.vigencia_inicio >= inicio) {
+          throw new ForbiddenException(
+            'vigencia_inicio deve ser posterior ao início da vigência aberta atual',
+          );
+        }
+        const fim = new Date(inicio);
+        fim.setUTCDate(fim.getUTCDate() - 1);
+        await tx.parametroFiscal.update({ where: { id: aberta.id }, data: { vigencia_fim: fim } });
+      }
+
+      const novo = await tx.parametroFiscal.create({
+        data: {
+          chave: dto.chave,
+          valor: dto.valor,
+          vigencia_inicio: inicio,
+          fundamento_legal: dto.fundamento_legal,
+          criado_por: userId,
+        },
+      });
+      await this.historico.registrar(
+        [{
+          userId, bloco: 'fiscal', entidade: 'parametro_fiscal', entidadeId: novo.id,
+          campo: dto.chave,
+          valorAntes: aberta ? fmt(aberta.valor) : null,
+          valorDepois: `${dto.valor} (vigencia ${dto.vigencia_inicio}; ${dto.fundamento_legal})`,
+        }],
+        tx,
+      );
+      return { ...novo, valor: toNum(novo.valor) };
     });
   }
 
