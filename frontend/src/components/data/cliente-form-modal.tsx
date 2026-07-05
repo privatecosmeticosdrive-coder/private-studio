@@ -24,8 +24,27 @@ const schema = z.object({
     .refine((v) => !v || z.string().email().safeParse(v).success, 'E-mail inválido'),
   telefone: z.string().optional(),
   observacoes: z.string().optional(),
+  // F4 Fase A (D3) — perfil fiscal; '' = não informado (vai como undefined -> conservador)
+  regime_fiscal: z.string().optional(),
+  finalidade_padrao: z.string().optional(),
+  uf: z
+    .string()
+    .optional()
+    .refine((v) => !v || /^[A-Za-z]{2}$/.test(v), 'UF com 2 letras (ex.: SP)'),
+  contribuinte_icms: z.string().optional(), // '' | 'sim' | 'nao' (preserva o "não informado")
 });
 type FormValues = z.infer<typeof schema>;
+
+const REGIMES = [
+  { value: 'simples', label: 'Simples Nacional' },
+  { value: 'lucro_real_presumido', label: 'Lucro Real / Presumido (RPA)' },
+  { value: 'consumidor_final_cpf', label: 'Consumidor final (CPF)' },
+];
+const FINALIDADES = [
+  { value: 'revenda', label: 'Revenda' },
+  { value: 'industrializacao', label: 'Industrialização' },
+  { value: 'uso_proprio', label: 'Uso próprio' },
+];
 
 interface ClienteFormModalProps {
   open: boolean;
@@ -45,6 +64,11 @@ export function ClienteFormModal({ open, onClose, cliente }: ClienteFormModalPro
       email: cliente?.email ?? '',
       telefone: cliente?.telefone ?? '',
       observacoes: cliente?.observacoes ?? '',
+      regime_fiscal: cliente?.regime_fiscal ?? '',
+      finalidade_padrao: cliente?.finalidade_padrao ?? '',
+      uf: cliente?.uf ?? '',
+      contribuinte_icms:
+        cliente?.contribuinte_icms == null ? '' : cliente.contribuinte_icms ? 'sim' : 'nao',
     }),
     [cliente],
   );
@@ -64,6 +88,10 @@ export function ClienteFormModal({ open, onClose, cliente }: ClienteFormModalPro
         email: d.email || undefined,
         telefone: d.telefone || undefined,
         observacoes: d.observacoes || undefined,
+        regime_fiscal: d.regime_fiscal || undefined,
+        finalidade_padrao: d.finalidade_padrao || undefined,
+        uf: d.uf ? d.uf.toUpperCase() : undefined,
+        contribuinte_icms: d.contribuinte_icms === '' ? undefined : d.contribuinte_icms === 'sim',
       };
       return ehEdicao ? clientesApi.atualizar(cliente!.id, payload) : clientesApi.criar(payload);
     },
@@ -137,6 +165,61 @@ export function ClienteFormModal({ open, onClose, cliente }: ClienteFormModalPro
         <div className="space-y-2">
           <Label htmlFor="observacoes">Observações</Label>
           <Textarea id="observacoes" rows={3} {...register('observacoes')} />
+        </div>
+
+        {/* ---- Perfil fiscal (F4 Fase A) — decide benefícios no cálculo ---- */}
+        <div className="space-y-4 rounded-md border border-border/60 bg-warm-50/50 p-4">
+          <div>
+            <p className="text-sm font-medium text-ink">Perfil fiscal</p>
+            <p className="text-caption text-warm-500">
+              Sem preenchimento, o cálculo assume o cenário conservador (sem benefícios de ICMS).
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="regime_fiscal">Regime tributário</Label>
+              <select
+                id="regime_fiscal"
+                className="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm"
+                {...register('regime_fiscal')}
+              >
+                <option value="">Não informado</option>
+                {REGIMES.map((r) => (
+                  <option key={r.value} value={r.value}>{r.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="finalidade_padrao">Finalidade da compra</Label>
+              <select
+                id="finalidade_padrao"
+                className="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm"
+                {...register('finalidade_padrao')}
+              >
+                <option value="">Não informado</option>
+                {FINALIDADES.map((f) => (
+                  <option key={f.value} value={f.value}>{f.label}</option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="uf">UF</Label>
+              <Input id="uf" placeholder="SP" maxLength={2} {...register('uf')} />
+              {errors.uf && <p className="text-caption text-error">{errors.uf.message}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="contribuinte_icms">Contribuinte de ICMS</Label>
+              <select
+                id="contribuinte_icms"
+                className="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm"
+                {...register('contribuinte_icms')}
+              >
+                <option value="">Não informado</option>
+                <option value="sim">Sim (tem IE)</option>
+                <option value="nao">Não</option>
+              </select>
+            </div>
+          </div>
         </div>
       </form>
     </Modal>

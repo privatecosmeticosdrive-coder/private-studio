@@ -7,6 +7,11 @@ export interface ClientePayload {
   email?: string;
   telefone?: string;
   observacoes?: string;
+  // F4 Fase A (D3) — perfil fiscal (opcional; ausente = conservador)
+  regime_fiscal?: string;
+  finalidade_padrao?: string;
+  uf?: string;
+  contribuinte_icms?: boolean;
 }
 
 export const clientesApi = {
