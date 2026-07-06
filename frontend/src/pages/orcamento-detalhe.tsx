@@ -40,7 +40,9 @@ function ResumoBriefing({
     : 'Sem fórmula';
   const embalagem = orc.sem_embalagem
     ? 'A granel (sem embalagem)'
-    : orc.embalagem_snapshot?.nome ?? '—';
+    : // fallback: orçamento calculado antes do fix do bug #50 não tem o
+      // snapshot persistido — o snap resolvido vive dentro do JSON_CALC.
+      (orc.embalagem_snapshot?.nome ?? orc.calculo?.embalagem?.nome ?? '—');
 
   // NCM efetivo: objeto do override (origem 'orcamento') ou da fórmula ('formula').
   const ncmObj = orc.ncm_efetivo_origem === 'orcamento' ? orc.ncm : orc.formula?.ncm ?? null;

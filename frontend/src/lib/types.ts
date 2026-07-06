@@ -492,6 +492,8 @@ export interface CalculoJsonLegacy {
   };
   parametros: { ipi_pct: number; imposto_mp_pct: number; imposto_mo_pct: number };
   score_global: number;
+  /** snap da embalagem resolvido no cálculo — fallback do briefing (bug #50). */
+  embalagem?: { nome?: string } | null;
 }
 
 /** Discrimina v3 (fiscal granular, tem `material`+`ncm`) de v1 legado. */

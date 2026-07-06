@@ -173,6 +173,11 @@ export class OrcamentosService {
         formula_versao_codigo: r.formula_versao_codigo,
         formula_status_momento: r.formula_status_momento,
         formula_composicao_snapshot: (r.formula_composicao_snapshot ?? undefined) as Prisma.InputJsonValue,
+        // BUG #50: o snap da embalagem era resolvido no cálculo mas NUNCA
+        // persistido — briefing/PDF liam embalagem_snapshot null. Trava o
+        // vínculo aqui, junto com o preço (mesmo momento do JSON_CALC).
+        embalagem_snapshot: ((r.calculo as { embalagem?: unknown }).embalagem ??
+          undefined) as Prisma.InputJsonValue,
       },
     });
     await this.audit.registrar({
