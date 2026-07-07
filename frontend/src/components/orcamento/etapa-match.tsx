@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
-import { Search, Sparkles, Check, FlaskConical, Ban } from 'lucide-react';
+import { Search, Sparkles, Check, FlaskConical, Ban, Beaker, ListOrdered } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -32,6 +32,10 @@ function ScorePill({ score }: { score: number }) {
 export function EtapaMatch({ form, patch }: EtapaProps) {
   const can = useCan();
   const [candidatas, setCandidatas] = React.useState<Candidata[]>([]);
+  // Fallback HONESTO: as mais usadas quando NÃO há match real (rank_textual=0).
+  // Nunca renderizadas como resultado — só sob clique explícito, rotuladas.
+  const [sugestoes, setSugestoes] = React.useState<Candidata[]>([]);
+  const [mostrarSugestoes, setMostrarSugestoes] = React.useState(false);
   const [matchId, setMatchId] = React.useState<number | null>(null);
   const [refinado, setRefinado] = React.useState(false);
   const [buscou, setBuscou] = React.useState(false);
@@ -48,12 +52,13 @@ export function EtapaMatch({ form, patch }: EtapaProps) {
       }),
     onSuccess: (r) => {
       setCandidatas(r.candidatas);
+      setSugestoes(r.sugestoes_por_uso ?? []);
+      setMostrarSugestoes(false);
       setMatchId(r.match_id);
       setRefinado(false);
       setBuscou(true);
       // sai do modo "sem fórmula" ao buscar — volta a exibir a lista de candidatas
       patch({ sem_formula: false, budget_mp: '' });
-      if (r.candidatas.length === 0) toast.info('Nenhuma fórmula encontrada para o briefing.');
     },
     onError: (err: AxiosError<{ message?: string | string[] }>) => {
       const m = err.response?.data?.message;
@@ -89,6 +94,75 @@ export function EtapaMatch({ form, patch }: EtapaProps) {
 
   const usarSemFormula = () => {
     patch({ sem_formula: true, formula_id: null, formula_nome: '' });
+  };
+
+  // HOOK da frente futura "Jornada de Laboratório": quando não há fórmula que
+  // atenda o briefing, daqui nascerá a solicitação ao lab (urgência mesmo dia /
+  // 2-3 dias / 7 dias + pendência pro time). Por ora, PLACEHOLDER deliberado.
+  const solicitarLaboratorio = () => {
+    toast.info(
+      'Solicitar ao Laboratório — em breve: pedido de desenvolvimento de fórmula com prazo e acompanhamento.',
+    );
+  };
+
+  /** Card de fórmula. Em modo sugestão NÃO mostra o score composto (ele é
+   *  dominado por nº de usos quando rank=0 — leria como relevância falsa). */
+  const renderCard = (c: Candidata, sugestao: boolean) => {
+    const selecionada = form.formula_id === c.formula_id;
+    return (
+      <button
+        type="button"
+        key={c.formula_id}
+        onClick={() => selecionar(c)}
+        className={cn(
+          'flex w-full items-start gap-4 rounded-lg border p-4 text-left transition-colors',
+          selecionada
+            ? 'border-gold-500 bg-gold-500/5 ring-1 ring-gold-500'
+            : 'border-border bg-surface hover:border-warm-300',
+        )}
+      >
+        <span
+          className={cn(
+            'mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border',
+            selecionada ? 'border-gold-500 bg-gold-500 text-ink' : 'border-border text-transparent',
+          )}
+        >
+          <Check className="size-3.5" />
+        </span>
+        <div className="min-w-0 flex-1 space-y-1.5">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 font-medium text-ink">
+              <FlaskConical className="size-4 text-warm-500" />
+              {c.nome_produto}
+            </span>
+            {c.versao_codigo && (
+              <span className="font-mono text-caption text-warm-500">{c.versao_codigo}</span>
+            )}
+            <StatusFormulaBadge status={c.status} />
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-caption text-warm-600">
+            <span>
+              Custo MP: <span className="tnum text-ink">{brl(c.custo_mp_kg)}/kg</span>
+            </span>
+            <span>
+              {c.n_orcamentos} orçamento{c.n_orcamentos === 1 ? '' : 's'}
+            </span>
+            {c.categoria && <span>{c.categoria}</span>}
+            {c.validada_recente && <span className="text-success">Validada recente</span>}
+          </div>
+          {c.justificativa_ia && (
+            <p className="text-caption italic text-warm-600">{c.justificativa_ia}</p>
+          )}
+        </div>
+        {sugestao ? (
+          <span className="inline-flex items-center rounded-full bg-warm-100 px-2.5 py-1 text-caption font-medium text-warm-600">
+            {c.n_orcamentos} uso{c.n_orcamentos === 1 ? '' : 's'}
+          </span>
+        ) : (
+          <ScorePill score={c.score} />
+        )}
+      </button>
+    );
   };
 
   return (
@@ -151,63 +225,37 @@ export function EtapaMatch({ form, patch }: EtapaProps) {
             </p>
           )}
 
+          {/* ESTADO VAZIO HONESTO: sem match real, nada de sequência-padrão como resultado. */}
           {buscou && candidatas.length === 0 && (
-            <p className="rounded-md border border-dashed border-border py-10 text-center text-sm text-muted-foreground">
-              Nenhuma fórmula encontrada. Ajuste o briefing ou siga sem fórmula.
-            </p>
+            <div className="space-y-4 rounded-md border border-dashed border-border px-6 py-10 text-center">
+              <p className="text-sm font-medium text-ink">Nenhuma fórmula corresponde ao briefing.</p>
+              <p className="text-caption text-warm-600">
+                Ajuste o briefing, siga sem fórmula, ou solicite o desenvolvimento ao laboratório.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <Button variant="outline" size="sm" onClick={solicitarLaboratorio}>
+                  <Beaker className="size-4" /> Solicitar ao Laboratório
+                </Button>
+                {sugestoes.length > 0 && !mostrarSugestoes && (
+                  <Button variant="ghost" size="sm" onClick={() => setMostrarSugestoes(true)}>
+                    <ListOrdered className="size-4" /> Ver fórmulas mais usadas
+                  </Button>
+                )}
+              </div>
+            </div>
           )}
 
-          {candidatas.map((c) => {
-            const selecionada = form.formula_id === c.formula_id;
-            return (
-              <button
-                type="button"
-                key={c.formula_id}
-                onClick={() => selecionar(c)}
-                className={cn(
-                  'flex w-full items-start gap-4 rounded-lg border p-4 text-left transition-colors',
-                  selecionada
-                    ? 'border-gold-500 bg-gold-500/5 ring-1 ring-gold-500'
-                    : 'border-border bg-surface hover:border-warm-300',
-                )}
-              >
-                <span
-                  className={cn(
-                    'mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border',
-                    selecionada ? 'border-gold-500 bg-gold-500 text-ink' : 'border-border text-transparent',
-                  )}
-                >
-                  <Check className="size-3.5" />
-                </span>
-                <div className="min-w-0 flex-1 space-y-1.5">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 font-medium text-ink">
-                      <FlaskConical className="size-4 text-warm-500" />
-                      {c.nome_produto}
-                    </span>
-                    {c.versao_codigo && (
-                      <span className="font-mono text-caption text-warm-500">{c.versao_codigo}</span>
-                    )}
-                    <StatusFormulaBadge status={c.status} />
-                  </div>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-caption text-warm-600">
-                    <span>
-                      Custo MP: <span className="tnum text-ink">{brl(c.custo_mp_kg)}/kg</span>
-                    </span>
-                    <span>
-                      {c.n_orcamentos} orçamento{c.n_orcamentos === 1 ? '' : 's'}
-                    </span>
-                    {c.categoria && <span>{c.categoria}</span>}
-                    {c.validada_recente && <span className="text-success">Validada recente</span>}
-                  </div>
-                  {c.justificativa_ia && (
-                    <p className="text-caption italic text-warm-600">{c.justificativa_ia}</p>
-                  )}
-                </div>
-                <ScorePill score={c.score} />
-              </button>
-            );
-          })}
+          {/* Sugestões por uso — reveladas SÓ por clique, rotuladas como não-match. */}
+          {buscou && candidatas.length === 0 && mostrarSugestoes && sugestoes.length > 0 && (
+            <div className="space-y-3">
+              <p className="text-caption font-medium uppercase tracking-wide text-warm-500">
+                Sugestões por uso — sem correspondência ao briefing
+              </p>
+              {sugestoes.map((c) => renderCard(c, true))}
+            </div>
+          )}
+
+          {candidatas.map((c) => renderCard(c, false))}
         </div>
       )}
     </div>

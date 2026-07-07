@@ -79,30 +79,45 @@ export class MatchFormulasService {
     `);
 
     const agora = Date.now();
-    const candidatas: Candidata[] = rows
-      .map((r) => {
-        const rank = Number(r.rank) || 0;
-        const recente = r.validada_em != null && agora - new Date(r.validada_em).getTime() <= RECENTE_MS;
-        // Boost (Doc 2d §C2): base textual + N% por uso (cap 20) + 10% se recente.
-        const base = Math.min(100, rank * 100);
-        const boostUso = Math.min(20, r.n_orcamentos);
-        const boostRecente = recente ? 10 : 0;
-        const score = Math.round(Math.min(100, base + boostUso + boostRecente));
-        return {
-          formula_id: r.id,
-          nome_produto: r.nome_produto,
-          categoria: r.categoria,
-          status: r.status,
-          versao_codigo: r.versao_codigo,
-          custo_mp_kg: r.custo_mp_kg != null ? Number(r.custo_mp_kg) : null,
-          n_orcamentos: r.n_orcamentos,
-          rank_textual: Number(rank.toFixed(4)),
-          validada_recente: recente,
-          score,
-        };
-      })
+    const todas: Candidata[] = rows.map((r) => {
+      const rank = Number(r.rank) || 0;
+      const recente = r.validada_em != null && agora - new Date(r.validada_em).getTime() <= RECENTE_MS;
+      // Boost (Doc 2d §C2): base textual + N% por uso (cap 20) + 10% se recente.
+      const base = Math.min(100, rank * 100);
+      const boostUso = Math.min(20, r.n_orcamentos);
+      const boostRecente = recente ? 10 : 0;
+      const score = Math.round(Math.min(100, base + boostUso + boostRecente));
+      return {
+        formula_id: r.id,
+        nome_produto: r.nome_produto,
+        categoria: r.categoria,
+        status: r.status,
+        versao_codigo: r.versao_codigo,
+        custo_mp_kg: r.custo_mp_kg != null ? Number(r.custo_mp_kg) : null,
+        n_orcamentos: r.n_orcamentos,
+        rank_textual: Number(rank.toFixed(4)),
+        validada_recente: recente,
+        score,
+      };
+    });
+
+    // CORTE DE RELEVÂNCIA (decisão do Gabriel): match REAL exige rank_textual > 0.
+    // Sem o corte, o ORDER BY devolvia as 20 mais usadas (rank=0) como se fossem
+    // resultado — a "sequência-padrão" que quebrava a credibilidade da busca.
+    const candidatas = todas
+      .filter((c) => c.rank_textual > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, 10);
+
+    // Fallback HONESTO: só quando não há match real, as mais usadas viajam num
+    // campo SEPARADO — o front as rotula "Sugestões por uso", nunca como match.
+    const sugestoes_por_uso =
+      candidatas.length > 0
+        ? []
+        : todas
+            .filter((c) => c.rank_textual <= 0)
+            .sort((a, b) => b.n_orcamentos - a.n_orcamentos)
+            .slice(0, 5);
 
     const query_hash = createHash('sha1')
       .update(JSON.stringify({ q: queryText, categoria, nivel: dto.nivel ?? null, budgetLimite }))
@@ -112,11 +127,15 @@ export class MatchFormulasService {
       data: {
         query_hash,
         modo: 'hibrido',
-        candidatas: { briefing: dto, lista: candidatas } as unknown as Prisma.InputJsonValue,
+        candidatas: {
+          briefing: dto,
+          lista: candidatas,
+          sugestoes_por_uso,
+        } as unknown as Prisma.InputJsonValue,
       },
     });
 
-    return { match_id: registro.id, modo: 'hibrido', custo: 0, candidatas };
+    return { match_id: registro.id, modo: 'hibrido', custo: 0, candidatas, sugestoes_por_uso };
   }
 
   /**

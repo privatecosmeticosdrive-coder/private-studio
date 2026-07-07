@@ -593,7 +593,10 @@ export interface MatchResposta {
   match_id: number;
   modo: string;
   custo: number;
+  /** matches REAIS (rank_textual > 0) — corte de relevância no backend. */
   candidatas: Candidata[];
+  /** fallback honesto: mais usadas quando NÃO há match; rotular como "por uso". */
+  sugestoes_por_uso: Candidata[];
 }
 
 export interface RefinarIaResposta {
