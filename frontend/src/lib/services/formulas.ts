@@ -1,5 +1,6 @@
 import { api } from '@/lib/api';
 import type {
+  ComposicaoItemInput,
   FormulaBuscaItem,
   FormulaDetalhe,
   FormulaListItem,
@@ -45,6 +46,22 @@ export const formulasApi = {
   // Cria nova versão (rascunho) na árvore da fórmula-mãe com a composição editada.
   novaVersao: async (id: number, payload: NovaVersaoPayload) => {
     const { data } = await api.post<FormulaDetalhe>(`/formulas/${id}/nova-versao`, payload);
+    return data;
+  },
+  // P0-1: edição IN-PLACE do RASCUNHO (mesma versão; validada é imutável — 400).
+  // Save parcial: o backend NÃO exige soma na faixa aqui (só na validação).
+  atualizar: async (
+    id: number,
+    payload: { versao_descricao?: string; composicao?: ComposicaoItemInput[] },
+  ) => {
+    const { data } = await api.patch<FormulaDetalhe>(`/formulas/${id}`, payload);
+    return data;
+  },
+  // Valida a fórmula (rascunho -> validada). Backend: @Roles(admin, pd) — D3.
+  validar: async (id: number, observacoes?: string) => {
+    const { data } = await api.post<FormulaDetalhe>(`/formulas/${id}/validar`, {
+      observacoes,
+    });
     return data;
   },
   // Fila de revisão da associação fórmula->NCM (F5 Bloco C).

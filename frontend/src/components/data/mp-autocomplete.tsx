@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { Check, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -31,6 +32,32 @@ export function MpAutocomplete({ value, matched, onSelect, onText, placeholder }
   const [open, setOpen] = React.useState(false);
   const [q, setQ] = React.useState(value);
   const ref = React.useRef<HTMLDivElement>(null);
+  // P2: dropdown via PORTAL (document.body) em position FIXED — nunca clipado
+  // pelo overflow da tabela E imune a ancestral com transform (que fazia o
+  // `fixed` renderizar deslocado do campo). Ancora na borda ESQUERDA do input,
+  // imediatamente abaixo, com a MESMA largura; FLIPA pra cima quando não cabe.
+  const ALTURA_MAX = 256; // max-h-64
+  const [rect, setRect] = React.useState<{ top: number; left: number; width: number } | null>(null);
+
+  const medir = React.useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const cabeEmbaixo = r.bottom + 4 + ALTURA_MAX <= window.innerHeight;
+    const top = cabeEmbaixo ? r.bottom + 4 : Math.max(8, r.top - 4 - ALTURA_MAX);
+    setRect({ top, left: r.left, width: r.width });
+  }, []);
+
+  React.useEffect(() => {
+    if (!open) return;
+    medir();
+    window.addEventListener('scroll', medir, true); // true: captura scroll de containers
+    window.addEventListener('resize', medir);
+    return () => {
+      window.removeEventListener('scroll', medir, true);
+      window.removeEventListener('resize', medir);
+    };
+  }, [open, medir]);
 
   // debounce do termo de busca a partir do texto digitado
   React.useEffect(() => {
@@ -38,10 +65,14 @@ export function MpAutocomplete({ value, matched, onSelect, onText, placeholder }
     return () => clearTimeout(t);
   }, [value]);
 
-  // fecha ao clicar fora
+  // fecha ao clicar fora (o dropdown vive num portal — também conta como "dentro")
+  const dropRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     const onClickFora = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      const alvo = e.target as Node;
+      const dentroDoCampo = ref.current?.contains(alvo) ?? false;
+      const dentroDoDropdown = dropRef.current?.contains(alvo) ?? false;
+      if (!dentroDoCampo && !dentroDoDropdown) setOpen(false);
     };
     document.addEventListener('mousedown', onClickFora);
     return () => document.removeEventListener('mousedown', onClickFora);
@@ -77,8 +108,12 @@ export function MpAutocomplete({ value, matched, onSelect, onText, placeholder }
         )}
       </div>
 
-      {open && termo.length >= 1 && (
-        <div className="absolute z-20 mt-1 max-h-64 w-full min-w-[280px] overflow-auto rounded-md border border-border bg-card shadow-lg">
+      {open && termo.length >= 1 && rect && createPortal(
+        <div
+          ref={dropRef}
+          className="fixed z-50 max-h-64 overflow-auto rounded-md border border-border bg-card shadow-lg"
+          style={{ top: rect.top, left: rect.left, width: rect.width }}
+        >
           {isFetching && itens.length === 0 ? (
             <div className="flex items-center gap-2 px-3 py-3 text-caption text-warm-500">
               <Spinner /> Buscando…
@@ -115,7 +150,8 @@ export function MpAutocomplete({ value, matched, onSelect, onText, placeholder }
               ))}
             </ul>
           )}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

@@ -606,6 +606,45 @@ export interface RefinarIaResposta {
   top_5_reranqueado: Candidata[];
 }
 
+// ----------------------- JORNADA DE LABORATÓRIO -----------------------
+
+export type TipoPendencia = 'formulacao_nova' | 'revisao';
+export type UrgenciaLab = 'mesmo_dia' | 'dois_tres_dias' | 'ate_sete_dias';
+export type StatusPendencia = 'aberta' | 'em_atendimento' | 'concluida' | 'cancelada';
+
+export interface PendenciaLab {
+  id: number;
+  tipo: TipoPendencia;
+  status: StatusPendencia;
+  urgencia: UrgenciaLab;
+  prazo_limite: string;
+  descricao: string;
+  motivo_origem: string | null;
+  solicitada_em: string;
+  atendida_em: string | null;
+  concluida_em: string | null;
+  atrasada: boolean; // derivado no backend
+  ncm_proposto: { id: number; ncm: string; ex_tipi: string; descricao: string } | null;
+  orcamento: { id: string; numero: number; produto: string | null; status: string } | null;
+  formula_base: { id: number; nome_produto: string; versao_codigo: string | null } | null;
+  formula_resultado: {
+    id: number;
+    nome_produto: string;
+    versao_codigo: string | null;
+    status: string;
+  } | null;
+}
+
+export interface CriarPendenciaPayload {
+  tipo: TipoPendencia;
+  urgencia: UrgenciaLab;
+  descricao: string;
+  ncm_proposto_id?: number; // obrigatório p/ formulacao_nova (D6)
+  orcamento_id?: string;
+  formula_base_id?: number;
+  motivo_origem?: string;
+}
+
 // ----------------------- ADMIN -----------------------
 
 /** Rótulos amigáveis dos papéis (enum Role do backend). */

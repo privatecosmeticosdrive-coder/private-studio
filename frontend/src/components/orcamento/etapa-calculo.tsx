@@ -11,54 +11,29 @@ import { Spinner } from '@/components/ui/spinner';
 import { useCan } from '@/auth/use-can';
 import { cn } from '@/lib/utils';
 import type { OrcamentoDetalhe } from '@/lib/types';
-import { orcamentosApi, type CriarOrcamentoPayload } from '@/lib/services/orcamentos';
+import { orcamentosApi } from '@/lib/services/orcamentos';
 import { EditarNcmOrcamentoModal } from '@/components/data/editar-ncm-orcamento';
 import { ResultadoCalculo } from './resultado-calculo';
-import type { EtapaProps, OrcamentoForm } from './wizard-types';
+import { montarPayloadOrcamento, num, type EtapaProps } from './wizard-types';
 
 interface EtapaCalculoProps extends EtapaProps {
   onVoltar: () => void;
+  /** retomada de rascunho (correção C/#4): recalcula o MESMO orçamento. */
+  orcIdInicial?: string | null;
 }
 
 const PRESETS_UN_MIN = [8, 6, 4, 2, 1];
 
-/** Converte campo string em número opcional (vazio → undefined). */
-function num(s: string): number | undefined {
-  const t = s.trim();
-  if (t === '') return undefined;
-  const v = Number(t);
-  return Number.isNaN(v) ? undefined : v;
-}
-
-/** Monta o payload do briefing (CreateOrcamentoDto) a partir do formulário. */
-function montarPayload(form: OrcamentoForm): CriarOrcamentoPayload {
-  return {
-    produto: form.produto.trim(),
-    cliente_id: form.cliente_id || undefined,
-    categoria: form.categoria || undefined,
-    nivel: form.nivel || undefined,
-    volume_un: num(form.volume_un),
-    quantidade: num(form.quantidade),
-    margem_pct: num(form.margem_pct),
-    produto_referencia: form.produto_referencia || undefined,
-    requer_amostra: form.requer_amostra,
-    amostra_qtd: form.requer_amostra ? num(form.amostra_qtd) : undefined,
-    modo_operacao: form.modo_operacao,
-    un_min: num(form.un_min),
-    formula_id: form.sem_formula ? undefined : form.formula_id ?? undefined,
-    embalagem_id: form.sem_embalagem ? undefined : form.embalagem_id ?? undefined,
-    sem_embalagem: form.sem_embalagem,
-    budget_mp: form.sem_formula ? num(form.budget_mp) : undefined,
-  };
-}
+// num() e montarPayloadOrcamento() vivem em wizard-types (compartilhados com a
+// solicitação ao lab da etapa 2 — P0-2).
 
 /** Etapa 4 — Cálculo determinístico (Fase 1). */
-export function EtapaCalculo({ form, patch, onVoltar }: EtapaCalculoProps) {
+export function EtapaCalculo({ form, patch, onVoltar, orcIdInicial }: EtapaCalculoProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const can = useCan();
-  // id do orçamento já criado nesta sessão (recalcula no mesmo registro).
-  const [orcId, setOrcId] = React.useState<string | null>(null);
+  // id do orçamento já criado nesta sessão OU do rascunho reaberto (correção C/#4).
+  const [orcId, setOrcId] = React.useState<string | null>(orcIdInicial ?? null);
   const [resultado, setResultado] = React.useState<OrcamentoDetalhe | null>(null);
   // bloqueio de NCM (F4): o calcular falhou por falta de NCM efetivo — oferece a saída.
   const [bloqueioNcm, setBloqueioNcm] = React.useState(false);
@@ -77,7 +52,7 @@ export function EtapaCalculo({ form, patch, onVoltar }: EtapaCalculoProps) {
 
   const calcular = useMutation({
     mutationFn: async () => {
-      const payload = montarPayload(form);
+      const payload = montarPayloadOrcamento(form);
       // cria na primeira vez; depois atualiza o briefing e recalcula o mesmo registro.
       const orc = orcId
         ? await orcamentosApi.atualizar(orcId, payload)
@@ -85,7 +60,13 @@ export function EtapaCalculo({ form, patch, onVoltar }: EtapaCalculoProps) {
       // Captura o id ANTES do calcular: se o cálculo falhar (ex.: sem NCM), o
       // retry REUSA este orçamento — sem isso, cada tentativa criava um
       // rascunho novo no banco (bug do rascunho duplicado).
-      if (!orcId) setOrcId(orc.id);
+      if (!orcId) {
+        setOrcId(orc.id);
+        // Correção C/#5: o rascunho existe MESMO se o calcular falhar — a lista
+        // precisa mostrá-lo já (antes, só o sucesso do cálculo invalidava o cache
+        // e rascunhos não-calculados "sumiam" até um refresh).
+        queryClient.invalidateQueries({ queryKey: ['orcamentos'] });
+      }
       const calculado = await orcamentosApi.calcular(orc.id, {
         un_min: unMin,
         margem_pct: margem,

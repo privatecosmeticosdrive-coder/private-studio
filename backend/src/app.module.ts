@@ -20,6 +20,7 @@ import { AmostrasModule } from './amostras/amostras.module';
 import { CotacoesModule } from './cotacoes/cotacoes.module';
 import { SystemConfigModule } from './system-config/system-config.module';
 import { MatrizCustoModule } from './matriz-custo/matriz-custo.module';
+import { PendenciasLabModule } from './pendencias-lab/pendencias-lab.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { MatrizCustoModule } from './matriz-custo/matriz-custo.module';
     CotacoesModule,
     SystemConfigModule,
     MatrizCustoModule,
+    PendenciasLabModule,
     HealthModule,
   ],
   controllers: [AppController],

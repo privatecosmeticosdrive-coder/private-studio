@@ -105,6 +105,11 @@ export const orcamentosApi = {
     const { data } = await api.post<OrcamentoDetalhe>(`/orcamentos/${id}/calcular`, payload);
     return data;
   },
+  // P1 — transição de status (máquina no backend: rascunho->enviado->aprovado/recusado).
+  mudarStatus: async (id: string, status: 'enviado' | 'aprovado_cliente' | 'recusado') => {
+    const { data } = await api.post<OrcamentoDetalhe>(`/orcamentos/${id}/status`, { status });
+    return data;
+  },
   // Match híbrido (custo R$0) — top 10 ranqueado por score.
   matchFormulas: async (payload: MatchFormulasPayload) => {
     const { data } = await api.post<MatchResposta>('/orcamentos/match-formulas', payload);

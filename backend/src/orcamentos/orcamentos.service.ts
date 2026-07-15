@@ -13,6 +13,7 @@ import { CreateOrcamentoDto } from './dto/create-orcamento.dto';
 import { UpdateOrcamentoDto } from './dto/update-orcamento.dto';
 import { CalcularDto } from './dto/calcular.dto';
 import { resolverNcmEfetivo } from './ncm-efetivo.util';
+import { validarTransicao } from './status-orcamento.util';
 
 export interface ListarOrcamentoQuery {
   status?: string;
@@ -191,6 +192,35 @@ export class OrcamentosService {
         preco_cipi: r.preco_cipi,
         score: r.score_global,
       },
+    });
+    return atualizado;
+  }
+
+  /**
+   * P1 — transição de status com máquina de estados (não pula etapas).
+   * rascunho->enviado (exige calculado); enviado->aprovado_cliente|recusado.
+   * [HOOK fase 4]: motivo categorizado da recusa + auto-pendência de lab.
+   */
+  async mudarStatus(id: string, novoStatus: string, userId: string) {
+    const orc = await this.prisma.orcamento.findUnique({
+      where: { id },
+      select: { id: true, numero: true, status: true, calculo: true },
+    });
+    if (!orc) throw new NotFoundException('Orcamento nao encontrado');
+
+    const r = validarTransicao(orc.status, novoStatus, orc.calculo !== null);
+    if (!r.ok) throw new BadRequestException(r.erro);
+
+    const atualizado = await this.prisma.orcamento.update({
+      where: { id },
+      data: { status: novoStatus },
+    });
+    await this.audit.registrar({
+      userId,
+      acao: 'mudar_status_orcamento',
+      entidade: 'orcamento',
+      entidadeId: id,
+      detalhes: { numero: orc.numero, de: orc.status, para: novoStatus },
     });
     return atualizado;
   }

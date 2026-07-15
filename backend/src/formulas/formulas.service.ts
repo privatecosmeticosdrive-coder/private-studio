@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ComposicaoItemDto } from './dto/composicao-item.dto';
 import { CreateFormulaDto } from './dto/create-formula.dto';
 import { UpdateFormulaDto } from './dto/update-formula.dto';
+import { SOMA_MAX, SOMA_MIN, somaComposicao, somaValidaParaValidacao } from './soma-composicao.util';
 import { NovaVersaoDto } from './dto/nova-versao.dto';
 import { ValidarFormulaDto } from './dto/validar-formula.dto';
 import { RevisarNcmDto } from './dto/revisar-ncm.dto';
@@ -240,6 +241,13 @@ export class FormulasService {
       include: { composicao: { orderBy: { ordem: 'asc' } } },
     });
     if (!origem) throw new NotFoundException('Formula de origem nao encontrada');
+    // P0-1: nova versao SO a partir de VALIDADA. Rascunho edita in-place
+    // (PATCH /formulas/:id) — senao cada save gerava uma versao-lixo.
+    if (origem.status !== 'validada') {
+      throw new BadRequestException(
+        'Nova versao so a partir de formula VALIDADA. Rascunho e editavel na mesma versao (Continuar edicao).',
+      );
+    }
 
     const raizId = origem.formula_mae_id ?? origem.id;
     const familia = await this.prisma.formula.count({
@@ -269,6 +277,11 @@ export class FormulasService {
         cliente_id: origem.cliente_id,
         formula_mae_id: raizId,
         derivada_de_id: origem.id,
+        // D6 (Jornada de Laboratório): a nova versao HERDA o NCM da origem — nunca
+        // nasce sem NCM. ncm_revisado volta a false (a associacao vale p/ a nova
+        // composicao, que pode mudar; humano reconfirma se necessario).
+        ncm_id: origem.ncm_id,
+        ncm_revisado: false,
         versao_codigo: novoCodigo,
         versao_descricao: dto.versao_descricao,
         origem: 'pd_manual',
@@ -304,6 +317,16 @@ export class FormulasService {
         } as Prisma.InputJsonValue,
       },
     });
+
+    // JORNADA DE LAB (re-link): se a ORIGEM é a fórmula vinculada de uma
+    // pendência em atendimento, o vínculo SEGUE a nova versão — o editor cria
+    // versão ao salvar, e a "fórmula da pendência" deve ser sempre a corrente.
+    // O invariante do concluir permanece: só a vinculada conclui.
+    await this.prisma.pendenciaLab.updateMany({
+      where: { formula_resultado_id: origem.id, status: 'em_atendimento' },
+      data: { formula_resultado_id: nova.id },
+    });
+
     return this.findOne(nova.id);
   }
 
@@ -312,6 +335,18 @@ export class FormulasService {
     const f = await this.ensure(id);
     if (f.status === 'validada') {
       throw new BadRequestException('Formula ja esta validada.');
+    }
+    // P0-1: o rascunho salva parcial, mas a VALIDAÇÃO exige a soma das
+    // concentrações na faixa — fórmula 50% não pode virar validada.
+    const comp = await this.prisma.formulaComposicao.findMany({
+      where: { formula_id: id },
+      select: { concentracao_pct: true },
+    });
+    const soma = somaComposicao(comp.map((c) => (c.concentracao_pct != null ? Number(c.concentracao_pct) : null)));
+    if (!somaValidaParaValidacao(soma)) {
+      throw new BadRequestException(
+        `Soma das concentracoes fora da faixa (${soma.toFixed(2)}% — exigido ${SOMA_MIN}% a ${SOMA_MAX}%). Complete a formula antes de validar.`,
+      );
     }
     await this.prisma.formula.update({
       where: { id },

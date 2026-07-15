@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
 import { Search, Sparkles, Check, FlaskConical, Ban, Beaker, ListOrdered } from 'lucide-react';
@@ -13,7 +13,15 @@ import { useCan } from '@/auth/use-can';
 import { brl, cn } from '@/lib/utils';
 import type { Candidata } from '@/lib/types';
 import { orcamentosApi } from '@/lib/services/orcamentos';
-import type { EtapaProps } from './wizard-types';
+import { pendenciasLabApi } from '@/lib/services/pendencias-lab';
+import { SolicitarLaboratorioModal } from '@/components/data/solicitar-laboratorio-modal';
+import { montarPayloadOrcamento, type EtapaProps } from './wizard-types';
+
+interface EtapaMatchProps extends EtapaProps {
+  /** P0-2: orçamento já persistido (rascunho reaberto ou criado na solicitação). */
+  orcamentoId?: string | null;
+  onOrcamentoPersistido?: (id: string) => void;
+}
 
 function ScorePill({ score }: { score: number }) {
   const { cor, label } = faixaScore(score);
@@ -29,8 +37,9 @@ function ScorePill({ score }: { score: number }) {
 }
 
 /** Etapa 2 — Match de fórmulas (híbrido, custo R$0) + refinar com IA opcional. */
-export function EtapaMatch({ form, patch }: EtapaProps) {
+export function EtapaMatch({ form, patch, orcamentoId, onOrcamentoPersistido }: EtapaMatchProps) {
   const can = useCan();
+  const queryClient = useQueryClient();
   const [candidatas, setCandidatas] = React.useState<Candidata[]>([]);
   // Fallback HONESTO: as mais usadas quando NÃO há match real (rank_textual=0).
   // Nunca renderizadas como resultado — só sob clique explícito, rotuladas.
@@ -39,6 +48,7 @@ export function EtapaMatch({ form, patch }: EtapaProps) {
   const [matchId, setMatchId] = React.useState<number | null>(null);
   const [refinado, setRefinado] = React.useState(false);
   const [buscou, setBuscou] = React.useState(false);
+  const [solicitarAberto, setSolicitarAberto] = React.useState(false);
 
   const buscar = useMutation({
     mutationFn: () =>
@@ -96,14 +106,35 @@ export function EtapaMatch({ form, patch }: EtapaProps) {
     patch({ sem_formula: true, formula_id: null, formula_nome: '' });
   };
 
-  // HOOK da frente futura "Jornada de Laboratório": quando não há fórmula que
-  // atenda o briefing, daqui nascerá a solicitação ao lab (urgência mesmo dia /
-  // 2-3 dias / 7 dias + pendência pro time). Por ora, PLACEHOLDER deliberado.
-  const solicitarLaboratorio = () => {
-    toast.info(
-      'Solicitar ao Laboratório — em breve: pedido de desenvolvimento de fórmula com prazo e acompanhamento.',
-    );
-  };
+  // P0-2: ao solicitar ao lab, o orçamento PERSISTE como rascunho (briefing da
+  // etapa 1) — o comercial pode sair e retomar por "Continuar edição". Só na
+  // solicitação (não persiste em outras etapas: evita rascunho-lixo).
+  const persistirEAbrir = useMutation({
+    mutationFn: async () => {
+      if (orcamentoId) return orcamentoId;
+      const orc = await orcamentosApi.criar(montarPayloadOrcamento(form));
+      queryClient.invalidateQueries({ queryKey: ['orcamentos'] });
+      onOrcamentoPersistido?.(orc.id);
+      return orc.id;
+    },
+    onSuccess: () => setSolicitarAberto(true),
+    onError: (err: AxiosError<{ message?: string | string[] }>) => {
+      const m = err.response?.data?.message;
+      toast.error(Array.isArray(m) ? m[0] : m || 'Falha ao salvar o rascunho do orçamento.');
+    },
+  });
+  const solicitarLaboratorio = () => persistirEAbrir.mutate();
+
+  // Reabertura de rascunho: se o lab JÁ CONCLUIU uma pendência deste orçamento,
+  // oferece a fórmula nova em 1 clique (vínculo formula_resultado_id).
+  const { data: concluidasDoOrcamento } = useQuery({
+    queryKey: ['pendencias-lab', 'concluidas-do-orcamento', orcamentoId],
+    queryFn: () => pendenciasLabApi.listar('concluida'),
+    enabled: !!orcamentoId,
+    select: (todas) =>
+      todas.filter((pnd) => pnd.orcamento?.id === orcamentoId && pnd.formula_resultado),
+  });
+  const formulaDoLab = concluidasDoOrcamento?.[0]?.formula_resultado ?? null;
 
   /** Card de fórmula. Em modo sugestão NÃO mostra o score composto (ele é
    *  dominado por nº de usos quando rank=0 — leria como relevância falsa). */
@@ -216,6 +247,31 @@ export function EtapaMatch({ form, patch }: EtapaProps) {
         </div>
       )}
 
+      {/* P0-2: fórmula desenvolvida pelo lab para ESTE orçamento — 1 clique. */}
+      {formulaDoLab && form.formula_id !== formulaDoLab.id && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-success/40 bg-success-soft p-4">
+          <div className="space-y-0.5">
+            <p className="text-sm font-medium text-ink">
+              O laboratório concluiu: {formulaDoLab.nome_produto}
+              {formulaDoLab.versao_codigo ? ` ${formulaDoLab.versao_codigo}` : ''}
+            </p>
+            <p className="text-caption text-warm-600">Fórmula validada, pronta para este orçamento.</p>
+          </div>
+          <Button
+            size="sm"
+            onClick={() =>
+              patch({
+                formula_id: formulaDoLab.id,
+                formula_nome: `${formulaDoLab.nome_produto}${formulaDoLab.versao_codigo ? ` ${formulaDoLab.versao_codigo}` : ''}`,
+                sem_formula: false,
+              })
+            }
+          >
+            <Check className="size-4" /> Usar esta fórmula
+          </Button>
+        </div>
+      )}
+
       {/* Lista de candidatas */}
       {!form.sem_formula && (
         <div className="space-y-3">
@@ -258,6 +314,13 @@ export function EtapaMatch({ form, patch }: EtapaProps) {
           {candidatas.map((c) => renderCard(c, false))}
         </div>
       )}
+
+      <SolicitarLaboratorioModal
+        open={solicitarAberto}
+        onClose={() => setSolicitarAberto(false)}
+        produtoInicial={form.produto || undefined}
+        orcamentoId={orcamentoId ?? undefined}
+      />
     </div>
   );
 }

@@ -1,11 +1,22 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import { ArrowLeft, FileDown, FlaskConical, Package, Barcode } from 'lucide-react';
+import {
+  ArrowLeft,
+  FileDown,
+  FlaskConical,
+  Package,
+  Barcode,
+  Pencil,
+  Send,
+  ThumbsUp,
+  ThumbsDown,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { Spinner } from '@/components/ui/spinner';
 import { StatusOrcamentoBadge } from '@/components/ui/status-badge';
 import { ResultadoCalculo } from '@/components/orcamento/resultado-calculo';
@@ -120,6 +131,23 @@ export default function OrcamentoDetalhe() {
 
   const [baixando, setBaixando] = useState(false);
   const [editandoNcm, setEditandoNcm] = useState(false);
+  // P1: qual transição está aguardando confirmação (null = nenhuma)
+  const [transicao, setTransicao] = useState<null | 'enviado' | 'aprovado_cliente' | 'recusado'>(null);
+  const queryClient = useQueryClient();
+
+  const mudarStatus = useMutation({
+    mutationFn: (novo: 'enviado' | 'aprovado_cliente' | 'recusado') =>
+      orcamentosApi.mudarStatus(id!, novo),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orcamentos'] });
+      setTransicao(null);
+      toast.success('Status atualizado.');
+    },
+    onError: (err: AxiosError<{ message?: string | string[] }>) => {
+      const m = err.response?.data?.message;
+      toast.error(Array.isArray(m) ? m[0] : m || 'Falha ao mudar o status.');
+    },
+  });
 
   const { data: orc, isLoading, isError, refetch } = useQuery({
     queryKey: ['orcamentos', 'detalhe', id],
@@ -198,22 +226,61 @@ export default function OrcamentoDetalhe() {
           </div>
         </div>
 
-        <span
-          title={!orc.calculo ? 'Calcule o orçamento antes de exportar' : undefined}
-        >
-          <Button
-            variant="outline"
-            disabled={!orc.calculo || baixando}
-            onClick={baixarPdf}
+        <div className="flex flex-wrap gap-2">
+          {/* Correção C/#4: rascunho REABRE no wizard com o estado salvo. */}
+          {orc.status === 'rascunho' && (
+            <Button onClick={() => navigate(`/orcamentos/${orc.id}/editar`)}>
+              <Pencil className="size-4" /> Continuar edição
+            </Button>
+          )}
+          {/* P1 — transições de status (máquina valida no backend). */}
+          {orc.status === 'rascunho' && (
+            <span title={!orc.calculo ? 'Calcule o orçamento antes de enviar' : undefined}>
+              <Button
+                variant="outline"
+                disabled={!orc.calculo || mudarStatus.isPending}
+                onClick={() => setTransicao('enviado')}
+              >
+                <Send className="size-4" /> Enviar ao cliente
+              </Button>
+            </span>
+          )}
+          {orc.status === 'enviado' && (
+            <>
+              <Button
+                variant="outline"
+                disabled={mudarStatus.isPending}
+                onClick={() => setTransicao('aprovado_cliente')}
+              >
+                <ThumbsUp className="size-4" /> Aprovado pelo cliente
+              </Button>
+              <Button
+                variant="outline"
+                disabled={mudarStatus.isPending}
+                className="text-error hover:bg-error-soft"
+                onClick={() => setTransicao('recusado')}
+              >
+                <ThumbsDown className="size-4" /> Recusado
+              </Button>
+            </>
+          )}
+          <span
+            title={!orc.calculo ? 'Calcule o orçamento antes de exportar' : undefined}
           >
-            {baixando ? (
-              <Spinner className="text-gold-500" />
-            ) : (
-              <FileDown className="size-4" />
-            )}
-            Baixar PDF
-          </Button>
-        </span>
+            <Button
+              variant="outline"
+              disabled={!orc.calculo || baixando}
+              onClick={baixarPdf}
+            >
+              {baixando ? (
+                <Spinner className="text-gold-500" />
+              ) : (
+                <FileDown className="size-4" />
+              )}
+              Baixar PDF
+            </Button>
+          </span>
+        </div>
       </div>
 
       <ResumoBriefing
@@ -237,6 +304,41 @@ export default function OrcamentoDetalhe() {
         open={editandoNcm}
         orcamento={orc}
         onClose={() => setEditandoNcm(false)}
+      />
+
+      {/* P1 — confirmação da transição de status */}
+      <ConfirmDialog
+        open={transicao !== null}
+        onClose={() => setTransicao(null)}
+        onConfirm={() => transicao && mudarStatus.mutate(transicao)}
+        loading={mudarStatus.isPending}
+        destructive={transicao === 'recusado'}
+        title={
+          transicao === 'enviado'
+            ? 'Enviar ao cliente'
+            : transicao === 'aprovado_cliente'
+              ? 'Marcar como aprovado'
+              : 'Marcar como recusado'
+        }
+        confirmLabel="Confirmar"
+        description={
+          transicao === 'enviado' ? (
+            <p>
+              O orçamento <strong className="text-ink">#{orc.numero}</strong> passa de rascunho
+              para <strong className="text-ink">enviado</strong>. Depois disso, só as transições de
+              aprovação/recusa ficam disponíveis.
+            </p>
+          ) : transicao === 'aprovado_cliente' ? (
+            <p>
+              Registra a resposta do cliente: <strong className="text-ink">aprovado</strong>.
+            </p>
+          ) : (
+            <p>
+              Registra a resposta do cliente: <strong className="text-ink">recusado</strong>. (O
+              motivo categorizado da recusa chega na próxima fase.)
+            </p>
+          )
+        }
       />
     </div>
   );

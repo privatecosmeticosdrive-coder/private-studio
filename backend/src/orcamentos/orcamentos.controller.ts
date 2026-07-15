@@ -14,6 +14,7 @@ import { OrcamentosService } from './orcamentos.service';
 import { CreateOrcamentoDto } from './dto/create-orcamento.dto';
 import { UpdateOrcamentoDto } from './dto/update-orcamento.dto';
 import { CalcularDto } from './dto/calcular.dto';
+import { MudarStatusDto } from './dto/mudar-status.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser, type JwtUser } from '../auth/decorators/current-user.decorator';
 
@@ -82,6 +83,17 @@ export class OrcamentosController {
   @Roles(Role.admin, Role.comercial)
   duplicar(@Param('id') id: string, @CurrentUser() user: JwtUser) {
     return this.orcamentos.duplicar(id, user.sub);
+  }
+
+  // P1 — transição de status (máquina de estados; auditada).
+  @Post(':id/status')
+  @Roles(Role.admin, Role.comercial)
+  mudarStatus(
+    @Param('id') id: string,
+    @Body() dto: MudarStatusDto,
+    @CurrentUser() user: JwtUser,
+  ) {
+    return this.orcamentos.mudarStatus(id, dto.status, user.sub);
   }
 
   // Fase 1 — cálculo único (trava JSON_CALC). admin, comercial, pd

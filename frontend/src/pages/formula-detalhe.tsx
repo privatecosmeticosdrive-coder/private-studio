@@ -1,10 +1,14 @@
+import * as React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, AlertTriangle, GitBranch } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import type { AxiosError } from 'axios';
+import { ArrowLeft, AlertTriangle, GitBranch, BadgeCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { StatusFormulaBadge, OrigemBadge } from '@/components/ui/status-badge';
 import { ScoreThermometer } from '@/components/data/score-thermometer';
 import { useCan } from '@/auth/use-can';
@@ -20,13 +24,31 @@ function pct(v: Money): string {
 export default function FormulaDetalhe() {
   const params = useParams<{ id: string }>();
   const can = useCan();
+  const queryClient = useQueryClient();
   const id = Number(params.id);
   const idValido = Number.isInteger(id) && id > 0;
+  const [confirmandoValidacao, setConfirmandoValidacao] = React.useState(false);
 
   const detalhe = useQuery({
     queryKey: ['formulas', id],
     queryFn: () => formulasApi.obter(id),
     enabled: idValido,
+  });
+
+  // Correção B (#3): validar de dentro da aba Fórmulas (endpoint já existia,
+  // faltava o caminho de UI). Autoridade real: @Roles(admin, pd) no backend.
+  const validar = useMutation({
+    mutationFn: () => formulasApi.validar(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['formulas'] });
+      queryClient.invalidateQueries({ queryKey: ['pendencias-lab'] });
+      setConfirmandoValidacao(false);
+      toast.success('Fórmula validada.');
+    },
+    onError: (err: AxiosError<{ message?: string | string[] }>) => {
+      const m = err.response?.data?.message;
+      toast.error(Array.isArray(m) ? m[0] : m || 'Falha ao validar a fórmula.');
+    },
   });
   const versoes = useQuery({
     queryKey: ['formulas', id, 'versoes'],
@@ -114,14 +136,47 @@ export default function FormulaDetalhe() {
             )}
           </div>
         </div>
-        {can('formula:escrever') && (
-          <Button asChild variant="outline">
-            <Link to={`/formulas/${f.id}/nova-versao`}>
-              <GitBranch className="size-4" /> Editar composição / Nova versão
-            </Link>
-          </Button>
-        )}
+        <div className="flex flex-wrap gap-2">
+          {can('formula:escrever') && f.status === 'rascunho' && (
+            <Button onClick={() => setConfirmandoValidacao(true)} disabled={validar.isPending}>
+              {validar.isPending ? <Spinner className="text-sand" /> : <BadgeCheck className="size-4" />}
+              Validar fórmula
+            </Button>
+          )}
+          {/* P0-1: rascunho edita a MESMA versão; nova versão só de validada. */}
+          {can('formula:escrever') && f.status === 'rascunho' && (
+            <Button asChild variant="outline">
+              <Link to={`/formulas/${f.id}/editar`}>
+                <GitBranch className="size-4" /> Continuar edição
+              </Link>
+            </Button>
+          )}
+          {can('formula:escrever') && f.status === 'validada' && (
+            <Button asChild variant="outline">
+              <Link to={`/formulas/${f.id}/nova-versao`}>
+                <GitBranch className="size-4" /> Nova versão
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
+
+      <ConfirmDialog
+        open={confirmandoValidacao}
+        onClose={() => setConfirmandoValidacao(false)}
+        onConfirm={() => validar.mutate()}
+        loading={validar.isPending}
+        title="Validar fórmula"
+        confirmLabel="Sim, validar"
+        description={
+          <p>
+            A fórmula <strong className="text-ink">{f.nome_produto}</strong>
+            {f.versao_codigo ? ` ${f.versao_codigo}` : ''} passa de rascunho para{' '}
+            <strong className="text-ink">validada</strong> e fica disponível para orçamentos. Se ela
+            pertence a uma pendência do Laboratório, a pendência poderá ser concluída.
+          </p>
+        }
+      />
 
       {/* Custo */}
       <Card>

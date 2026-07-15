@@ -60,13 +60,27 @@ function semear(f: FormulaDetalhe): LinhaComposicao[] {
   }));
 }
 
-/** Editor Vivo de Composição — monta nova versão a partir da fórmula de origem. */
-export function EditorComposicao({ formula }: { formula: FormulaDetalhe }) {
+/**
+ * Editor Vivo de Composição — dois modos (P0-1):
+ *  - 'nova-versao' (default): cria NOVA versão a partir de uma fórmula VALIDADA.
+ *  - 'rascunho': edita a MESMA versão in-place (PATCH). Save PARCIAL permitido
+ *    (soma fora da faixa OK — a faixa é exigida só na VALIDAÇÃO).
+ */
+export function EditorComposicao({
+  formula,
+  modo = 'nova-versao',
+}: {
+  formula: FormulaDetalhe;
+  modo?: 'nova-versao' | 'rascunho';
+}) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const emRascunho = modo === 'rascunho';
   // init lazy: o componente só monta com a fórmula já carregada
   const [linhas, setLinhas] = React.useState<LinhaComposicao[]>(() => semear(formula));
-  const [descricao, setDescricao] = React.useState('');
+  const [descricao, setDescricao] = React.useState(
+    emRascunho ? (formula.versao_descricao ?? '') : '',
+  );
 
   const atualizar = (uid: string, patch: Partial<LinhaComposicao>) => {
     setLinhas((prev) => prev.map((l) => (l.uid === uid ? { ...l, ...patch } : l)));
@@ -97,7 +111,10 @@ export function EditorComposicao({ formula }: { formula: FormulaDetalhe }) {
 
   // linha "real" = tem MP casada ou nome livre. Vazias são ignoradas no payload.
   const linhasComConteudo = linhas.filter((l) => l.mp_id != null || l.mp_nome.trim() !== '');
-  const podeSalvar = somaValida && linhasComConteudo.length >= 1;
+  // Rascunho salva PARCIAL (fórmula incompleta é estado natural); a faixa de
+  // soma é exigida na VALIDAÇÃO (backend também barra lá). Nova versão mantém
+  // a exigência no save (nasce completa a partir de uma validada).
+  const podeSalvar = (emRascunho || somaValida) && linhasComConteudo.length >= 1;
 
   const montarComposicao = (): ComposicaoItemInput[] =>
     linhasComConteudo.map((l, i) => {
@@ -115,18 +132,28 @@ export function EditorComposicao({ formula }: { formula: FormulaDetalhe }) {
 
   const salvar = useMutation({
     mutationFn: () =>
-      formulasApi.novaVersao(formula.id, {
-        versao_descricao: descricao.trim() || undefined,
-        composicao: montarComposicao(),
-      }),
-    onSuccess: (nova) => {
+      emRascunho
+        ? formulasApi.atualizar(formula.id, {
+            versao_descricao: descricao.trim() || undefined,
+            composicao: montarComposicao(),
+          })
+        : formulasApi.novaVersao(formula.id, {
+            versao_descricao: descricao.trim() || undefined,
+            composicao: montarComposicao(),
+          }),
+    onSuccess: (salva) => {
       queryClient.invalidateQueries({ queryKey: ['formulas'] });
-      toast.success(`Nova versão ${nova.versao_codigo ?? ''} criada.`);
-      navigate(`/formulas/${nova.id}`);
+      queryClient.invalidateQueries({ queryKey: ['pendencias-lab'] });
+      toast.success(
+        emRascunho
+          ? 'Rascunho salvo (mesma versão).'
+          : `Nova versão ${salva.versao_codigo ?? ''} criada.`,
+      );
+      navigate(`/formulas/${salva.id}`);
     },
     onError: (err: AxiosError<{ message?: string | string[] }>) => {
       const m = err.response?.data?.message;
-      toast.error(Array.isArray(m) ? m[0] : m || 'Falha ao salvar a nova versão.');
+      toast.error(Array.isArray(m) ? m[0] : m || 'Falha ao salvar.');
     },
   });
 
@@ -140,11 +167,24 @@ export function EditorComposicao({ formula }: { formula: FormulaDetalhe }) {
         >
           <ArrowLeft className="size-3.5" /> {formula.nome_produto}
         </button>
-        <h1 className="font-display text-h1 text-ink">Nova versão</h1>
+        <h1 className="font-display text-h1 text-ink">
+          {emRascunho ? 'Editar rascunho' : 'Nova versão'}
+        </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Editando a partir de{' '}
-          <span className="font-mono text-warm-600">{formula.versao_codigo ?? '—'}</span>. A versão
-          atual não é alterada — uma nova versão (rascunho) é criada.
+          {emRascunho ? (
+            <>
+              Editando a versão{' '}
+              <span className="font-mono text-warm-600">{formula.versao_codigo ?? '—'}</span> em
+              rascunho — salva na MESMA versão. Pode salvar parcial; a soma na faixa só é exigida
+              ao validar.
+            </>
+          ) : (
+            <>
+              Editando a partir de{' '}
+              <span className="font-mono text-warm-600">{formula.versao_codigo ?? '—'}</span>. A
+              versão atual não é alterada — uma nova versão (rascunho) é criada.
+            </>
+          )}
         </p>
       </div>
 
@@ -164,7 +204,7 @@ export function EditorComposicao({ formula }: { formula: FormulaDetalhe }) {
           <thead>
             <tr className="border-b border-border bg-sand/60 text-left">
               <th className="w-20 px-3 py-2.5 font-mono text-caption uppercase tracking-wide text-warm-600">Fase</th>
-              <th className="w-16 px-3 py-2.5 font-mono text-caption uppercase tracking-wide text-warm-600">Ordem</th>
+              <th className="w-20 px-3 py-2.5 font-mono text-caption uppercase tracking-wide text-warm-600">Ordem</th>
               <th className="px-3 py-2.5 font-mono text-caption uppercase tracking-wide text-warm-600">Matéria-prima</th>
               <th className="w-28 px-3 py-2.5 text-right font-mono text-caption uppercase tracking-wide text-warm-600">Conc. %</th>
               <th className="px-3 py-2.5 font-mono text-caption uppercase tracking-wide text-warm-600">Função</th>
@@ -182,13 +222,16 @@ export function EditorComposicao({ formula }: { formula: FormulaDetalhe }) {
                   />
                 </td>
                 <td className="px-3 py-2">
+                  {/* inteiro SEM spinner nativo (o widget numa coluna estreita
+                      cobria a área útil e "não aceitava" digitação). Só dígitos. */}
                   <Input
-                    type="number"
-                    step="1"
-                    min="0"
+                    inputMode="numeric"
                     value={l.ordem}
-                    onChange={(e) => atualizar(l.uid, { ordem: e.target.value })}
-                    className="h-9"
+                    onChange={(e) =>
+                      atualizar(l.uid, { ordem: e.target.value.replace(/\D/g, '') })
+                    }
+                    placeholder="—"
+                    className="h-9 text-right"
                   />
                 </td>
                 <td className="px-3 py-2">
@@ -260,7 +303,11 @@ export function EditorComposicao({ formula }: { formula: FormulaDetalhe }) {
             {soma.toFixed(2)}%
           </p>
           <p className="text-caption text-warm-500">
-            {somaValida ? 'Dentro da faixa (99,5–100,5%).' : 'Deve ficar entre 99,5% e 100,5%.'}
+            {somaValida
+              ? 'Dentro da faixa (99,5–100,5%).'
+              : emRascunho
+                ? 'Fora da faixa — pode salvar o rascunho; a validação exigirá 99,5–100,5%.'
+                : 'Deve ficar entre 99,5% e 100,5%.'}
           </p>
         </div>
         <div className="space-y-1">
@@ -282,14 +329,14 @@ export function EditorComposicao({ formula }: { formula: FormulaDetalhe }) {
           <ArrowLeft className="size-4" /> Cancelar
         </Button>
         <div className="flex items-center gap-3">
-          {!somaValida && (
+          {!somaValida && !emRascunho && (
             <span className="text-caption text-warm-500">
               Ajuste a soma para 99,5–100,5% para salvar.
             </span>
           )}
           <Button onClick={() => salvar.mutate()} disabled={!podeSalvar || salvar.isPending}>
             {salvar.isPending ? <Spinner className="text-sand" /> : <Save className="size-4" />}
-            Salvar nova versão
+            {emRascunho ? 'Salvar rascunho' : 'Salvar nova versão'}
           </Button>
         </div>
       </div>

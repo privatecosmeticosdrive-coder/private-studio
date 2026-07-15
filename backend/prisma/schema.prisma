@@ -204,6 +204,8 @@ model Formula {
   derivacoes  Formula[]           @relation("FormulaDerivada")
   composicao  FormulaComposicao[]
   orcamentos  Orcamento[]
+  pendencias_base      PendenciaLab[] @relation("PendenciaBase")
+  pendencias_resultado PendenciaLab[] @relation("PendenciaResultado")
 
   @@index([categoria])
   @@index([origem])
@@ -235,6 +237,43 @@ model FormulaComposicao {
   @@index([formula_id])
   @@index([mp_id])
   @@map("formula_composicao")
+}
+
+// ----------------------- JORNADA DE LABORATORIO -----------------------
+// Fila publica de pendencias do lab (desenvolver/revisar formula). Atraso e
+// DERIVADO (now > prazo_limite && status != concluida) — nunca coluna. prazo_limite
+// calculado na criacao em DIAS UTEIS (util no backend). *_por = escalar UUID
+// (padrao do codebase, ex. ncm_revisado_por), sem relation.
+model PendenciaLab {
+  id                   Int       @id @default(autoincrement())
+  tipo                 String // formulacao_nova | revisao ([futuro] amostra)
+  status               String    @default("aberta") // aberta | em_atendimento | concluida | cancelada
+  urgencia             String // mesmo_dia | dois_tres_dias | ate_sete_dias
+  prazo_limite         DateTime // calculado na criacao (dias uteis)
+  descricao            String
+  ncm_proposto_id      Int? // D6 — obrigatorio p/ formulacao_nova (validado no DTO); revisao herda da base
+  orcamento_id         String?   @db.Uuid // origem (destrava ao concluir)
+  formula_base_id      Int? // base da nova OU alvo da revisao
+  formula_resultado_id Int? // a versao criada/validada
+  motivo_origem        String? // reprovado_por_custo | melhoria_proativa | ...
+  solicitada_em        DateTime  @default(now())
+  solicitada_por       String?   @db.Uuid
+  atendida_em          DateTime?
+  atendida_por         String?   @db.Uuid
+  concluida_em         DateTime?
+  concluida_por        String?   @db.Uuid
+  cancelada_em         DateTime?
+  cancelada_por        String?   @db.Uuid
+  cancelamento_motivo  String?
+
+  ncm_proposto      Ncm?       @relation(fields: [ncm_proposto_id], references: [id])
+  orcamento         Orcamento? @relation(fields: [orcamento_id], references: [id])
+  formula_base      Formula?   @relation("PendenciaBase", fields: [formula_base_id], references: [id])
+  formula_resultado Formula?   @relation("PendenciaResultado", fields: [formula_resultado_id], references: [id])
+
+  @@index([status])
+  @@index([urgencia])
+  @@map("pendencias_lab")
 }
 
 // ----------------------- ORCAMENTOS -----------------------
@@ -316,6 +355,7 @@ model Orcamento {
   amostra_responsavel User?           @relation("AmostraResponsavel", fields: [amostra_responsavel_id], references: [id])
   amostra_eventos     AmostraEvento[]
   formula_matches     FormulaMatch[]
+  pendencias_lab      PendenciaLab[]
 
   @@index([status])
   @@index([cliente_id])
@@ -430,6 +470,7 @@ model Ncm {
 
   formulas   Formula[]
   orcamentos Orcamento[] // F3-prep — relation virtual (override de NCM por orcamento)
+  pendencias PendenciaLab[]
 
   @@unique([ncm, ex_tipi])
   @@map("ncm")

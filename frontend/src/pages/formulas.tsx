@@ -52,9 +52,12 @@ export default function Formulas() {
 
   const resetarPagina = () => setPage(1);
 
-  // --- listagem paginada (maes) ---
+  // --- listagem paginada ---
+  // maes=true (só raízes) SÓ no browse sem filtro. Com filtro de origem ou
+  // status ativo, as VERSÕES entram (correção B: a versão P&D em rascunho
+  // criada pela Jornada de Lab tem formula_mae_id != null e sumia da lista).
   const params: ListarFormulasParams = {
-    maes: true,
+    maes: !origem && !status,
     categoria: categoriaDebounced || undefined,
     origem: origem || undefined,
     status: status || undefined,

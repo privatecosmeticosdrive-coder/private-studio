@@ -1,4 +1,5 @@
 import type { NivelOrcamento } from '@/lib/types';
+import type { CriarOrcamentoPayload } from '@/lib/services/orcamentos';
 
 /**
  * Estado único do wizard de orçamento. Campos numéricos ficam como string
@@ -62,4 +63,38 @@ export const FORM_INICIAL: OrcamentoForm = {
 export interface EtapaProps {
   form: OrcamentoForm;
   patch: (parcial: Partial<OrcamentoForm>) => void;
+}
+
+/** Converte campo string em número opcional (vazio → undefined). */
+export function num(s: string): number | undefined {
+  const t = s.trim();
+  if (t === '') return undefined;
+  const v = Number(t);
+  return Number.isNaN(v) ? undefined : v;
+}
+
+/**
+ * Monta o payload do briefing (CreateOrcamentoDto) a partir do formulário.
+ * Usado pela etapa 4 (calcular) e pela SOLICITAÇÃO AO LAB na etapa 2 (P0-2:
+ * o orçamento persiste como rascunho no momento da solicitação).
+ */
+export function montarPayloadOrcamento(form: OrcamentoForm): CriarOrcamentoPayload {
+  return {
+    produto: form.produto.trim(),
+    cliente_id: form.cliente_id || undefined,
+    categoria: form.categoria || undefined,
+    nivel: form.nivel || undefined,
+    volume_un: num(form.volume_un),
+    quantidade: num(form.quantidade),
+    margem_pct: num(form.margem_pct),
+    produto_referencia: form.produto_referencia || undefined,
+    requer_amostra: form.requer_amostra,
+    amostra_qtd: form.requer_amostra ? num(form.amostra_qtd) : undefined,
+    modo_operacao: form.modo_operacao,
+    un_min: num(form.un_min),
+    formula_id: form.sem_formula ? undefined : form.formula_id ?? undefined,
+    embalagem_id: form.sem_embalagem ? undefined : form.embalagem_id ?? undefined,
+    sem_embalagem: form.sem_embalagem,
+    budget_mp: form.sem_formula ? num(form.budget_mp) : undefined,
+  };
 }
