@@ -20,6 +20,15 @@ export const pendenciasLabApi = {
     const { data } = await api.post<PendenciaLab>('/pendencias-lab', payload);
     return data;
   },
+  // Fase 2 (gatilho c) — melhoria proativa: cria + assume + versiona (pd|admin).
+  revisaoProativa: async (payload: {
+    formula_base_id: number;
+    urgencia: string;
+    descricao: string;
+  }) => {
+    const { data } = await api.post<PendenciaLab>('/pendencias-lab/revisao-proativa', payload);
+    return data;
+  },
   atender: async (id: number) => {
     const { data } = await api.post<PendenciaLab>(`/pendencias-lab/${id}/atender`, {});
     return data;

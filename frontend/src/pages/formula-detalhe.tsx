@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
-import { ArrowLeft, AlertTriangle, GitBranch, BadgeCheck } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, GitBranch, BadgeCheck, Wrench, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,8 @@ import { useCan } from '@/auth/use-can';
 import { brl } from '@/lib/utils';
 import type { Money } from '@/lib/types';
 import { formulasApi } from '@/lib/services/formulas';
+import { pendenciasLabApi } from '@/lib/services/pendencias-lab';
+import { SolicitarRevisaoModal } from '@/components/data/solicitar-revisao-modal';
 
 function pct(v: Money): string {
   if (v == null || v === '') return '—';
@@ -23,16 +25,37 @@ function pct(v: Money): string {
 
 export default function FormulaDetalhe() {
   const params = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const can = useCan();
   const queryClient = useQueryClient();
   const id = Number(params.id);
   const idValido = Number.isInteger(id) && id > 0;
   const [confirmandoValidacao, setConfirmandoValidacao] = React.useState(false);
+  const [solicitandoRevisao, setSolicitandoRevisao] = React.useState(false);
 
   const detalhe = useQuery({
     queryKey: ['formulas', id],
     queryFn: () => formulasApi.obter(id),
     enabled: idValido,
+  });
+
+  // Fase 2 (c): melhoria proativa — cria+assume a revisão e cai no editor.
+  const abrirProativa = useMutation({
+    mutationFn: () =>
+      pendenciasLabApi.revisaoProativa({
+        formula_base_id: id,
+        urgencia: 'ate_sete_dias',
+        descricao: 'Melhoria proativa de custo/composição (aberta pelo laboratório).',
+      }),
+    onSuccess: (pend) => {
+      queryClient.invalidateQueries({ queryKey: ['pendencias-lab'] });
+      queryClient.invalidateQueries({ queryKey: ['formulas'] });
+      if (pend.formula_resultado) navigate(`/formulas/${pend.formula_resultado.id}/editar`);
+    },
+    onError: (err: AxiosError<{ message?: string | string[] }>) => {
+      const m = err.response?.data?.message;
+      toast.error(Array.isArray(m) ? m[0] : m || 'Falha ao abrir a revisão.');
+    },
   });
 
   // Correção B (#3): validar de dentro da aba Fórmulas (endpoint já existia,
@@ -158,8 +181,28 @@ export default function FormulaDetalhe() {
               </Link>
             </Button>
           )}
+          {/* Fase 2 (b): qualquer usuário pede revisão de fórmula VALIDADA. */}
+          {f.status === 'validada' && (
+            <Button variant="outline" onClick={() => setSolicitandoRevisao(true)}>
+              <Wrench className="size-4" /> Solicitar revisão
+            </Button>
+          )}
+          {/* Fase 2 (c): pd/admin abre revisão proativa — cai direto no editor. */}
+          {can('formula:escrever') && f.status === 'validada' && (
+            <Button variant="outline" onClick={() => abrirProativa.mutate()} disabled={abrirProativa.isPending}>
+              {abrirProativa.isPending ? <Spinner className="text-warm-500" /> : <Sparkles className="size-4" />}
+              Abrir revisão (lab)
+            </Button>
+          )}
         </div>
       </div>
+
+      <SolicitarRevisaoModal
+        open={solicitandoRevisao}
+        onClose={() => setSolicitandoRevisao(false)}
+        formulaBaseId={f.id}
+        formulaNome={`${f.nome_produto}${f.versao_codigo ? ` ${f.versao_codigo}` : ''}`}
+      />
 
       <ConfirmDialog
         open={confirmandoValidacao}

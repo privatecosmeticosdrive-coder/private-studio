@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpCode, Param, ParseIntPipe, Post, Query } fro
 import { Role } from '@prisma/client';
 import { PendenciasLabService } from './pendencias-lab.service';
 import { CreatePendenciaDto } from './dto/create-pendencia.dto';
+import { RevisaoProativaDto } from './dto/revisao-proativa.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
@@ -28,6 +29,14 @@ export class PendenciasLabController {
   @HttpCode(201)
   criar(@Body() dto: CreatePendenciaDto, @CurrentUser('sub') userId: string) {
     return this.pendencias.criar(dto, userId);
+  }
+
+  // Fase 2 (gatilho c) — melhoria proativa: cria + assume + versiona (pd|admin).
+  @Post('revisao-proativa')
+  @HttpCode(201)
+  @Roles(Role.pd, Role.admin)
+  revisaoProativa(@Body() dto: RevisaoProativaDto, @CurrentUser('sub') userId: string) {
+    return this.pendencias.abrirRevisaoProativa(dto, userId);
   }
 
   @Post(':id/atender')

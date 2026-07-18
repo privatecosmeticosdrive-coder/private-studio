@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
-import { Search, Sparkles, Check, FlaskConical, Ban, Beaker, ListOrdered } from 'lucide-react';
+import { Search, Sparkles, Check, FlaskConical, Ban, Beaker, ListOrdered, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ import type { Candidata } from '@/lib/types';
 import { orcamentosApi } from '@/lib/services/orcamentos';
 import { pendenciasLabApi } from '@/lib/services/pendencias-lab';
 import { SolicitarLaboratorioModal } from '@/components/data/solicitar-laboratorio-modal';
+import { SolicitarRevisaoModal } from '@/components/data/solicitar-revisao-modal';
 import { montarPayloadOrcamento, type EtapaProps } from './wizard-types';
 
 interface EtapaMatchProps extends EtapaProps {
@@ -49,6 +50,7 @@ export function EtapaMatch({ form, patch, orcamentoId, onOrcamentoPersistido }: 
   const [refinado, setRefinado] = React.useState(false);
   const [buscou, setBuscou] = React.useState(false);
   const [solicitarAberto, setSolicitarAberto] = React.useState(false);
+  const [revisaoAberta, setRevisaoAberta] = React.useState(false);
 
   const buscar = useMutation({
     mutationFn: () =>
@@ -226,6 +228,14 @@ export function EtapaMatch({ form, patch, orcamentoId, onOrcamentoPersistido }: 
         >
           <Ban className="size-4" /> Sem fórmula
         </Button>
+        {/* Fase 2 (b): fórmula selecionada mas precisa ajuste (custo alto etc.).
+            ASSÍNCRONO — o orçamento segue com o custo atual; a nova versão é
+            oferecida no rascunho reaberto quando a revisão concluir. */}
+        {form.formula_id != null && !form.sem_formula && (
+          <Button variant="ghost" onClick={() => setRevisaoAberta(true)}>
+            <Wrench className="size-4" /> Solicitar revisão
+          </Button>
+        )}
       </div>
 
       {/* Sem fórmula: base de MP manual */}
@@ -321,6 +331,16 @@ export function EtapaMatch({ form, patch, orcamentoId, onOrcamentoPersistido }: 
         produtoInicial={form.produto || undefined}
         orcamentoId={orcamentoId ?? undefined}
       />
+
+      {form.formula_id != null && (
+        <SolicitarRevisaoModal
+          open={revisaoAberta}
+          onClose={() => setRevisaoAberta(false)}
+          formulaBaseId={form.formula_id}
+          formulaNome={form.formula_nome || 'Fórmula selecionada'}
+          orcamentoId={orcamentoId ?? undefined}
+        />
+      )}
     </div>
   );
 }

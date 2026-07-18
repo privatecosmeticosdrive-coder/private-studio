@@ -34,6 +34,11 @@ export class PendenciasLabService {
     if (dto.tipo === 'formulacao_nova' && dto.ncm_proposto_id == null) {
       throw new BadRequestException('ncm_proposto_id e obrigatorio para formulacao_nova (D6).');
     }
+    // Fase 2 (gatilho b): revisão SEMPRE tem uma fórmula-base (a versão nova
+    // nasce dela, herdando o NCM). NCM proposto não é pedido.
+    if (dto.tipo === 'revisao' && dto.formula_base_id == null) {
+      throw new BadRequestException('formula_base_id e obrigatorio para revisao.');
+    }
     if (dto.ncm_proposto_id != null) {
       const ncm = await this.prisma.ncm.findFirst({
         where: { id: dto.ncm_proposto_id, ativo: true },
@@ -57,6 +62,42 @@ export class PendenciasLabService {
       include: this.include,
     });
     return this.comAtraso(p);
+  }
+
+  /**
+   * Fase 2 (gatilho c) — MELHORIA PROATIVA (pd|admin): o lab abre uma revisão
+   * de qualquer fórmula validada e JÁ assume (em_atendimento + fórmula-versão
+   * vinculada), caindo direto no editor. Sem orçamento de origem.
+   */
+  async abrirRevisaoProativa(
+    dto: { formula_base_id: number; urgencia: string; descricao: string },
+    userId: string,
+  ) {
+    const base = await this.prisma.formula.findUnique({
+      where: { id: dto.formula_base_id },
+      select: { id: true, status: true },
+    });
+    if (!base) throw new NotFoundException('Formula-base nao encontrada.');
+    if (base.status !== 'validada') {
+      throw new BadRequestException(
+        'Revisao so a partir de formula VALIDADA (a versao nova nasce dela).',
+      );
+    }
+    const prazo = calcularPrazoLimite(dto.urgencia as UrgenciaLab, new Date());
+    const pend = await this.prisma.pendenciaLab.create({
+      data: {
+        tipo: 'revisao',
+        urgencia: dto.urgencia,
+        prazo_limite: prazo,
+        descricao: dto.descricao,
+        formula_base_id: dto.formula_base_id,
+        motivo_origem: 'melhoria_proativa',
+        solicitada_por: userId,
+      },
+      select: { id: true },
+    });
+    // reusa o mesmo caminho do atender: cria nova-versao vinculada + em_atendimento.
+    return this.atender(pend.id, userId);
   }
 
   /**
