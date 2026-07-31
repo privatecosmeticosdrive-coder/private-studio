@@ -19,10 +19,14 @@ Sistema B2B de orçamentos da Private Cosméticos (terceirista de cosméticos, V
 11. Gating: menu por `roles?:` e `custos?:` no NavItem; `pode_ver_custos || role==='admin'` é o check canônico de custo; autoridade real é sempre o backend (guards) — front é UX.
 12. `$queryRaw`: tagged template (não Unsafe) quando não há input do usuário; nomes de TABELA/COLUNA do banco (conferir `@@map`/`@map` no schema antes); `COUNT(*)::int` (BigInt quebra JSON).
 13. Em dúvida de produto/arquitetura/fiscal: PARAR e perguntar ao Gabriel (que consulta o conselheiro). Não decidir sozinho o que é tese de negócio.
+14. **Verificação antes de afirmação:** NENHUMA afirmação sobre o estado do projeto (o que está feito, o que falta, o que um arquivo contém, quanto é um número) sem ter verificado no disco/git/banco NESTA sessão. Memória de sessão passada e entrada de doc desatualizada não são fonte — já viraram desinformação (radar listando PDF "quebrado" depois de entregue). Número informado por terceiro que não foi verificado é registrado COMO não-verificado.
+15. **Pergunta obrigatória em todo design de fluxo:** *o que acontece se o usuário sair no meio — em CADA etapa?* Trabalho perdido é bug de produto. Foi assim que nasceram o rascunho de orçamento que persiste ao solicitar ao lab, o "Continuar edição" e o rascunho de fórmula editável in-place.
+16. **Flush de contexto:** ao se aproximar de ~80% da janela, PARAR e transferir pro disco (`docs/05_handoff_sessao.md` ou sucessor) decisões, métricas medidas, gotchas e próximo passo. NUNCA deixar compactar no meio de uma fatia — compactação no meio de fatia perde o porquê das decisões.
 
 ## Estado e fontes de verdade
 
 - `docs/04_estado_atual.md` → estado do projeto + PENDÊNCIAS NO RADAR (ler ao iniciar sessão).
+- `docs/05_handoff_sessao.md` → handoff da última sessão: decisões travadas sem código, gotchas de ambiente, números medidos, armadilhas e o próximo mandato pronto.
 - `docs/00_contexto_estrategico.md` → o porquê do projeto, teses, gaps, ecossistema, visão.
 - `docs/validacao-fiscal-contador.md` (+ .pdf) → perguntas ao contador; F4 passo 3/4 BLOQUEADOS até as respostas.
 
