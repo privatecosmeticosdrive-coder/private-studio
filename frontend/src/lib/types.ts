@@ -668,6 +668,23 @@ export interface CriarPendenciaPayload {
   motivo_origem?: string;
 }
 
+/** FASE 4 — GET /pendencias-lab/indicadores. Atraso derivado na requisição. */
+export interface TempoUrgenciaLab {
+  urgencia: UrgenciaLab | string;
+  n: number;
+  media_horas: number | null; // null quando n=0 — nunca "0h"
+  mediana_horas: number | null;
+  valores_horas: number[]; // crus e ordenados — o front lista quando n<3
+}
+
+export interface IndicadoresLab {
+  atrasadas: number;
+  por_status: Record<string, number>; // aberta/em_atendimento/concluida/cancelada sempre presentes
+  tempos: TempoUrgenciaLab[];
+  /** concluídas sem concluida_em — fora do cálculo, visíveis aqui (nunca somem). */
+  excluidas: number;
+}
+
 // ----------------------- ADMIN -----------------------
 
 /** Rótulos amigáveis dos papéis (enum Role do backend). */

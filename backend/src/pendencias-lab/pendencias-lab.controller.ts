@@ -25,6 +25,13 @@ export class PendenciasLabController {
     return this.pendencias.contarAbertas();
   }
 
+  // FASE 4 — indicadores operacionais (rota estática, regra 9). Fila é pública:
+  // qualquer autenticado lê os números.
+  @Get('indicadores')
+  indicadores() {
+    return this.pendencias.indicadores();
+  }
+
   @Post()
   @HttpCode(201)
   criar(@Body() dto: CreatePendenciaDto, @CurrentUser('sub') userId: string) {

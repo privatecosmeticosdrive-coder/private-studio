@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { FormulasService } from '../formulas/formulas.service';
 import { CreatePendenciaDto } from './dto/create-pendencia.dto';
 import { calcularPrazoLimite, estaAtrasada, type UrgenciaLab } from './dias-uteis.util';
+import { calcularTempos } from './indicadores.util';
 
 /**
  * Jornada de Laboratório (fatia 1, corrigida) — fila PÚBLICA de pendências.
@@ -120,6 +121,34 @@ export class PendenciasLabService {
       orderBy: [{ status: 'asc' }, { prazo_limite: 'asc' }],
     });
     return rows.map((p) => this.comAtraso(p));
+  }
+
+  /**
+   * FASE 4 — indicadores operacionais da fila. 3 blocos, 1 GET:
+   * atrasadas (DERIVADO com o `now` da requisição — nunca coluna, regra do
+   * radar), contagem por status e tempos solicitação→conclusão por urgência
+   * (cálculo puro em `indicadores.util`, mediana+média+n).
+   */
+  async indicadores() {
+    const agora = new Date();
+    const [atrasadas, porStatusRaw, concluidas] = await Promise.all([
+      this.prisma.pendenciaLab.count({
+        where: { status: { in: ['aberta', 'em_atendimento'] }, prazo_limite: { lt: agora } },
+      }),
+      this.prisma.pendenciaLab.groupBy({ by: ['status'], _count: true }),
+      this.prisma.pendenciaLab.findMany({
+        where: { status: 'concluida' },
+        select: { urgencia: true, solicitada_em: true, concluida_em: true },
+      }),
+    ]);
+    // todos os estados sempre presentes (0 explícito > chave ausente)
+    const por_status = { aberta: 0, em_atendimento: 0, concluida: 0, cancelada: 0 } as Record<
+      string,
+      number
+    >;
+    for (const g of porStatusRaw) por_status[g.status] = g._count;
+    const { tempos, excluidas } = calcularTempos(concluidas);
+    return { atrasadas, por_status, tempos, excluidas };
   }
 
   /** Badge do menu: contagem de pendências abertas + em atendimento. */

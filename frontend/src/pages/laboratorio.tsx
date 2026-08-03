@@ -10,7 +10,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { useAuth } from '@/auth/auth-context';
 import { pendenciasLabApi } from '@/lib/services/pendencias-lab';
 import { ConcluirPendenciaModal } from '@/components/data/concluir-pendencia-modal';
-import type { PendenciaLab, StatusPendencia, UrgenciaLab } from '@/lib/types';
+import type { IndicadoresLab, PendenciaLab, StatusPendencia, UrgenciaLab } from '@/lib/types';
 
 const URGENCIA_LABEL: Record<UrgenciaLab, string> = {
   mesmo_dia: 'Mesmo dia',
@@ -107,6 +107,94 @@ function CardPendencia({
   );
 }
 
+/** Formata horas: <1h vira minutos; >=48h também mostra dias (leitura rápida). */
+function horas(h: number) {
+  if (h < 1) return `${Math.round(h * 60)}min`;
+  if (h >= 48) return `${h.toFixed(0)}h (~${(h / 24).toFixed(1)} dias)`;
+  return `${h.toFixed(1)}h`;
+}
+
+/**
+ * FASE 4 — painel de indicadores (3 cards, sem gráfico/período/tela nova).
+ * Regras: atraso derivado na leitura; média NUNCA solitária com n pequeno
+ * (n>=3 = mediana+média+n; n<3 = valores crus); n=0 = texto honesto, nunca "0h";
+ * cancelada só aparece se >0 (estado hoje inalcançável via API).
+ */
+function PainelIndicadores({ ind }: { ind: IndicadoresLab }) {
+  const totalConcluidas = ind.tempos.reduce((s, t) => s + t.n, 0);
+  return (
+    <div className="grid gap-4 sm:grid-cols-3">
+      {/* Atrasadas AGORA */}
+      <div className="rounded-lg border border-border bg-surface p-4">
+        <p className="text-caption text-warm-600">Atrasadas agora</p>
+        {ind.atrasadas > 0 ? (
+          <p className="mt-1 inline-flex items-center gap-2 font-display text-h2 text-error">
+            <AlertTriangle className="size-5" /> {ind.atrasadas}
+          </p>
+        ) : (
+          <p className="mt-2 text-sm text-warm-600">Nenhuma pendência atrasada.</p>
+        )}
+      </div>
+
+      {/* Por estado */}
+      <div className="rounded-lg border border-border bg-surface p-4">
+        <p className="text-caption text-warm-600">Por estado</p>
+        <div className="mt-2 space-y-1 text-sm">
+          {(['aberta', 'em_atendimento', 'concluida'] as const).map((s) => (
+            <div key={s} className="flex justify-between">
+              <span className="text-warm-700">{STATUS_LABEL[s]}</span>
+              <span className="tnum font-medium text-ink">{ind.por_status[s] ?? 0}</span>
+            </div>
+          ))}
+          {(ind.por_status.cancelada ?? 0) > 0 && (
+            <div className="flex justify-between">
+              <span className="text-warm-700">{STATUS_LABEL.cancelada}</span>
+              <span className="tnum font-medium text-ink">{ind.por_status.cancelada}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Tempo solicitação→conclusão por urgência */}
+      <div className="rounded-lg border border-border bg-surface p-4">
+        <p className="text-caption text-warm-600">Tempo até concluir (por urgência)</p>
+        <div className="mt-2 space-y-1.5 text-sm">
+          {ind.tempos.map((t) => (
+            <div key={t.urgencia} className="flex items-baseline justify-between gap-2">
+              <span className="shrink-0 text-warm-700">
+                {URGENCIA_LABEL[t.urgencia as UrgenciaLab] ?? t.urgencia}
+              </span>
+              {t.n === 0 ? (
+                <span className="text-caption text-warm-500">sem concluídas</span>
+              ) : t.n < 3 ? (
+                <span className="tnum text-right text-caption text-warm-700">
+                  {t.n} concluída{t.n > 1 ? 's' : ''}: {t.valores_horas.map(horas).join(', ')}
+                </span>
+              ) : (
+                <span className="tnum text-right text-caption text-ink">
+                  mediana {horas(t.mediana_horas!)} · média {horas(t.media_horas!)} · n={t.n}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+        {/* Honestidade sobre a base: some sozinho quando houver volume real. */}
+        {totalConcluidas > 0 && totalConcluidas < 10 && (
+          <p className="mt-2 text-caption text-warm-500">
+            Base pequena — inclui pendências de teste.
+          </p>
+        )}
+        {ind.excluidas > 0 && (
+          <p className="mt-1 text-caption text-warning">
+            {ind.excluidas} concluída{ind.excluidas > 1 ? 's' : ''} sem data de conclusão — fora do
+            cálculo.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /** Jornada de Laboratório (fatia 1) — fila PÚBLICA. Atender: pd|admin. */
 export default function Laboratorio() {
   const { user } = useAuth();
@@ -119,6 +207,13 @@ export default function Laboratorio() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['pendencias-lab', filtro],
     queryFn: () => pendenciasLabApi.listar(filtro === 'abertas' ? undefined : filtro),
+  });
+
+  // FASE 4 — indicadores. Query separada da fila: invalidada pela mesma chave
+  // raiz ['pendencias-lab'] nos onSuccess existentes (atender/concluir/criar).
+  const { data: indicadores, isError: indicadoresErro } = useQuery({
+    queryKey: ['pendencias-lab', 'indicadores'],
+    queryFn: () => pendenciasLabApi.indicadores(),
   });
 
   const atender = useMutation({
@@ -151,6 +246,15 @@ export default function Laboratorio() {
         title="Laboratório"
         description="Fila de pendências de desenvolvimento e revisão de fórmulas. Atender é restrito ao P&D."
       />
+
+      {/* FASE 4 — indicadores. Falha na query mostra erro, nunca zero falso (regra 7). */}
+      {indicadoresErro ? (
+        <p className="rounded-lg border border-error/30 bg-error-soft/40 p-3 text-sm text-error">
+          Não foi possível carregar os indicadores.
+        </p>
+      ) : (
+        indicadores && <PainelIndicadores ind={indicadores} />
+      )}
 
       <div className="flex gap-2">
         {abas.map((a) => (

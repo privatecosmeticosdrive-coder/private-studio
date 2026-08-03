@@ -1,5 +1,5 @@
 import { api } from '@/lib/api';
-import type { PendenciaLab, CriarPendenciaPayload } from '@/lib/types';
+import type { PendenciaLab, CriarPendenciaPayload, IndicadoresLab } from '@/lib/types';
 
 /**
  * Jornada de Laboratório (fatia 1). Criar/listar = qualquer autenticado (fila
@@ -15,6 +15,11 @@ export const pendenciasLabApi = {
   contagem: async () => {
     const { data } = await api.get<{ total: number }>('/pendencias-lab/contagem');
     return data.total;
+  },
+  // FASE 4 — indicadores operacionais (atrasadas / por status / tempos por urgência).
+  indicadores: async () => {
+    const { data } = await api.get<IndicadoresLab>('/pendencias-lab/indicadores');
+    return data;
   },
   criar: async (payload: CriarPendenciaPayload) => {
     const { data } = await api.post<PendenciaLab>('/pendencias-lab', payload);
