@@ -296,6 +296,15 @@ model Orcamento {
   produto_referencia String?
   status             String          @default("rascunho")
 
+  // FASE 3 (Jornada de Laboratorio) — motivo CATEGORIZADO da recusa.
+  // Gravado na transicao enviado->recusado (terminal na maquina: nao ha
+  // re-recusa, logo e append-only por construcao). NAO toca o snapshot de
+  // preco (calculo / formula_composicao_snapshot / embalagem_snapshot) —
+  // fronteira tese 2: o preco congelado so e escrito em calcular().
+  recusa_motivo     String? // preco_custo | formula | prazo | outro
+  recusa_observacao String?
+  recusa_em         DateTime?
+
   // PRODUTIVIDADE DIRETA (Doc 2d §A) — un/min informado, sem inferencia de etapas
   un_min Decimal? @db.Decimal(6, 2)
 
@@ -362,6 +371,7 @@ model Orcamento {
   @@index([amostra_status])
   @@index([amostra_responsavel_id])
   @@index([ncm_id]) // F3-prep
+  @@index([recusa_motivo]) // Fase 3 — filtro por motivo na lista
   @@map("orcamentos")
 }
 

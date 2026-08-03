@@ -14,6 +14,8 @@ interface ConfirmDialogProps {
   loading?: boolean;
   /** botao de confirmacao em vermelho (acoes destrutivas) */
   destructive?: boolean;
+  /** trava o confirmar (ex.: form embutido ainda incompleto). Default: false. */
+  confirmDisabled?: boolean;
 }
 
 /** Dialogo de confirmacao generico (sim/nao) sobre o Modal base. */
@@ -27,6 +29,7 @@ export function ConfirmDialog({
   cancelLabel = 'Cancelar',
   loading = false,
   destructive = false,
+  confirmDisabled = false,
 }: ConfirmDialogProps) {
   return (
     <Modal
@@ -39,7 +42,11 @@ export function ConfirmDialog({
           <Button variant="ghost" onClick={onClose} disabled={loading}>
             {cancelLabel}
           </Button>
-          <Button variant={destructive ? 'destructive' : 'default'} onClick={onConfirm} disabled={loading}>
+          <Button
+            variant={destructive ? 'destructive' : 'default'}
+            onClick={onConfirm}
+            disabled={loading || confirmDisabled}
+          >
             {loading && <Spinner className="text-sand" />}
             {confirmLabel}
           </Button>

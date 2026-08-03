@@ -11,7 +11,12 @@ import { DataTable } from '@/components/data/data-table';
 import { StatusOrcamentoBadge } from '@/components/ui/status-badge';
 import { useCan } from '@/auth/use-can';
 import { brl } from '@/lib/utils';
-import { STATUS_ORCAMENTO_LABEL, type OrcamentoListItem } from '@/lib/types';
+import {
+  MOTIVOS_RECUSA,
+  MOTIVO_RECUSA_LABEL,
+  STATUS_ORCAMENTO_LABEL,
+  type OrcamentoListItem,
+} from '@/lib/types';
 import { orcamentosApi } from '@/lib/services/orcamentos';
 
 const STATUS_OPCOES = Object.keys(STATUS_ORCAMENTO_LABEL);
@@ -22,6 +27,8 @@ export default function Orcamentos() {
 
   const [q, setQ] = React.useState('');
   const [status, setStatus] = React.useState('');
+  // FASE 3 — filtro por motivo de recusa; só faz sentido com status=recusado.
+  const [motivo, setMotivo] = React.useState('');
   const [page, setPage] = React.useState(1);
   const pageSize = 20;
 
@@ -32,15 +39,23 @@ export default function Orcamentos() {
   };
   const filtrarStatus = (valor: string) => {
     setStatus(valor);
+    // sair de "recusado" zera o motivo — senão o filtro fica ativo e invisível,
+    // e a lista viria vazia sem explicação (UI nunca mente).
+    if (valor !== 'recusado') setMotivo('');
+    setPage(1);
+  };
+  const filtrarMotivo = (valor: string) => {
+    setMotivo(valor);
     setPage(1);
   };
 
   const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ['orcamentos', 'lista', { q, status, page }],
+    queryKey: ['orcamentos', 'lista', { q, status, motivo, page }],
     queryFn: () =>
       orcamentosApi.listar({
         q: q || undefined,
         status: status || undefined,
+        motivo: motivo || undefined,
         page,
         pageSize,
       }),
@@ -159,6 +174,22 @@ export default function Orcamentos() {
                 </option>
               ))}
             </Select>
+            {/* FASE 3 — aparece só em "recusado": em qualquer outro status
+                filtrar por motivo de recusa não significaria nada. */}
+            {status === 'recusado' && (
+              <Select
+                value={motivo}
+                onChange={(e) => filtrarMotivo(e.target.value)}
+                className="w-auto min-w-[180px]"
+              >
+                <option value="">Todos os motivos</option>
+                {MOTIVOS_RECUSA.map((m) => (
+                  <option key={m} value={m}>
+                    {MOTIVO_RECUSA_LABEL[m]}
+                  </option>
+                ))}
+              </Select>
+            )}
           </div>
         }
       />

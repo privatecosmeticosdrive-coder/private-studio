@@ -27,6 +27,7 @@ export class OrcamentosController {
     @Query('status') status?: string,
     @Query('cliente_id') cliente_id?: string,
     @Query('q') q?: string,
+    @Query('motivo') motivo?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
   ) {
@@ -34,6 +35,7 @@ export class OrcamentosController {
       status,
       cliente_id,
       q,
+      motivo,
       page: page ? parseInt(page, 10) : undefined,
       pageSize: pageSize ? parseInt(pageSize, 10) : undefined,
     });
@@ -93,7 +95,7 @@ export class OrcamentosController {
     @Body() dto: MudarStatusDto,
     @CurrentUser() user: JwtUser,
   ) {
-    return this.orcamentos.mudarStatus(id, dto.status, user.sub);
+    return this.orcamentos.mudarStatus(id, dto, user.sub);
   }
 
   // Fase 1 — cálculo único (trava JSON_CALC). admin, comercial, pd

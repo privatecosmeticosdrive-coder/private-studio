@@ -10,6 +10,7 @@ export function StatusOrcamentoBadge({ status }: { status: string }) {
     aprovado_interno: 'info',
     enviado: 'info',
     aprovado_cliente: 'success',
+    recusado: 'error',
     em_amostragem: 'warning',
     em_producao: 'info',
     concluido: 'success',

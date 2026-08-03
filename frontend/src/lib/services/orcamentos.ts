@@ -1,21 +1,43 @@
 import { api } from '@/lib/api';
 import type {
   MatchResposta,
+  MotivoRecusa,
   NivelOrcamento,
   OrcamentoDetalhe,
   OrcamentoListItem,
   OrcamentoStats,
   Paginado,
   RefinarIaResposta,
+  UrgenciaLab,
 } from '@/lib/types';
 
 export interface ListarOrcamentosParams {
   status?: string;
   cliente_id?: string;
   q?: string;
+  /** FASE 3 — filtra por motivo de recusa (só faz sentido com status=recusado). */
+  motivo?: string;
   page?: number;
   pageSize?: number;
 }
+
+/** FASE 3 — payload da transição de status (motivo obrigatório na recusa). */
+export interface MudarStatusPayload {
+  status: 'enviado' | 'aprovado_cliente' | 'recusado';
+  motivo?: MotivoRecusa;
+  observacao?: string;
+  /** urgência da pendência de revisão — só quando motivo='formula'. */
+  urgencia?: UrgenciaLab;
+}
+
+/**
+ * Resposta da transição: o orçamento + o resultado do gatilho. `aviso` != null
+ * significa "motivo gravado, mas a pendência NÃO nasceu" (e explica porquê).
+ */
+export type MudarStatusResposta = OrcamentoDetalhe & {
+  aviso: string | null;
+  pendencia_criada: { id: number } | null;
+};
 
 /** Briefing do orçamento (espelha CreateOrcamentoDto). */
 export interface CriarOrcamentoPayload {
@@ -105,9 +127,10 @@ export const orcamentosApi = {
     const { data } = await api.post<OrcamentoDetalhe>(`/orcamentos/${id}/calcular`, payload);
     return data;
   },
-  // P1 — transição de status (máquina no backend: rascunho->enviado->aprovado/recusado).
-  mudarStatus: async (id: string, status: 'enviado' | 'aprovado_cliente' | 'recusado') => {
-    const { data } = await api.post<OrcamentoDetalhe>(`/orcamentos/${id}/status`, { status });
+  // P1 + FASE 3 — transição de status (máquina no backend). Recusa carrega o
+  // motivo categorizado; motivo='formula' dispara pendência de revisão no lab.
+  mudarStatus: async (id: string, payload: MudarStatusPayload) => {
+    const { data } = await api.post<MudarStatusResposta>(`/orcamentos/${id}/status`, payload);
     return data;
   },
   // Match híbrido (custo R$0) — top 10 ranqueado por score.

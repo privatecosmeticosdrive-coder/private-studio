@@ -12,12 +12,16 @@ import { PdfService } from './pdf.service';
 import { CreateOrcamentoDto } from './dto/create-orcamento.dto';
 import { UpdateOrcamentoDto } from './dto/update-orcamento.dto';
 import { CalcularDto } from './dto/calcular.dto';
+import { MudarStatusDto } from './dto/mudar-status.dto';
 import { resolverNcmEfetivo } from './ncm-efetivo.util';
 import { validarTransicao } from './status-orcamento.util';
+import { PendenciasLabService } from '../pendencias-lab/pendencias-lab.service';
 
 export interface ListarOrcamentoQuery {
   status?: string;
   cliente_id?: string;
+  /** FASE 3 — filtro por motivo de recusa (só faz sentido com status=recusado). */
+  motivo?: string;
   q?: string;
   page?: number;
   pageSize?: number;
@@ -31,6 +35,11 @@ export class OrcamentosService {
     private readonly calculo: CalculoService,
     private readonly formatacao: FormatacaoService,
     private readonly pdf: PdfService,
+    // FASE 3 — gatilho recusa-por-fórmula. Chamada DIRETA (decisão travada):
+    // acíclico hoje (PendenciasLabModule importa só FormulasModule e resolve
+    // orcamento_id via Prisma, nunca via OrcamentosService). Se aparecerem
+    // múltiplos consumidores, migra pra evento — o schema não muda.
+    private readonly pendenciasLab: PendenciasLabService,
   ) {}
 
   async findAll(query: ListarOrcamentoQuery) {
@@ -38,6 +47,7 @@ export class OrcamentosService {
     const pageSize = Math.min(200, Math.max(1, query.pageSize ?? 50));
     const where: Prisma.OrcamentoWhereInput = {};
     if (query.status) where.status = query.status;
+    if (query.motivo) where.recusa_motivo = query.motivo; // FASE 3
     if (query.cliente_id) where.cliente_id = query.cliente_id;
     if (query.q) where.produto = { contains: query.q, mode: 'insensitive' };
 
@@ -201,28 +211,112 @@ export class OrcamentosService {
    * rascunho->enviado (exige calculado); enviado->aprovado_cliente|recusado.
    * [HOOK fase 4]: motivo categorizado da recusa + auto-pendência de lab.
    */
-  async mudarStatus(id: string, novoStatus: string, userId: string) {
+  /**
+   * P1 + FASE 3 — transição de status. Recusar exige motivo categorizado, e
+   * motivo='formula' dispara a criação de uma pendência de revisão no lab.
+   *
+   * FRONTEIRA (tese 2): esta função escreve APENAS status + as 3 colunas de
+   * recusa. Nunca toca `calculo`, `formula_composicao_snapshot` nem
+   * `embalagem_snapshot` — o preço congelado só é escrito em `calcular()`.
+   *
+   * SOBERANIA DA CAPTURA: o motivo é gravado ANTES do gatilho e o gatilho roda
+   * em try/catch. Recusa NUNCA falha por causa da pendência — se ela não puder
+   * nascer, o motivo continua registrado e a resposta traz o aviso.
+   */
+  async mudarStatus(id: string, dto: MudarStatusDto, userId: string) {
     const orc = await this.prisma.orcamento.findUnique({
       where: { id },
-      select: { id: true, numero: true, status: true, calculo: true },
+      select: {
+        id: true,
+        numero: true,
+        status: true,
+        calculo: true,
+        formula_id: true,
+        produto: true,
+        formula: { select: { id: true, status: true, nome_produto: true } },
+      },
     });
     if (!orc) throw new NotFoundException('Orcamento nao encontrado');
 
-    const r = validarTransicao(orc.status, novoStatus, orc.calculo !== null);
+    const novoStatus = dto.status;
+    const ehRecusa = novoStatus === 'recusado';
+    const motivo = ehRecusa ? (dto.motivo ?? null) : null;
+
+    const r = validarTransicao(orc.status, novoStatus, orc.calculo !== null, motivo);
     if (!r.ok) throw new BadRequestException(r.erro);
 
+    // Motivo entra na MESMA update do status: ou os dois gravam, ou nenhum.
     const atualizado = await this.prisma.orcamento.update({
       where: { id },
-      data: { status: novoStatus },
+      data: {
+        status: novoStatus,
+        ...(ehRecusa
+          ? {
+              recusa_motivo: motivo,
+              recusa_observacao: dto.observacao?.trim() || null,
+              recusa_em: new Date(),
+            }
+          : {}),
+      },
     });
     await this.audit.registrar({
       userId,
       acao: 'mudar_status_orcamento',
       entidade: 'orcamento',
       entidadeId: id,
-      detalhes: { numero: orc.numero, de: orc.status, para: novoStatus },
+      detalhes: {
+        numero: orc.numero,
+        de: orc.status,
+        para: novoStatus,
+        ...(ehRecusa ? { motivo, observacao: dto.observacao?.trim() || null } : {}),
+      },
     });
-    return atualizado;
+
+    // ---- GATILHO (D2d): recusa por FÓRMULA -> pendência de revisão no lab ----
+    // Só aqui nasce pendência. Os outros 3 motivos são registro puro.
+    let aviso: string | null = null;
+    let pendencia_criada: { id: number } | null = null;
+    if (ehRecusa && motivo === 'formula') {
+      // Guarda (decisão 3): sem fórmula OU fórmula em rascunho -> não cria.
+      // `criar()` exige formula_base_id, e `atender()` barra base não-validada:
+      // uma pendência nascida aqui ficaria travada no atender. Melhor não nascer
+      // e avisar do que criar lixo na fila do lab.
+      if (!orc.formula_id || !orc.formula) {
+        aviso =
+          'Motivo registrado. Pendência de revisão NÃO criada: este orçamento não tem fórmula vinculada — atribua uma fórmula antes de pedir revisão ao laboratório.';
+      } else if (orc.formula.status !== 'validada') {
+        aviso = `Motivo registrado. Pendência de revisão NÃO criada: a fórmula "${orc.formula.nome_produto}" está em ${orc.formula.status} — revisão só parte de fórmula VALIDADA (a versão nova nasce dela). Valide-a e abra a revisão pelo laboratório.`;
+      } else {
+        const obs = dto.observacao?.trim();
+        const descricao = [
+          `Revisão solicitada pela recusa do orçamento #${orc.numero} (${orc.produto}).`,
+          `Motivo: fórmula.`,
+          obs ? `Observação do comercial: ${obs}` : null,
+        ]
+          .filter(Boolean)
+          .join('\n');
+        try {
+          const p = await this.pendenciasLab.criar(
+            {
+              tipo: 'revisao',
+              urgencia: dto.urgencia ?? 'dois_tres_dias',
+              descricao,
+              formula_base_id: orc.formula_id,
+              orcamento_id: id,
+              motivo_origem: 'reprovado_por_custo',
+            },
+            userId,
+          );
+          pendencia_criada = { id: p.id };
+        } catch (e) {
+          // Captura é soberana: a recusa já está gravada e NÃO é desfeita.
+          const msg = e instanceof Error ? e.message : String(e);
+          aviso = `Motivo registrado. A pendência de revisão não pôde ser criada (${msg}). Abra a revisão manualmente pelo laboratório.`;
+        }
+      }
+    }
+
+    return { ...atualizado, aviso, pendencia_criada };
   }
 
   /** FASE 2 — formata as 4 paginas a partir do JSON_CALC travado. */

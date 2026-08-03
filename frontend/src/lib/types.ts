@@ -297,6 +297,7 @@ export type StatusOrcamento =
   | 'aprovado_interno'
   | 'enviado'
   | 'aprovado_cliente'
+  | 'recusado'
   | 'em_amostragem'
   | 'em_producao'
   | 'concluido'
@@ -309,11 +310,29 @@ export const STATUS_ORCAMENTO_LABEL: Record<string, string> = {
   aprovado_interno: 'Aprovado interno',
   enviado: 'Enviado',
   aprovado_cliente: 'Aprovado cliente',
+  // 'recusado' é o status REAL que a máquina do backend escreve (P1). O
+  // 'rejeitado' abaixo é rótulo legado do Doc 2c que nenhum código atribui —
+  // mantido para não quebrar registro histórico; remoção é decisão de produto.
+  recusado: 'Recusado',
   em_amostragem: 'Em amostragem',
   em_producao: 'Em produção',
   concluido: 'Concluído',
   rejeitado: 'Rejeitado',
   arquivado: 'Arquivado',
+};
+
+/**
+ * FASE 3 — motivo categorizado da recusa. `formula` é o único que dispara a
+ * criação de uma pendência de revisão no laboratório.
+ */
+export const MOTIVOS_RECUSA = ['preco_custo', 'formula', 'prazo', 'outro'] as const;
+export type MotivoRecusa = (typeof MOTIVOS_RECUSA)[number];
+
+export const MOTIVO_RECUSA_LABEL: Record<string, string> = {
+  preco_custo: 'Preço / custo',
+  formula: 'Fórmula',
+  prazo: 'Prazo',
+  outro: 'Outro',
 };
 
 /** Item da listagem (GET /orcamentos) — inclui cliente resumido. */
@@ -518,6 +537,10 @@ export interface OrcamentoDetalhe {
   budget_mp: Money;
   produto_referencia: string | null;
   status: StatusOrcamento | string;
+  // FASE 3 — motivo categorizado da recusa (só preenchido quando recusado).
+  recusa_motivo: MotivoRecusa | null;
+  recusa_observacao: string | null;
+  recusa_em: string | null;
   un_min: Money;
   embalagem_id: number | null;
   embalagem_snapshot: CalculoJson['embalagem'] | null;

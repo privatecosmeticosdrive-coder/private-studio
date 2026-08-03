@@ -22,7 +22,14 @@ import { StatusOrcamentoBadge } from '@/components/ui/status-badge';
 import { ResultadoCalculo } from '@/components/orcamento/resultado-calculo';
 import { brl } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { NIVEL_ORCAMENTO_LABEL, type OrcamentoDetalhe } from '@/lib/types';
+import {
+  MOTIVOS_RECUSA,
+  MOTIVO_RECUSA_LABEL,
+  NIVEL_ORCAMENTO_LABEL,
+  type MotivoRecusa,
+  type OrcamentoDetalhe,
+  type UrgenciaLab,
+} from '@/lib/types';
 import { orcamentosApi } from '@/lib/services/orcamentos';
 import { useAuth } from '@/auth/auth-context';
 import { EditarNcmOrcamentoModal } from '@/components/data/editar-ncm-orcamento';
@@ -133,15 +140,46 @@ export default function OrcamentoDetalhe() {
   const [editandoNcm, setEditandoNcm] = useState(false);
   // P1: qual transição está aguardando confirmação (null = nenhuma)
   const [transicao, setTransicao] = useState<null | 'enviado' | 'aprovado_cliente' | 'recusado'>(null);
+  // FASE 3 — form da recusa (vive no dialog; zerado a cada abertura).
+  const [motivo, setMotivo] = useState<MotivoRecusa | ''>('');
+  const [observacao, setObservacao] = useState('');
+  const [urgencia, setUrgencia] = useState<UrgenciaLab>('dois_tres_dias');
   const queryClient = useQueryClient();
+
+  /** Abre o dialog zerando o form (não herdar motivo de uma recusa cancelada). */
+  const abrirTransicao = (t: 'enviado' | 'aprovado_cliente' | 'recusado') => {
+    setMotivo('');
+    setObservacao('');
+    setUrgencia('dois_tres_dias');
+    setTransicao(t);
+  };
 
   const mudarStatus = useMutation({
     mutationFn: (novo: 'enviado' | 'aprovado_cliente' | 'recusado') =>
-      orcamentosApi.mudarStatus(id!, novo),
-    onSuccess: () => {
+      orcamentosApi.mudarStatus(id!, {
+        status: novo,
+        ...(novo === 'recusado'
+          ? {
+              motivo: motivo as MotivoRecusa,
+              observacao: observacao.trim() || undefined,
+              ...(motivo === 'formula' ? { urgencia } : {}),
+            }
+          : {}),
+      }),
+    onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['orcamentos'] });
+      queryClient.invalidateQueries({ queryKey: ['pendencias-lab'] });
       setTransicao(null);
-      toast.success('Status atualizado.');
+      // O gatilho tem 3 desfechos e a UI conta os 3 (nunca "sucesso" mudo).
+      if (res.aviso) {
+        toast.warning(res.aviso, { duration: 9000 });
+      } else if (res.pendencia_criada) {
+        toast.success(
+          `Recusa registrada. Pendência de revisão #${res.pendencia_criada.id} criada no laboratório.`,
+        );
+      } else {
+        toast.success('Status atualizado.');
+      }
     },
     onError: (err: AxiosError<{ message?: string | string[] }>) => {
       const m = err.response?.data?.message;
@@ -239,7 +277,7 @@ export default function OrcamentoDetalhe() {
               <Button
                 variant="outline"
                 disabled={!orc.calculo || mudarStatus.isPending}
-                onClick={() => setTransicao('enviado')}
+                onClick={() => abrirTransicao('enviado')}
               >
                 <Send className="size-4" /> Enviar ao cliente
               </Button>
@@ -250,7 +288,7 @@ export default function OrcamentoDetalhe() {
               <Button
                 variant="outline"
                 disabled={mudarStatus.isPending}
-                onClick={() => setTransicao('aprovado_cliente')}
+                onClick={() => abrirTransicao('aprovado_cliente')}
               >
                 <ThumbsUp className="size-4" /> Aprovado pelo cliente
               </Button>
@@ -258,7 +296,7 @@ export default function OrcamentoDetalhe() {
                 variant="outline"
                 disabled={mudarStatus.isPending}
                 className="text-error hover:bg-error-soft"
-                onClick={() => setTransicao('recusado')}
+                onClick={() => abrirTransicao('recusado')}
               >
                 <ThumbsDown className="size-4" /> Recusado
               </Button>
@@ -282,6 +320,29 @@ export default function OrcamentoDetalhe() {
           </span>
         </div>
       </div>
+
+      {/* FASE 3 — motivo da recusa. Só aparece quando existe (UI nunca mente:
+          orçamento recusado antes desta fase não tem motivo e não inventa um). */}
+      {orc.status === 'recusado' && orc.recusa_motivo && (
+        <Card className="border-error/30 bg-error-soft/40 p-6">
+          <h2 className="mb-2 font-display text-h3 text-ink">Motivo da recusa</h2>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="rounded-full border border-error/30 bg-surface px-3 py-1 text-caption font-semibold text-error">
+              {MOTIVO_RECUSA_LABEL[orc.recusa_motivo] ?? orc.recusa_motivo}
+            </span>
+            {orc.recusa_em && (
+              <span className="text-caption text-warm-600">
+                em {new Date(orc.recusa_em).toLocaleDateString('pt-BR')}
+              </span>
+            )}
+          </div>
+          {orc.recusa_observacao && (
+            <p className="mt-3 whitespace-pre-wrap text-sm text-warm-700">
+              {orc.recusa_observacao}
+            </p>
+          )}
+        </Card>
+      )}
 
       <ResumoBriefing
         orc={orc}
@@ -313,6 +374,8 @@ export default function OrcamentoDetalhe() {
         onConfirm={() => transicao && mudarStatus.mutate(transicao)}
         loading={mudarStatus.isPending}
         destructive={transicao === 'recusado'}
+        // FASE 3 — sem motivo não recusa (o backend também barra; isto é UX).
+        confirmDisabled={transicao === 'recusado' && !motivo}
         title={
           transicao === 'enviado'
             ? 'Enviar ao cliente'
@@ -333,10 +396,69 @@ export default function OrcamentoDetalhe() {
               Registra a resposta do cliente: <strong className="text-ink">aprovado</strong>.
             </p>
           ) : (
-            <p>
-              Registra a resposta do cliente: <strong className="text-ink">recusado</strong>. (O
-              motivo categorizado da recusa chega na próxima fase.)
-            </p>
+            // FASE 3 — o motivo é o dado que fecha o funil: sem ele, "perdemos
+            // o orçamento" é dado morto. Por isso é obrigatório aqui.
+            <div className="space-y-4">
+              <p>
+                Registra a resposta do cliente: <strong className="text-ink">recusado</strong>.
+              </p>
+
+              <div className="space-y-1.5">
+                <label htmlFor="recusa-motivo" className="block text-caption text-warm-600">
+                  Motivo da recusa <span className="text-error">*</span>
+                </label>
+                <select
+                  id="recusa-motivo"
+                  className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-ink"
+                  value={motivo}
+                  onChange={(e) => setMotivo(e.target.value as MotivoRecusa | '')}
+                >
+                  <option value="">Selecione…</option>
+                  {MOTIVOS_RECUSA.map((m) => (
+                    <option key={m} value={m}>
+                      {MOTIVO_RECUSA_LABEL[m]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {motivo === 'formula' && (
+                <div className="space-y-1.5 rounded-md border border-gold-200 bg-gold-50 p-3">
+                  <label htmlFor="recusa-urgencia" className="block text-caption text-warm-700">
+                    Urgência da revisão no laboratório
+                  </label>
+                  <select
+                    id="recusa-urgencia"
+                    className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-ink"
+                    value={urgencia}
+                    onChange={(e) => setUrgencia(e.target.value as UrgenciaLab)}
+                  >
+                    <option value="mesmo_dia">Mesmo dia</option>
+                    <option value="dois_tres_dias">2 a 3 dias</option>
+                    <option value="ate_sete_dias">Até 7 dias</option>
+                  </select>
+                  <p className="text-caption text-warm-600">
+                    Uma pendência de revisão da fórmula será aberta no laboratório, vinculada a
+                    este orçamento.
+                  </p>
+                </div>
+              )}
+
+              <div className="space-y-1.5">
+                <label htmlFor="recusa-obs" className="block text-caption text-warm-600">
+                  Observação <span className="text-warm-500">(opcional)</span>
+                </label>
+                <textarea
+                  id="recusa-obs"
+                  rows={3}
+                  maxLength={1000}
+                  className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-ink"
+                  placeholder="O que o cliente falou? (ex.: preço 8% acima do concorrente)"
+                  value={observacao}
+                  onChange={(e) => setObservacao(e.target.value)}
+                />
+              </div>
+            </div>
           )
         }
       />

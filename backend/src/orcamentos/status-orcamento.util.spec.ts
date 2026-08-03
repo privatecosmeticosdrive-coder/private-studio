@@ -9,9 +9,37 @@ describe('validarTransicao — máquina de status do orçamento', () => {
     expect(sem.erro).toMatch(/Calcule/);
   });
 
-  it('enviado -> aprovado_cliente / recusado', () => {
+  it('enviado -> aprovado_cliente (sem motivo — aprovar não pede nada)', () => {
     expect(validarTransicao('enviado', 'aprovado_cliente', true).ok).toBe(true);
-    expect(validarTransicao('enviado', 'recusado', true).ok).toBe(true);
+  });
+
+  // FASE 3 — a regra desta transição MUDOU: antes `enviado -> recusado` passava
+  // sem motivo. Agora o motivo categorizado é obrigatório (captura do dado).
+  it('enviado -> recusado EXIGE motivo categorizado', () => {
+    const sem = validarTransicao('enviado', 'recusado', true);
+    expect(sem.ok).toBe(false);
+    expect(sem.erro).toMatch(/motivo/i);
+
+    const vazio = validarTransicao('enviado', 'recusado', true, '');
+    expect(vazio.ok).toBe(false);
+  });
+
+  it('enviado -> recusado aceita os 4 motivos válidos', () => {
+    for (const m of ['preco_custo', 'formula', 'prazo', 'outro']) {
+      expect(validarTransicao('enviado', 'recusado', true, m).ok).toBe(true);
+    }
+  });
+
+  it('enviado -> recusado rejeita motivo fora da lista', () => {
+    const r = validarTransicao('enviado', 'recusado', true, 'custo_formula');
+    expect(r.ok).toBe(false);
+    expect(r.erro).toMatch(/invalido/i);
+  });
+
+  it('motivo não vaza para outras transições (aprovar ignora)', () => {
+    expect(validarTransicao('enviado', 'aprovado_cliente', true, 'formula').ok).toBe(true);
+    // transição inválida continua inválida mesmo com motivo bom
+    expect(validarTransicao('rascunho', 'recusado', true, 'formula').ok).toBe(false);
   });
 
   it('não pula etapas: rascunho -> aprovado_cliente/recusado rejeitado', () => {

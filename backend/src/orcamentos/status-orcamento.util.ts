@@ -8,12 +8,20 @@
  * atual (nenhum código o atribui) — decisão: não expor transição até ganhar
  * significado de negócio.
  *
- * [HOOK fase 4 — motivo de reprovação]: quando `recusado` ganhar motivo
- * categorizado (preço/custo, fórmula, prazo, outro + texto), a transição
- * enviado->recusado passa a exigir o motivo, e motivo='custo_formula' auto-cria
- * pendência de revisão no Laboratório (gatilho D2d). Não construído aqui.
+ * FASE 3 (ex-"HOOK fase 4") — motivo de reprovação CATEGORIZADO: a transição
+ * enviado->recusado exige `motivo`. O gatilho motivo='formula' -> pendência de
+ * revisão no Laboratório NÃO mora aqui (esta função é PURA, não toca banco):
+ * ele vive em `OrcamentosService.mudarStatus`.
  */
 export type StatusOrcamento = 'rascunho' | 'enviado' | 'aprovado_cliente' | 'recusado';
+
+/**
+ * Motivos de recusa. `formula` é o único que dispara pendência de revisão.
+ * `preco_custo` é marcação investigativa (matéria-prima da tese: quanto custa
+ * em cotações perdidas um preço X% acima).
+ */
+export const MOTIVOS_RECUSA = ['preco_custo', 'formula', 'prazo', 'outro'] as const;
+export type MotivoRecusa = (typeof MOTIVOS_RECUSA)[number];
 
 const TRANSICOES: Record<string, StatusOrcamento[]> = {
   rascunho: ['enviado'],
@@ -31,6 +39,7 @@ export function validarTransicao(
   de: string,
   para: string,
   temCalculo: boolean,
+  motivo?: string | null,
 ): ResultadoTransicao {
   const destinos = TRANSICOES[de];
   if (!destinos) return { ok: false, erro: `Status atual desconhecido: ${de}.` };
@@ -39,6 +48,16 @@ export function validarTransicao(
   }
   if (de === 'rascunho' && para === 'enviado' && !temCalculo) {
     return { ok: false, erro: 'Calcule o orcamento antes de enviar ao cliente.' };
+  }
+  // FASE 3: recusar exige motivo categorizado. Sem ele, "perdemos o orçamento"
+  // é dado morto — a captura do motivo é o elo que fecha o funil.
+  if (para === 'recusado') {
+    if (!motivo) {
+      return { ok: false, erro: 'Informe o motivo da recusa.' };
+    }
+    if (!MOTIVOS_RECUSA.includes(motivo as MotivoRecusa)) {
+      return { ok: false, erro: `Motivo de recusa invalido: ${motivo}.` };
+    }
   }
   return { ok: true };
 }
