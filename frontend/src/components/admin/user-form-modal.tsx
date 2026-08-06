@@ -154,7 +154,7 @@ export function UserFormModal({ open, onClose, usuario }: UserFormModalProps) {
             />
             {errors.senha && <p className="text-caption text-error">{errors.senha.message}</p>}
             <p className="text-caption text-warm-500">
-              Oriente o funcionário a trocar no primeiro acesso.
+              Anote e repasse a senha — só o admin pode alterá-la depois.
             </p>
           </div>
           <div className="space-y-2">
