@@ -504,6 +504,33 @@ model ParametroFiscal {
   @@map("parametro_fiscal")
 }
 
+// ----------------------- PARAMETROS DE PRODUCAO (modelo MO rodada 2) -----------------------
+// Versionado por vigencia, MESMA disciplina do parametro_fiscal: valor + vigencia
+// + FONTE. Alimenta o modelo de MO de 3 componentes (setup por ordem + corrida
+// sobre capacidade normal). Ate o corte, o engine vigente segue lendo a
+// system_config — as duas fontes COEXISTEM de proposito (chaves com nomes
+// DISTINTOS: eficiencia_producao aqui vs eficiencia_linha na system_config).
+//
+// DERIVADOS NUNCA GRAVADOS (recomputados da vigencia, regra do atraso derivado):
+// capacidade_normal_min_mes, taxa_minuto, custo_setup_ordem,
+// minutos_produtivos_dia_linha.
+//
+// FORA DO CUSTO DO PRODUTO, JAMAIS (CPC 16 item 13 — resultado do periodo):
+// ociosidade (~50.559/mes hoje) e SG&A (59.400/mes).
+model ParametroProducao {
+  id              Int       @id @default(autoincrement())
+  chave           String // custo_fixo_producao_mensal | linhas_paralelas | eficiencia_producao | setup_minutos | dias_uteis_mes | horas_dia | moq_economico_valor
+  valor           Decimal   @db.Decimal(12, 4)
+  vigencia_inicio DateTime  @db.Date
+  vigencia_fim    DateTime? @db.Date
+  fonte           String // origem do numero (levantamento, extrato, medicao) + status medido/provisorio
+  criado_por      String?   @db.Uuid
+  created_at      DateTime  @default(now())
+
+  @@index([chave, vigencia_inicio])
+  @@map("parametro_producao")
+}
+
 // ----------------------- MATRIZ DE CUSTO — LOG DE AUDITORIA (F1) -----------------------
 // Historico granular por campo (antes -> depois). Permanente, consultavel por data.
 
