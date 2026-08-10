@@ -238,7 +238,12 @@ export function EtapaMatch({ form, patch, orcamentoId, onOrcamentoPersistido }: 
         )}
       </div>
 
-      {/* Sem fórmula: base de MP manual */}
+      {/* Sem fórmula: base de MP manual + PORTA PRO LAB.
+          O combinado é "sem fórmula -> o lab é acionado", e este é o SEGUNDO
+          caminho pro mesmo estado (o primeiro é o estado vazio da busca). Sem o
+          botão aqui, clicar "Sem fórmula" depois de uma busca sem match FECHAVA
+          a porta que existia — o bloco da busca some junto. ASSÍNCRONO: solicitar
+          não impede seguir com o custo estimado. */}
       {form.sem_formula && (
         <div className="max-w-sm space-y-2 rounded-md border border-border bg-sand/40 p-4">
           <Label htmlFor="budget_mp">Custo base de MP (R$/kg)</Label>
@@ -254,6 +259,21 @@ export function EtapaMatch({ form, patch, orcamentoId, onOrcamentoPersistido }: 
           <p className="text-caption text-warm-500">
             Sem fórmula, o cálculo usa este custo de matéria-prima por kg.
           </p>
+          <div className="border-t border-border pt-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={solicitarLaboratorio}
+              disabled={persistirEAbrir.isPending}
+            >
+              {persistirEAbrir.isPending ? <Spinner /> : <Beaker className="size-4" />}
+              Solicitar ao Laboratório
+            </Button>
+            <p className="mt-2 text-caption text-warm-500">
+              Pode seguir cotando com o custo estimado — quando o laboratório concluir, a fórmula
+              nova é oferecida aqui mesmo.
+            </p>
+          </div>
         </div>
       )}
 
