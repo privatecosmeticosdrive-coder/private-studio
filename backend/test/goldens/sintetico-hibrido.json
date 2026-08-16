@@ -1,5 +1,5 @@
 {
-  "_fonte": "orcamento hibrido (id 703425a1-638f-4884-8a69-2141f5a4be1a) — engine fiscal 3.0",
+  "_fonte": "orcamento hibrido (id 3f9078e9-bc58-4bac-91fd-325628c72188) — engine fiscal 3.0",
   "modo_operacao": "hibrido",
   "inputs": {
     "cmp_base_mp_kg": 50,
@@ -10,8 +10,14 @@
     "embalagem_un": 0
   },
   "oper": {
-    "mo_folha_mensal": 75000,
-    "mo_dias_uteis": 22,
+    "producao": {
+      "custo_fixo_producao_mensal": 83084,
+      "linhas_paralelas": 2.5,
+      "eficiencia_producao": 0.82,
+      "setup_minutos": 60,
+      "dias_uteis_mes": 22,
+      "horas_dia": 8
+    },
     "desvio_mp_pct": 10,
     "frete_un_brl": 0.1
   },
@@ -50,10 +56,13 @@
       "custo_material_un": 11.1
     },
     "mao_de_obra": {
-      "mo_diario": 3409.09,
-      "producao_diaria": 1920,
-      "dias_necessarios": 1,
-      "mo_un": 3.4091
+      "taxa_minuto": 3.838,
+      "custo_setup_ordem": 230.28,
+      "minutos_produtivos_dia_linha": 393.6,
+      "producao_diaria": 1574.4,
+      "setup_un": 0.2303,
+      "corrida_un": 0.9595,
+      "mo_un": 1.1898
     },
     "parcelas": {
       "material": {
@@ -62,19 +71,19 @@
         "preco_un": 24.3956
       },
       "mo": {
-        "custo_un": 3.4091,
+        "custo_un": 1.1898,
         "taxa_pct": 0,
-        "preco_un": 4.8701
+        "preco_un": 1.6997
       }
     },
     "resultado": {
       "margem_pct": 30,
-      "preco_sipi": 29.27,
+      "preco_sipi": 26.1,
       "ipi_pct": 4.55,
       "base_ipi": "material",
       "ipi_un": 1.11,
       "icms_sobre_ipi": 0,
-      "preco_cipi": 30.38
+      "preco_cipi": 27.21
     },
     "fundamentos": [
       "ICMS do material: carga efetiva 12% (art. 34, Anexo II, RICMS/SP — cliente RPA, finalidade industrializacao).",

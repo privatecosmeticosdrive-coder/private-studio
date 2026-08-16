@@ -16,11 +16,13 @@
  *    IPI é somado por fora como componente EXPLÍCITO (icms_sobre_ipi) — nada
  *    embutido silenciosamente.
  *
- * MO usa o MESMO modelo do vigente (folha/dias × ceil de dia) — o modelo de
- * 3 componentes é etapa futura (04_estado_atual §6); esta fase muda IMPOSTO,
- * não filosofia de MO — mantém o diff dos goldens interpretável.
+ * MO — CORTE F3 (rodada 2, ago/2026): modelo de 3 componentes. SAÍRAM a folha
+ * inteira como base, o `Math.ceil` de dia inteiro e o 480 fixo. ENTRARAM setup
+ * diluído por lote + corrida sobre capacidade normal, com taxa/minuto e minutos
+ * produtivos SEMPRE derivados de `parametro_producao` (nunca literais).
+ * Decisão auditável em `prisma/comparar-mo-rodada2.ts`.
  */
-import { producaoDiaria } from './custo-engine';
+import { avaliarMoq, calcularCustoProducao, type ParametrosProducao } from './custo-producao.util';
 import type { TributosSaida, TributosParcela } from './matriz-fiscal.util';
 
 export interface InputsFiscal {
@@ -30,12 +32,22 @@ export interface InputsFiscal {
   un_min: number;
   margem_pct: number;
   embalagem_un?: number;
+  /**
+   * MPs da composição SEM preço (regra 6 — falha visível): elas entram no
+   * cálculo valendo R$0, então o custo de material sai SUBESTIMADO. Não
+   * bloqueia (o comercial às vezes precisa cotar com fórmula incompleta), mas
+   * o aviso é propagado para tela e PDF — nunca só o score baixo.
+   */
+  mp_sem_preco?: string[];
 }
 
-/** Parâmetros OPERACIONAIS (não fiscais) — mesmos campos que o vigente usa. */
+/**
+ * Parâmetros OPERACIONAIS (não fiscais).
+ * `producao` vem de `parametro_producao` (versionado, com fonte) — substituiu
+ * mo_folha_mensal/mo_dias_uteis no cálculo da MO no corte F3.
+ */
 export interface ParametrosOperacionaisFiscal {
-  mo_folha_mensal: number;
-  mo_dias_uteis: number;
+  producao: ParametrosProducao;
   desvio_mp_pct: number;
   frete_un_brl: number;
 }
@@ -74,11 +86,21 @@ export function calcularCustoFiscal(
   const frete = oper.frete_un_brl;
   const custo_material_un = mp_base + desvio + embalagem + frete;
 
-  // ---- custo de MO por unidade (modelo vigente, SEM flat de 9,25%) ----
-  const mo_diario = oper.mo_folha_mensal / oper.mo_dias_uteis;
-  const un_dia = producaoDiaria(inputs.un_min);
-  const dias_necessarios = Math.ceil(quantidade / un_dia);
-  const mo_un = (mo_diario * dias_necessarios) / quantidade;
+  // ---- custo de PRODUÇÃO por unidade (3 componentes — corte F3) ----
+  // setup por ORDEM diluído no lote + corrida em minuto produtivo, ambos sobre
+  // a taxa derivada da capacidade NORMAL. Sem ceil de dia, sem 480 fixo.
+  const prod = calcularCustoProducao(oper.producao, inputs.un_min, quantidade);
+  const mo_un = prod.custo_producao_un;
+  const un_dia = prod.producao_dia_linha;
+
+  // ALERTA de MOQ econômico (derivado; não bloqueia, não muda preço).
+  // Variável = o que escala com a quantidade: material + corrida (sem setup).
+  const alerta_moq = avaliarMoq(
+    prod.custo_setup_ordem,
+    custo_material_un + prod.corrida_un,
+    quantidade,
+    oper.producao.moq_economico_valor,
+  );
 
   // ---- parcelas por modo ----
   // industrializacao: custo de material próprio residual (se houver) entra como
@@ -135,10 +157,24 @@ export function calcularCustoFiscal(
       frete: r2(frete),
       custo_material_un: r4(custo_material_un),
     },
+    // ---- ALERTAS derivados no cálculo (não bloqueiam, não mudam preço) ----
+    alertas: {
+      moq: alerta_moq,
+      mp_sem_preco:
+        inputs.mp_sem_preco && inputs.mp_sem_preco.length > 0
+          ? { quantidade: inputs.mp_sem_preco.length, nomes: inputs.mp_sem_preco }
+          : null,
+    },
+    // Forma 3.1 — MO de 3 componentes. `dias_necessarios` NÃO existe mais
+    // (era o artefato do ceil). Snapshots antigos preservam a forma antiga:
+    // o renderer e o PDF toleram as duas (fronteira tese 2).
     mao_de_obra: {
-      mo_diario: r2(mo_diario),
+      taxa_minuto: prod.taxa_minuto,
+      custo_setup_ordem: prod.custo_setup_ordem,
+      minutos_produtivos_dia_linha: prod.minutos_produtivos_dia_linha,
       producao_diaria: r2(un_dia),
-      dias_necessarios,
+      setup_un: prod.setup_un,
+      corrida_un: prod.corrida_un,
       mo_un: r4(mo_un),
     },
     parcelas: {

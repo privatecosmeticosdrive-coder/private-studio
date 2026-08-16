@@ -82,11 +82,21 @@ interface CalcMaterialV3 {
   frete: number;
   custo_material_un: number;
 }
+/**
+ * MO do v3 em DUAS formas (o PDF tolera as duas — fronteira tese 2):
+ *  3.1 (corte F3): taxa_minuto + setup_un + corrida_un.
+ *  3.0 (pré-corte): mo_diario + dias_necessarios (artefato do ceil).
+ */
 interface CalcMaoDeObraV3 {
-  mo_diario: number;
   producao_diaria: number;
-  dias_necessarios: number;
   mo_un: number;
+  taxa_minuto?: number;
+  custo_setup_ordem?: number;
+  minutos_produtivos_dia_linha?: number;
+  setup_un?: number;
+  corrida_un?: number;
+  mo_diario?: number;
+  dias_necessarios?: number;
 }
 interface CalcParcelaV3 {
   custo_un: number;
@@ -101,8 +111,11 @@ interface CalcNcmV3 {
   tratamento: string;
 }
 interface CalcOperV3 {
-  mo_folha_mensal: number;
-  mo_dias_uteis: number;
+  // 3.0: folha/dias. 3.1 (corte F3): substituídos por `producao` (parâmetros
+  // versionados) — opcionais para o PDF tolerar snapshots das duas formas.
+  mo_folha_mensal?: number;
+  mo_dias_uteis?: number;
+  producao?: Record<string, number>;
   desvio_mp_pct: number;
   frete_un_brl: number;
 }
@@ -144,6 +157,16 @@ interface CalculoJson {
   modo_operacao?: 'full_service' | 'hibrido' | 'industrializacao';
   ncm?: CalcNcmV3;
   material?: CalcMaterialV3;
+  /** alertas derivados (red team): MOQ e MP sem preço. Ausente em snapshots antigos. */
+  alertas?: {
+    moq: {
+      custo_lote: number;
+      peso_setup_pct: number;
+      lote_minimo_valor: number;
+      quantidade_minima: number;
+    } | null;
+    mp_sem_preco: { quantidade: number; nomes: string[] } | null;
+  };
   parcelas?: { material: CalcParcelaV3 | null; mo: CalcParcelaV3 | null };
   parametros_operacionais?: CalcOperV3;
   fundamentos?: string[];
@@ -342,6 +365,8 @@ export class PdfService {
         },
         rotulo: { fontSize: 7, color: COR.warm500, characterSpacing: 0.4 },
         th: { fontSize: 7.5, bold: true, color: COR.warm600 },
+        // avisos do red team (MP sem preço, MOQ) — precisam saltar da página
+        aviso: { fontSize: 7.5, bold: true, color: COR.warning },
       },
     };
   }
@@ -625,6 +650,22 @@ export class PdfService {
       this.linhaRV('Frete/un', this.brl(mat.frete)),
       this.linhaRV('Custo de material/un', this.brl(mat.custo_material_un), true),
     ];
+    // Aviso AGREGADO de MP sem preço: a linha da MP já aparece na formulação,
+    // mas o impacto no custo tem que estar junto do número (regra 7).
+    const semPreco = c.alertas?.mp_sem_preco;
+    if (semPreco) {
+      bodyMat.push([
+        {
+          text:
+            `ATENCAO: ${semPreco.quantidade} materia-prima(s) SEM PRECO ` +
+            `(${semPreco.nomes.join(', ')}) entraram valendo R$ 0,00. ` +
+            `O custo de material acima esta SUBESTIMADO.`,
+          colSpan: 2,
+          style: 'aviso',
+        },
+        {},
+      ]);
+    }
     if (c.parcelas?.material) {
       bodyMat.push(
         this.linhaRV('Tributos por dentro', `${this.num(c.parcelas.material.taxa_pct)}%`),
@@ -635,17 +676,44 @@ export class PdfService {
     const bodyMo: TableCell[][] = [
       [{ text: 'Mão de obra / execução', style: 'th', colSpan: 2 }, {}],
     ];
-    if (oper) {
+    // Forma 3.1 (corte F3) vs 3.0 (histórico): só imprime o que o snapshot tem.
+    if (mo.setup_un != null) {
       bodyMo.push(
-        this.linhaRV('Folha mensal', this.brl(oper.mo_folha_mensal)),
-        this.linhaRV('Dias úteis/mês', this.num(oper.mo_dias_uteis)),
+        this.linhaRV('Setup/un (ordem diluída no lote)', this.brl(mo.setup_un)),
+        this.linhaRV('Corrida/un (tempo real)', this.brl(mo.corrida_un!)),
+        this.linhaRV('Taxa por minuto produtivo', this.brl(mo.taxa_minuto!)),
+        this.linhaRV('Produção diária/linha', `${this.num(mo.producao_diaria)} un`),
       );
+    } else {
+      if (oper?.mo_folha_mensal != null) {
+        bodyMo.push(
+          this.linhaRV('Folha mensal', this.brl(oper.mo_folha_mensal)),
+          this.linhaRV('Dias úteis/mês', this.num(oper.mo_dias_uteis!)),
+        );
+      }
+      bodyMo.push(this.linhaRV('Produção diária', `${this.num(mo.producao_diaria)} un`));
+      if (mo.dias_necessarios != null) {
+        bodyMo.push(
+          this.linhaRV('Dias necessários (modelo anterior)', this.num(mo.dias_necessarios)),
+        );
+      }
     }
-    bodyMo.push(
-      this.linhaRV('Produção diária', `${this.num(mo.producao_diaria)} un`),
-      this.linhaRV('Dias necessários', this.num(mo.dias_necessarios)),
-      this.linhaRV('MO/un', this.brl(mo.mo_un), true),
-    );
+    bodyMo.push(this.linhaRV('MO/un', this.brl(mo.mo_un), true));
+    // MOQ econômico: o setup pesa demais neste lote — informa, não bloqueia.
+    const moq = c.alertas?.moq;
+    if (moq) {
+      bodyMo.push([
+        {
+          text:
+            `ABAIXO DO MOQ ECONOMICO: setup = ${moq.peso_setup_pct}% do lote ` +
+            `(${this.brl(moq.custo_lote)}). A partir de ${moq.quantidade_minima} un ` +
+            `(lote de ${this.brl(moq.lote_minimo_valor)}) o setup cai para 10% ou menos.`,
+          colSpan: 2,
+          style: 'aviso',
+        },
+        {},
+      ]);
+    }
     if (c.parcelas?.mo) {
       bodyMo.push(
         this.linhaRV('Custo da parcela/un', this.brl(c.parcelas.mo.custo_un)),

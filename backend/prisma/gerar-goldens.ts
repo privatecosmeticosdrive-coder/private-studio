@@ -77,17 +77,43 @@ async function main() {
     if (f.endsWith('.json')) fs.unlinkSync(path.join(GOLDENS_DIR, f));
   }
 
-  // ---- 15 reais (full_service) ----
+  // ---- 15 reais (full_service) — BASELINE FIXO, por número ----
+  // NÃO varrer todos os calculados: golden é rede de regressão e precisa ser
+  // ESTÁVEL e representativo. Varredura infla a suíte com orçamentos de cliente
+  // fictício (uma mudança futura quebraria 30 arquivos em vez de 17) e
+  // cristaliza dado de teste como referência. A expansão do baseline é decisão
+  // DELIBERADA — quando houver orçamentos reais representativos, acrescente o
+  // número aqui de propósito.
+  const NUMEROS_BASELINE = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
   const reais = await prisma.orcamento.findMany({
-    where: { calculo: { not: Prisma.AnyNull } },
+    where: { numero: { in: NUMEROS_BASELINE }, NOT: { calculo: { equals: Prisma.DbNull } } },
     select: { id: true, numero: true, formula_id: true, ncm_id: true },
     orderBy: { numero: 'asc' },
   });
+  if (reais.length !== NUMEROS_BASELINE.length) {
+    const achados = reais.map((r) => r.numero);
+    console.log(
+      `AVISO: baseline esperava ${NUMEROS_BASELINE.length} orcamentos, achou ${reais.length}. ` +
+        `Faltando: ${NUMEROS_BASELINE.filter((n) => !achados.includes(n)).join(', ')}`,
+    );
+  }
+  // Orçamento sem NCM efetivo NÃO calcula (regra 6 — falha visível, F4A) e por
+  // isso não pode virar golden: PULA com aviso em vez de abortar a geração
+  // inteira. É lacuna de DADO daquele orçamento, não regressão do engine.
+  let pulados = 0;
   for (const orc of reais) {
-    const g = await golden(svc, prisma, orc);
+    let g: Awaited<ReturnType<typeof golden>>;
+    try {
+      g = await golden(svc, prisma, orc);
+    } catch (e) {
+      console.log(`#${orc.numero} PULADO — ${(e as Error).message.slice(0, 80)}`);
+      pulados++;
+      continue;
+    }
     fs.writeFileSync(path.join(GOLDENS_DIR, `orcamento-${orc.numero}.json`), JSON.stringify(g, null, 2) + '\n');
     console.log(`#${orc.numero} (${g.modo_operacao}) -> cipi ${g.esperado.resultado.preco_cipi}`);
   }
+  if (pulados > 0) console.log(`(${pulados} orcamento(s) pulado(s) por falta de NCM efetivo)`);
 
   // ---- 2 sintéticos (híbrido + industrialização) — criados e excluídos ----
   const cli = await prisma.cliente.findFirst({ where: { nome: 'Teste Agente' }, select: { id: true } });

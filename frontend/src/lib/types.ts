@@ -399,11 +399,41 @@ export interface CalculoMaterial {
   custo_material_un: number;
 }
 
+/**
+ * MO do cálculo v3. Duas formas coexistem e o renderer tolera as duas:
+ *  - 3.1 (corte F3, rodada 2): taxa_minuto + setup_un + corrida_un.
+ *  - 3.0 (pré-corte): mo_diario + dias_necessarios (o artefato do ceil).
+ * Snapshot congelado NUNCA é reescrito — orçamento antigo mantém a forma dele.
+ */
 export interface CalculoMaoDeObra {
-  mo_diario: number;
   producao_diaria: number;
-  dias_necessarios: number;
   mo_un: number;
+  // ---- forma 3.1 (modelo de 3 componentes) ----
+  taxa_minuto?: number;
+  custo_setup_ordem?: number;
+  minutos_produtivos_dia_linha?: number;
+  setup_un?: number;
+  corrida_un?: number;
+  // ---- forma 3.0 (histórico, com ceil de dia inteiro) ----
+  mo_diario?: number;
+  dias_necessarios?: number;
+}
+
+/**
+ * Alertas DERIVADOS no cálculo (não bloqueiam, não mudam preço).
+ * Ausentes em snapshots anteriores ao red team — por isso opcionais.
+ */
+export interface AlertaMoq {
+  custo_lote: number;
+  peso_setup_pct: number;
+  lote_minimo_valor: number;
+  quantidade_minima: number;
+  motivo: 'abaixo_do_valor_minimo' | 'setup_acima_do_teto' | 'ambos';
+}
+
+export interface CalculoAlertas {
+  moq: AlertaMoq | null;
+  mp_sem_preco: { quantidade: number; nomes: string[] } | null;
 }
 
 /** Parcela precificada (material ou MO): custo, tributos "por dentro", preço. */
@@ -443,6 +473,8 @@ export interface CalculoJson {
   parametros_fiscais: CalculoParametrosFiscais;
   material: CalculoMaterial;
   mao_de_obra: CalculoMaoDeObra;
+  /** opcional: snapshots anteriores ao red team não têm o bloco */
+  alertas?: CalculoAlertas;
   parcelas: { material: CalculoParcela | null; mo: CalculoParcela | null };
   resultado: CalculoResultado;
   fundamentos: string[];

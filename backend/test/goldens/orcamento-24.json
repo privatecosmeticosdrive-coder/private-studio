@@ -10,8 +10,14 @@
     "embalagem_un": 0
   },
   "oper": {
-    "mo_folha_mensal": 75000,
-    "mo_dias_uteis": 22,
+    "producao": {
+      "custo_fixo_producao_mensal": 83084,
+      "linhas_paralelas": 2.5,
+      "eficiencia_producao": 0.82,
+      "setup_minutos": 60,
+      "dias_uteis_mes": 22,
+      "horas_dia": 8
+    },
     "desvio_mp_pct": 10,
     "frete_un_brl": 0.1
   },
@@ -50,27 +56,30 @@
       "custo_material_un": 0.4291
     },
     "mao_de_obra": {
-      "mo_diario": 3409.09,
-      "producao_diaria": 2880,
-      "dias_necessarios": 1,
-      "mo_un": 3.4091
+      "taxa_minuto": 3.838,
+      "custo_setup_ordem": 230.28,
+      "minutos_produtivos_dia_linha": 393.6,
+      "producao_diaria": 2361.6,
+      "setup_un": 0.2303,
+      "corrida_un": 0.6397,
+      "mo_un": 0.8699
     },
     "parcelas": {
       "material": {
-        "custo_un": 3.8381,
+        "custo_un": 1.299,
         "taxa_pct": 24.5,
-        "preco_un": 8.4355
+        "preco_un": 2.8548
       },
       "mo": null
     },
     "resultado": {
       "margem_pct": 30,
-      "preco_sipi": 8.44,
+      "preco_sipi": 2.85,
       "ipi_pct": 14.3,
       "base_ipi": "total",
-      "ipi_un": 1.21,
+      "ipi_un": 0.41,
       "icms_sobre_ipi": 0,
-      "preco_cipi": 9.64
+      "preco_cipi": 3.26
     },
     "fundamentos": [
       "ICMS do material: carga efetiva 12% (art. 34, Anexo II, RICMS/SP — cliente RPA, finalidade industrializacao).",

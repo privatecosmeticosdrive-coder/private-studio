@@ -30,6 +30,61 @@ export interface ParametrosProducao {
   setup_minutos: number; // ex.: 60 (global por ora)
   dias_uteis_mes: number; // ex.: 22
   horas_dia: number; // ex.: 8
+  /** política comercial (ex.: 2.400) — usada só no alerta de MOQ, não no custo. */
+  moq_economico_valor?: number;
+}
+
+/** Teto de participação do setup no custo do lote (política): 10%. */
+export const PESO_SETUP_MAXIMO = 0.1;
+
+export interface AlertaMoq {
+  custo_lote: number;
+  peso_setup_pct: number; // participação do setup no custo do lote
+  /** menor custo de lote que satisfaz AMBOS os critérios */
+  lote_minimo_valor: number;
+  /** quantidade que atinge esse custo de lote, nas condições deste orçamento */
+  quantidade_minima: number;
+  motivo: 'abaixo_do_valor_minimo' | 'setup_acima_do_teto' | 'ambos';
+}
+
+/**
+ * ALERTA de MOQ econômico — DERIVADO no cálculo, nunca coluna. NÃO bloqueia e
+ * NÃO aplica margem premium (isso é decisão comercial da escada de volume):
+ * só torna visível que o lote é pequeno demais para diluir o setup.
+ *
+ * Dispara se o custo do lote fica abaixo do mínimo de política OU se o setup
+ * pesa mais que o teto. `custo_un_variavel` = custo por unidade SEM o setup
+ * (material + corrida) — é o que escala com a quantidade.
+ */
+export function avaliarMoq(
+  custo_setup_ordem: number,
+  custo_un_variavel: number,
+  quantidade: number,
+  moq_economico_valor?: number,
+): AlertaMoq | null {
+  const custo_lote = custo_un_variavel * quantidade + custo_setup_ordem;
+  if (custo_lote <= 0) return null;
+  const peso = custo_setup_ordem / custo_lote;
+
+  const abaixoValor = moq_economico_valor != null && custo_lote < moq_economico_valor;
+  const setupAlto = peso > PESO_SETUP_MAXIMO;
+  if (!abaixoValor && !setupAlto) return null;
+
+  // lote mínimo que satisfaz os DOIS critérios:
+  //  - custo_lote >= moq_economico_valor
+  //  - setup/custo_lote <= teto  =>  custo_lote >= setup / teto
+  const alvo = Math.max(moq_economico_valor ?? 0, custo_setup_ordem / PESO_SETUP_MAXIMO);
+  // custo_lote(q) = custo_un_variavel × q + setup  =>  q = (alvo − setup) / custo_un_variavel
+  const qMin =
+    custo_un_variavel > 0 ? Math.ceil((alvo - custo_setup_ordem) / custo_un_variavel) : 0;
+
+  return {
+    custo_lote: r2(custo_lote),
+    peso_setup_pct: Number((peso * 100).toFixed(2)),
+    lote_minimo_valor: r2(alvo),
+    quantidade_minima: Math.max(qMin, quantidade + 1),
+    motivo: abaixoValor && setupAlto ? 'ambos' : abaixoValor ? 'abaixo_do_valor_minimo' : 'setup_acima_do_teto',
+  };
 }
 
 export interface CustoProducao {

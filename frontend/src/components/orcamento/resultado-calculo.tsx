@@ -148,6 +148,39 @@ export function ResultadoCalculo({ calc }: { calc: CalculoJson | CalculoJsonLega
         </div>
       </div>
 
+      {/* ALERTAS (red team) — impossíveis de ignorar: ficam ACIMA dos blocos
+          de detalhe, não escondidos no score. Não bloqueiam o orçamento. */}
+      {calc.alertas?.mp_sem_preco && (
+        <div className="rounded-lg border border-error bg-error-soft p-4">
+          <p className="font-medium text-error">
+            Custo de material SUBESTIMADO — {calc.alertas.mp_sem_preco.quantidade} matéria-prima
+            {calc.alertas.mp_sem_preco.quantidade > 1 ? 's' : ''} sem preço
+          </p>
+          <p className="mt-1 text-sm text-warm-700">
+            {calc.alertas.mp_sem_preco.nomes.join(', ')} — entrou no cálculo valendo{' '}
+            <strong className="text-ink">R$ 0,00</strong>. O preço abaixo está mais baixo que o
+            real. Cote antes de enviar ao cliente.
+          </p>
+        </div>
+      )}
+      {calc.alertas?.moq && (
+        <div className="rounded-lg border border-warning bg-warning-soft p-4">
+          <p className="font-medium text-ink">
+            Abaixo do MOQ econômico — o setup pesa{' '}
+            <span className="tnum">{calc.alertas.moq.peso_setup_pct}%</span> deste lote
+          </p>
+          <p className="mt-1 text-sm text-warm-700">
+            Custo do lote <span className="tnum">{brl(calc.alertas.moq.custo_lote)}</span>. A troca
+            de SKU custa o mesmo em qualquer tamanho de lote, então em lote pequeno ela encarece
+            cada unidade. A partir de{' '}
+            <strong className="text-ink tnum">
+              {calc.alertas.moq.quantidade_minima.toLocaleString('pt-BR')} un
+            </strong>{' '}
+            (lote de {brl(calc.alertas.moq.lote_minimo_valor)}) o setup cai para 10% ou menos.
+          </p>
+        </div>
+      )}
+
       {/* Enquadramento fiscal */}
       <div className="rounded-lg border border-border bg-surface p-5">
         <h3 className="mb-2 font-medium text-ink">Enquadramento fiscal</h3>
@@ -186,9 +219,34 @@ export function ResultadoCalculo({ calc }: { calc: CalculoJson | CalculoJsonLega
         </div>
 
         <div className="rounded-lg border border-border bg-surface p-5">
-          <h3 className="mb-2 font-medium text-ink">Mão de obra</h3>
-          <Linha rotulo="Produção diária" valor={`${calc.mao_de_obra.producao_diaria} un`} />
-          <Linha rotulo="Dias necessários" valor={String(calc.mao_de_obra.dias_necessarios)} />
+          <h3 className="mb-2 font-medium text-ink">Produção (mão de obra)</h3>
+          {/* Forma 3.1 (corte F3): setup por ordem + corrida real. Snapshot
+              antigo (3.0) não tem esses campos e cai no ramo histórico —
+              nunca exibir campo ausente como se existisse (regra 7). */}
+          {calc.mao_de_obra.setup_un != null ? (
+            <>
+              <Linha
+                rotulo="Setup/un (ordem diluída no lote)"
+                valor={brl(calc.mao_de_obra.setup_un)}
+              />
+              <Linha rotulo="Corrida/un (tempo real)" valor={brl(calc.mao_de_obra.corrida_un!)} />
+              <Linha
+                rotulo="Taxa por minuto produtivo"
+                valor={brl(calc.mao_de_obra.taxa_minuto!)}
+              />
+              <Linha rotulo="Produção diária/linha" valor={`${calc.mao_de_obra.producao_diaria} un`} />
+            </>
+          ) : (
+            <>
+              <Linha rotulo="Produção diária" valor={`${calc.mao_de_obra.producao_diaria} un`} />
+              {calc.mao_de_obra.dias_necessarios != null && (
+                <Linha
+                  rotulo="Dias necessários (modelo anterior)"
+                  valor={String(calc.mao_de_obra.dias_necessarios)}
+                />
+              )}
+            </>
+          )}
           <div className="mt-1 border-t border-border pt-1">
             <Linha rotulo="MO/un" valor={brl(calc.mao_de_obra.mo_un)} destaque />
           </div>

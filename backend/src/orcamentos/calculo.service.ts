@@ -6,6 +6,7 @@ import { lerParametrosCusto } from './params.util';
 import { CalcularDto } from './dto/calcular.dto';
 import { resolverNcmEfetivo } from './ncm-efetivo.util';
 import { lerParametrosFiscaisVigentes } from './params-fiscais.util';
+import { lerParametrosProducaoVigentes } from './params-producao.util';
 import { calcularCustoFiscal, InputsFiscal } from './custo-engine-fiscal';
 import type { ModoOperacao, NcmFiscal, PerfilClienteFiscal } from './matriz-fiscal.util';
 import { resolverTributosSaida } from './matriz-fiscal.util';
@@ -18,6 +19,7 @@ type FormulaComCusto = {
   origem: string;
   custo_mp_kg_atual: number;
   score_global: number;
+  mp_sem_preco: string[];
   ingredientes: any[];
   composicao_snapshot: any[];
 } | null;
@@ -113,15 +115,32 @@ export class CalculoService {
       un_min,
       margem_pct,
       embalagem_un: emb.embalagem_un,
+      mp_sem_preco: formula?.mp_sem_preco ?? [],
     };
+    // CORTE F3: a MO vem de parametro_producao (versionado, com fonte).
+    // mo_folha_mensal/mo_dias_uteis saíram do cálculo — seguem na system_config
+    // como legado até a F6, sem influenciar preço.
+    const producao = await lerParametrosProducaoVigentes(this.prisma);
     const oper = {
-      mo_folha_mensal: cfg.mo_folha_mensal,
-      mo_dias_uteis: cfg.mo_dias_uteis,
+      producao,
       desvio_mp_pct: cfg.desvio_mp_pct,
       frete_un_brl: cfg.frete_un_brl,
     };
     const calc = calcularCustoFiscal(inputs, oper, tributos);
-    const score_global = formula ? formula.score_global : 55; // sem formula => baixa confianca
+    // ---- SCORE do orçamento: MATERIAL INTEIRO (MP + embalagem) ----
+    // Antes media só a idade das cotações de MP e ignorava a embalagem — no #76
+    // a embalagem era 93% do custo de material e não pontuava nada. Agora é
+    // média PONDERADA pela participação de cada parte no custo de material,
+    // com a MESMA régua de idade (score.util). Embalagem sem data_cotacao
+    // pontua 50, igual a MP sem data — não é premiada por falta de dado.
+    const scoreMp = formula ? formula.score_global : 55; // sem formula => baixa confianca
+    const custoMpUn = cmp_base_mp_kg * (volume_un / 1000);
+    const custoEmbUn = emb.embalagem_un;
+    const scoreEmb = emb.snapshot ? scoreCotacao(emb.snapshot.data_cotacao ?? null) : null;
+    const score_global =
+      scoreEmb != null && custoEmbUn > 0 && custoMpUn + custoEmbUn > 0
+        ? Math.round((scoreMp * custoMpUn + scoreEmb * custoEmbUn) / (custoMpUn + custoEmbUn))
+        : scoreMp;
 
     // Blindagem: sem base de MP (R$0/kg) o preco vira so MO — sinaliza preliminar.
     const semBaseMp = cmp_base_mp_kg === 0;
@@ -152,6 +171,7 @@ export class CalculoService {
       parametros_fiscais: pf,
       material: calc.material,
       mao_de_obra: calc.mao_de_obra,
+      alertas: calc.alertas, // MOQ + MP sem preço (derivados; não bloqueiam)
       parcelas: calc.parcelas,
       resultado: calc.resultado,
       fundamentos: calc.fundamentos,
@@ -203,6 +223,8 @@ export class CalculoService {
           preco_un_brl: e.preco_un_brl != null ? Number(e.preco_un_brl) : null,
           fornecedor: e.fornecedor,
           preco_estimado: e.preco_estimado,
+          // usada no score do orçamento (mesma régua de idade das MPs)
+          data_cotacao: e.data_cotacao,
         };
       }
     }
@@ -251,6 +273,12 @@ export class CalculoService {
           ? Math.round(ingredientes.reduce((a, i) => a + i.score, 0) / ingredientes.length)
           : 50;
 
+    // Regra 6 — MP sem preço entra valendo R$0: o custo sai SUBESTIMADO e isso
+    // precisa ser visível (não basta o score baixo). Nomes vão para o alerta.
+    const mp_sem_preco = ingredientes
+      .filter((i) => i.preco_kg_atual == null)
+      .map((i) => i.nome ?? '(sem nome)');
+
     return {
       id: f.id,
       nome_produto: f.nome_produto,
@@ -259,6 +287,7 @@ export class CalculoService {
       origem: f.origem,
       custo_mp_kg_atual: Number(custoAtual.toFixed(4)),
       score_global: score,
+      mp_sem_preco,
       ingredientes,
       composicao_snapshot: ingredientes,
     };

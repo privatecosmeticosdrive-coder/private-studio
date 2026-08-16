@@ -1,5 +1,5 @@
 /** Specs do modelo de MO de 3 componentes (rodada 2) — função pura. */
-import { calcularCustoProducao, type ParametrosProducao } from './custo-producao.util';
+import { avaliarMoq, calcularCustoProducao, type ParametrosProducao } from './custo-producao.util';
 
 /** Parâmetros da rodada 2 (ago/2026) — mesmos valores da seed. */
 const RODADA2: ParametrosProducao = {
@@ -87,5 +87,51 @@ describe('guards', () => {
     expect(() =>
       calcularCustoProducao({ ...RODADA2, eficiencia_producao: 0 }, 2, 100),
     ).toThrow(/Capacidade/);
+  });
+});
+
+describe('avaliarMoq — alerta de MOQ econômico (Ajuste 1, red team #77)', () => {
+  // #77 real: custo do lote R$1.300, setup 230,28 -> 17,7% (teto 10%)
+  const SETUP = 230.28;
+
+  it('reproduz o caso #77: dispara por AMBOS os critérios', () => {
+    // variável/un ≈ (0,4291 material + 0,6397 corrida) = 1,0688
+    const a = avaliarMoq(SETUP, 1.0688, 1000, 2400)!;
+    expect(a).not.toBeNull();
+    expect(a.custo_lote).toBeCloseTo(1299.08, 1);
+    expect(a.peso_setup_pct).toBeCloseTo(17.73, 1);
+    expect(a.motivo).toBe('ambos');
+  });
+
+  it('lote grande não dispara (setup diluído e valor acima do mínimo)', () => {
+    expect(avaliarMoq(SETUP, 1.0688, 5000, 2400)).toBeNull();
+  });
+
+  it('quantidade_minima proposta REALMENTE resolve o alerta', () => {
+    const a = avaliarMoq(SETUP, 1.0688, 1000, 2400)!;
+    const depois = avaliarMoq(SETUP, 1.0688, a.quantidade_minima, 2400);
+    expect(depois).toBeNull(); // a sugestão é acionável, não decorativa
+  });
+
+  it('dispara só por VALOR quando o setup já pesa pouco', () => {
+    // lote de valor baixo mas com setup <10%: material caro, poucas unidades
+    const a = avaliarMoq(10, 100, 20, 2400)!;
+    expect(a.motivo).toBe('abaixo_do_valor_minimo');
+    expect(a.peso_setup_pct).toBeLessThan(10);
+  });
+
+  it('dispara só por SETUP quando não há valor mínimo configurado', () => {
+    const a = avaliarMoq(SETUP, 1.0688, 1000, undefined)!;
+    expect(a.motivo).toBe('setup_acima_do_teto');
+    expect(a.lote_minimo_valor).toBeCloseTo(SETUP / 0.1, 1);
+  });
+
+  it('nunca sugere quantidade menor ou igual à atual', () => {
+    const a = avaliarMoq(SETUP, 1.0688, 1000, 2400)!;
+    expect(a.quantidade_minima).toBeGreaterThan(1000);
+  });
+
+  it('custo de lote zero não gera alerta (nada a avisar)', () => {
+    expect(avaliarMoq(0, 0, 1000, 2400)).toBeNull();
   });
 });
