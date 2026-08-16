@@ -1,5 +1,5 @@
 {
-  "_fonte": "orcamento hibrido (id 3f9078e9-bc58-4bac-91fd-325628c72188) — engine fiscal 3.0",
+  "_fonte": "orcamento hibrido (id 006e1b03-6b25-4ced-832a-32ca977a635c) — engine fiscal 3.1",
   "modo_operacao": "hibrido",
   "inputs": {
     "cmp_base_mp_kg": 50,
@@ -7,7 +7,8 @@
     "quantidade": 1000,
     "un_min": 4,
     "margem_pct": 30,
-    "embalagem_un": 0
+    "embalagem_un": 0,
+    "mp_sem_preco": []
   },
   "oper": {
     "producao": {
@@ -16,7 +17,8 @@
       "eficiencia_producao": 0.82,
       "setup_minutos": 60,
       "dias_uteis_mes": 22,
-      "horas_dia": 8
+      "horas_dia": 8,
+      "moq_economico_valor": 2400
     },
     "desvio_mp_pct": 10,
     "frete_un_brl": 0.1

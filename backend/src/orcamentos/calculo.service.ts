@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { ParametrosCusto } from './custo-engine';
-import { scoreCotacao, faixaScore } from '../formulas/score.util';
+import { scoreCotacao, faixaScore, scoreMaterialPonderado } from '../formulas/score.util';
 import { lerParametrosCusto } from './params.util';
 import { CalcularDto } from './dto/calcular.dto';
 import { resolverNcmEfetivo } from './ncm-efetivo.util';
@@ -131,16 +131,16 @@ export class CalculoService {
     // Antes media só a idade das cotações de MP e ignorava a embalagem — no #76
     // a embalagem era 93% do custo de material e não pontuava nada. Agora é
     // média PONDERADA pela participação de cada parte no custo de material,
-    // com a MESMA régua de idade (score.util). Embalagem sem data_cotacao
-    // pontua 50, igual a MP sem data — não é premiada por falta de dado.
+    // com a MESMA régua de idade (score.util). A data vem do snapshot ou, se
+    // ele for anterior a esta fatia, do CATÁLOGO (fallback de leitura — ver
+    // resolverDataCotacaoEmbalagem). Sem data em lugar nenhum: pontua 50,
+    // igual a MP sem data — não é premiada por falta de dado.
     const scoreMp = formula ? formula.score_global : 55; // sem formula => baixa confianca
     const custoMpUn = cmp_base_mp_kg * (volume_un / 1000);
     const custoEmbUn = emb.embalagem_un;
-    const scoreEmb = emb.snapshot ? scoreCotacao(emb.snapshot.data_cotacao ?? null) : null;
-    const score_global =
-      scoreEmb != null && custoEmbUn > 0 && custoMpUn + custoEmbUn > 0
-        ? Math.round((scoreMp * custoMpUn + scoreEmb * custoEmbUn) / (custoMpUn + custoEmbUn))
-        : scoreMp;
+    const dataEmb = await this.resolverDataCotacaoEmbalagem(emb.snapshot);
+    const scoreEmb = emb.snapshot ? scoreCotacao(dataEmb) : null;
+    const score_global = scoreMaterialPonderado(scoreMp, custoMpUn, scoreEmb, custoEmbUn);
 
     // Blindagem: sem base de MP (R$0/kg) o preco vira so MO — sinaliza preliminar.
     const semBaseMp = cmp_base_mp_kg === 0;
@@ -153,7 +153,11 @@ export class CalculoService {
 
     const calculo = {
       _mode: 'fiscal_granular',
-      _modelo_versao: '3.0',
+      // 3.1 = corte do modelo de MO (setup por ordem + corrida sobre capacidade
+      // normal). O carimbo é DOCUMENTAL: renderer e PDF discriminam a forma por
+      // PRESENÇA DE CAMPO (mao_de_obra.setup_un), nunca por esta string — por
+      // isso snapshots antigos com '3.0' seguem sendo lidos normalmente.
+      _modelo_versao: '3.1',
       _gerado_em: new Date().toISOString(),
       _preliminar: preliminar || undefined,
       _aviso: aviso,
@@ -233,6 +237,30 @@ export class CalculoService {
     const preco = snap.preco_un_brl != null ? Number(snap.preco_un_brl) : null;
     // Sem cotacao -> usa R$0 e marca o orcamento como preliminar.
     return { embalagem_un: preco ?? 0, preliminar: preco == null, snapshot: snap };
+  }
+
+  /**
+   * FALLBACK DE LEITURA da data de cotação da embalagem (score).
+   *
+   * O snapshot preserva o PREÇO — esse é o valor econômico que a tese 2
+   * congela. A data de cotação é metadado de CONFIANÇA, não valor: snapshots
+   * anteriores à fatia do score simplesmente não têm o campo, e sem este
+   * fallback todo orçamento antigo exibiria confiança falsamente baixa
+   * (o #76 marcava 51 com a embalagem em dia no catálogo).
+   *
+   * Derivação na leitura, mesma disciplina do atraso da Fase 4 e do MOQ:
+   * NUNCA reescreve o snapshot, NUNCA toca o preço (que segue vindo do snapshot).
+   * Embalagem removida do catálogo -> null -> pontua 50, comportamento atual.
+   */
+  private async resolverDataCotacaoEmbalagem(snapshot: any | null): Promise<Date | null> {
+    if (!snapshot) return null;
+    if (snapshot.data_cotacao) return new Date(snapshot.data_cotacao);
+    if (snapshot.id == null) return null;
+    const cat = await this.prisma.embalagem.findUnique({
+      where: { id: Number(snapshot.id) },
+      select: { data_cotacao: true },
+    });
+    return cat?.data_cotacao ?? null;
   }
 
   // ---------------- carrega formula + custo atual + score ----------------

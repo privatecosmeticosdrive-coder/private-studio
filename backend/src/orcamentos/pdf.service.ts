@@ -65,7 +65,9 @@ interface CalcParametrosV1 {
   frete_un_brl: number;
 }
 
-// ---- Shape v3 (engine fiscal granular, _modelo_versao 3.0) ----
+// ---- Shape v3 (engine fiscal granular; _modelo_versao 3.0 pré-corte de MO,
+// 3.1 a partir dele). O carimbo é documental: a discriminação de forma é por
+// PRESENÇA DE CAMPO (isCalculoV3 e mao_de_obra.setup_un), nunca pela string. ----
 interface CalcResultadoV3 {
   margem_pct: number;
   preco_sipi: number;

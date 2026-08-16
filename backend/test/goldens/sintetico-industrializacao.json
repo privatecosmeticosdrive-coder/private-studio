@@ -1,5 +1,5 @@
 {
-  "_fonte": "orcamento industrializacao (id 9636736f-2a15-4ddb-b3d3-0d155d9b6a41) — engine fiscal 3.0",
+  "_fonte": "orcamento industrializacao (id 789f3be0-546e-4525-a094-21b7f29b1c26) — engine fiscal 3.1",
   "modo_operacao": "industrializacao",
   "inputs": {
     "cmp_base_mp_kg": 50,
@@ -7,7 +7,8 @@
     "quantidade": 1000,
     "un_min": 4,
     "margem_pct": 30,
-    "embalagem_un": 0
+    "embalagem_un": 0,
+    "mp_sem_preco": []
   },
   "oper": {
     "producao": {
@@ -16,7 +17,8 @@
       "eficiencia_producao": 0.82,
       "setup_minutos": 60,
       "dias_uteis_mes": 22,
-      "horas_dia": 8
+      "horas_dia": 8,
+      "moq_economico_valor": 2400
     },
     "desvio_mp_pct": 10,
     "frete_un_brl": 0.1

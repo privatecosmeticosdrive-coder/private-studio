@@ -12,6 +12,25 @@ export function scoreCotacao(dataCotacao: Date | null | undefined): number {
   return 60;
 }
 
+/**
+ * Score do MATERIAL do orçamento: média ponderada MP × embalagem pela
+ * participação de cada um no custo de material. Antes o score ignorava a
+ * embalagem — no #76 ela era 93,9% do custo e não pontuava nada.
+ *
+ * `scoreEmb = null` (sem embalagem, ou embalagem de custo zero) => devolve o
+ * score de MP puro, sem diluir.
+ */
+export function scoreMaterialPonderado(
+  scoreMp: number,
+  custoMpUn: number,
+  scoreEmb: number | null,
+  custoEmbUn: number,
+): number {
+  const total = custoMpUn + custoEmbUn;
+  if (scoreEmb == null || custoEmbUn <= 0 || total <= 0) return Math.round(scoreMp);
+  return Math.round((scoreMp * custoMpUn + scoreEmb * custoEmbUn) / total);
+}
+
 /** Faixa visual do termometro (Doc 1 §7). */
 export function faixaScore(score: number): 'verde' | 'amarelo' | 'laranja' | 'vermelho' {
   if (score >= 90) return 'verde';
