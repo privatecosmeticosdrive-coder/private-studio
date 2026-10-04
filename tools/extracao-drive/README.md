@@ -52,7 +52,7 @@ paddlex 3.7.2) e rodar `python bin/ocr_worker.py 1` (e `2` em paralelo). ~75 s/f
 cd backend
 npm run import:extracao-drive              # PREVIEW: fórmulas e preços que entrariam / seriam pulados, e por quê
 npm run import:extracao-drive -- --apply   # grava em UMA transação + escreve rollback .sql (untracked)
-# opções: --sem-precos | --sem-formulas
+# opções: --sem-mps-novas | --sem-formulas | --sem-precos | --sem-alertas
 ```
 Regras completas e números do smoke: `docs/extracao-drive-2026-10/RELATORIO_EXTRACAO.md` §8.
 O nome do produto vem de `dados/titulos/` (leitura visual dedicada do título impresso, conferida contra o OCR;

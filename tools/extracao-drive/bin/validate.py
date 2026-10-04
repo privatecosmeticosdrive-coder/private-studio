@@ -220,7 +220,10 @@ def validar(rec):
                           fornecedor=t.get("fornecedor"), embal=t.get("embal"),
                           preco_kb=MP[cod]["preco_kg_brl"] if kb else None, data_cotacao_kb=MP[cod]["data_cotacao"] if kb else None,
                           fornecedor_kb=MP[cod]["fornecedor"] if kb else None,
-                          conf_min=round(min(l["conf"].values()), 4) if l["conf"] else None, problemas=f))
+                          conf_min=round(min(l["conf"].values()), 4) if l["conf"] else None,
+                          conf_codigo=(round(l["conf"]["codigo"], 4) if l["conf"].get("codigo") is not None else None),
+                          conf_descricao=(round(l["conf"]["descricao"], 4) if l["conf"].get("descricao") is not None else None),
+                          leitura=fonte, problemas=f))
     an_path = f"{S}/dados/anotacoes/{rec['arquivo']}.json"
     an = json.load(open(an_path)) if os.path.exists(an_path) else None
     anot = []

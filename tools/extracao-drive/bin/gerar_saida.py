@@ -128,20 +128,70 @@ def data_iso(d):
     return iso if DATA_MIN <= iso <= DATA_MAX else None
 
 
+def limpa_forn(f):
+    """Fornecedor da folha sem sujeira de OCR: tira caracteres soltos no fim ('一', '-', '|'); '0'/'-'/vazio = sem fornecedor."""
+    if not f:
+        return None
+    f = re.sub(r"[\s\-–—|一_.,;:]+$", "", re.sub(r"^[\s\-–—|一_.,;:]+", "", str(f))).strip()
+    return None if (not f or re.fullmatch(r"[0\-]+", f)) else re.sub(r"\s+", " ", f)
+
+
+TAM = r"\d+[.,]?\d*\s*(?:kg|lg|g|gr|l|lt|litros?|ml|un)\b\.?"  # "Lg" = OCR de "kg"
+
+
+def forn_embal(forn, emb):
+    """Separa fornecedor × embalagem mínima quando o OCR juntou as duas células ('1kg Summit', 'Alt Comerce 1kg')."""
+    forn, emb = limpa_forn(forn), limpa_forn(emb)
+    for campo in (forn, emb):
+        if campo:
+            m = re.fullmatch(rf"({TAM})\s+(.+)|(.+?)\s+({TAM})", campo, re.I)
+            if m:
+                tam, nome = (m.group(1), m.group(2)) if m.group(1) else (m.group(4), m.group(3))
+                if not re.fullmatch(TAM, nome, re.I):
+                    return nome.strip(), tam.strip()
+    if forn and re.fullmatch(TAM, forn, re.I) and not emb:
+        return None, forn
+    return forn, emb
+
+
+def linhas_manuscritas(r):
+    """Códigos citados em anotação manuscrita da fórmula ('... na linha 1583 ...'): não servem de fonte de preço/cadastro."""
+    return {int(m) for pb in r.get("pendencias_cadastro", []) if "MANUSCRITA" in pb for m in re.findall(r"na linha (\d+)", pb)}
+
+
+def data_pasta(pasta):
+    """Data do orçamento no nome da pasta ('Dr Alan- 07/07', '19/02 Sabrina Uess') — todas de 2026 (decisão do Gabriel)."""
+    m = re.search(r"(?<!\d)(\d{2})/(\d{2})(?!\d)", pasta or "")
+    return data_iso(f"{m.group(1)}/{m.group(2)}/2026") if m else None
+
+
+def data_orcamento(r, pasta_cli):
+    d = data_iso(r.get("data_folha"))
+    if d:
+        return d, "folha"
+    d = data_pasta(pasta_cli)
+    if d:
+        return d, "pasta"
+    return REF_MAIO, "referencia_maio"
+
+
 BLOQ = ("ANOTAÇÃO MANUSCRITA", "CÓDIGO INFERIDO", "nome não bate", "PREÇO/FORNECEDOR SUSPEITO", "PREÇO ATÍPICO")
 cand = defaultdict(list)
 for u in uni:
     r = u["r"]
     if r["status"] == "revisar":
         continue
-    d = data_iso(r.get("data_folha"))
+    d, d_origem = data_orcamento(r, u["pasta_cliente"])
+    manus = linhas_manuscritas(r)
     for i in r.get("itens", []):
+        if i["codigo"] in manus:
+            continue
         if i["codigo"] is None or i["valor_kg"] is None or i.get("preco_suspeito") or i.get("preco_zero"):
             continue
         if any(pb.startswith(BLOQ) or BLOQ[0] in pb for pb in i["problemas"]):
             continue
-        cand[i["codigo"]].append(dict(valor=i["valor_kg"], fornecedor=i["fornecedor"], data_cotacao=d or REF_MAIO,
-                                      data_origem="folha" if d else "referencia_maio", formula=u["n"], produto=r.get("produto"),
+        cand[i["codigo"]].append(dict(valor=i["valor_kg"], fornecedor=forn_embal(i["fornecedor"], i["embal"])[0], data_cotacao=d,
+                                      data_origem=d_origem, formula=u["n"], produto=r.get("produto"),
                                       pasta=u["pasta_cliente"], foto=r["drive"], link=link(r["drive_id"]), sha256=r["sha256"]))
 staging["precos_para_atualizar"] = []
 staging["precos_ambiguos"] = []
@@ -160,6 +210,58 @@ for cod, obs_ in sorted(cand.items()):
     staging["precos_para_atualizar"].append(dict(reg, preco_kg_brl=str(vals[0]), fornecedor_folha=o["fornecedor"], data_cotacao=top,
                                                  data_origem=o["data_origem"], fonte=f"{o['foto']} ({o['link']}) sha256 {o['sha256']}",
                                                  formula=o["formula"], produto=o["produto"]))
+# ---------- MPs a cadastrar (decisão do Gabriel: MP da fórmula que não existe no banco deve ser criada) ----------
+# Só códigos fora do kb de maio. O import cria apenas se o código NÃO existir no banco real. Nome = leitura mais
+# confirmada (transcrição visual > OCR mais frequente > maior confiança); leituras do mesmo código têm de concordar.
+from difflib import SequenceMatcher
+pr_sel = {p["mp_codigo"]: p for p in staging["precos_para_atualizar"]}
+amb = {a["mp_codigo"] for a in staging["precos_ambiguos"]}
+leit = defaultdict(list)
+for u in uni:
+    r = u["r"]
+    if r["status"] == "revisar":
+        continue
+    manus = linhas_manuscritas(r)
+    for i in r.get("itens", []):
+        if i["codigo"] is None or i["codigo"] in MP:
+            continue
+        fe = forn_embal(i["fornecedor"], i["embal"])
+        if any(not pb.startswith("código não existe") for pb in i["problemas"]):
+            continue  # linha com qualquer outro problema não serve de fonte de cadastro
+        leit[i["codigo"]].append(dict(nome=re.sub(r"\s+", " ", i["descricao_lida"]).strip(), visual=i.get("leitura") == "transcricao_visual",
+                                      conf=i.get("conf_descricao") or 0, conf_cod=i.get("conf_codigo"), fornecedor=fe[0],
+                                      embal=fe[1], manuscrito=i["codigo"] in manus, formula=u["n"], foto=r["drive"], sha=r["sha256"]))
+staging["mps_a_cadastrar"] = []
+staging["mps_nao_cadastraveis"] = []
+for cod, ls in sorted(leit.items()):
+    nomes = Counter(l["nome"] for l in ls if l["nome"])
+    vis = Counter(l["nome"] for l in ls if l["visual"] and l["nome"])
+    if not nomes:
+        staging["mps_nao_cadastraveis"].append(dict(mp_codigo=cod, motivo="nome não lido"))
+        continue
+    escolhido = (vis or nomes).most_common(1)[0][0]
+    rn = lambda a, b: SequenceMatcher(None, norm(a), norm(b)).ratio()
+    divergentes = [n for n in nomes if rn(n, escolhido) < 0.8]
+    fotos = {l["sha"] for l in ls}
+    evid = dict(n_fotos=len(fotos), leitura_visual=bool(vis), conf_codigo_max=max([l["conf_cod"] or 0 for l in ls]))
+    if divergentes:
+        staging["mps_nao_cadastraveis"].append(dict(mp_codigo=cod, motivo=f"leituras do nome divergem: {sorted(nomes)}", **evid))
+        continue
+    if not (evid["n_fotos"] >= 2 or evid["leitura_visual"] or evid["conf_codigo_max"] >= 0.98):
+        staging["mps_nao_cadastraveis"].append(dict(mp_codigo=cod, motivo="evidência do código insuficiente", **evid))
+        continue
+    forn = Counter(l["fornecedor"] for l in ls if l["fornecedor"]).most_common(1)
+    emb = Counter(l["embal"] for l in ls if l["embal"]).most_common(1)
+    p = pr_sel.get(cod)  # preço só de linha sem manuscrito (já filtrado na seleção de preços)
+    staging["mps_a_cadastrar"].append(dict(
+        mp_codigo=cod, nome=escolhido, leituras_nome=dict(nomes), fornecedor=forn[0][0] if forn else (p or {}).get("fornecedor_folha"),
+        embalagem_minima=emb[0][0] if emb else None, preco_kg_brl=p["preco_kg_brl"] if p else None,
+        data_cotacao=p["data_cotacao"] if p else None, data_origem=p["data_origem"] if p else None,
+        preco_ambiguo=cod in amb, formulas=sorted({l["formula"] for l in ls}), **evid,
+        fonte=sorted({l["foto"] for l in ls})[:5]))
+for f in staging["formulas"]:
+    u = next(x for x in uni if x["n"] == f["n"])
+    f["data_orcamento"], f["data_orcamento_origem"] = data_orcamento(u["r"], u["pasta_cliente"])
 json.dump(staging, open(f"{OUT}/formulas_staging.json", "w"), ensure_ascii=False, indent=1)
 
 # ---------- markdown ----------

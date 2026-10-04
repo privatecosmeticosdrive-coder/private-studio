@@ -72,15 +72,23 @@ Linhas com **R$ 0,00** (36, quase todas MP fornecida pelo cliente — mel, próp
 
 ## 8. Implementado nesta branch (não executado em produção)
 
-Decisões do Gabriel (04/10/2026): **% com 4 casas → arredondar a 3**; **fórmulas com TOTAL ≠ 100% → subir mesmo assim** (margem para ajuste); **preço da folha = preço atualizado na data da cotação impressa; sem data → maio/2026 (01/05/2026)**.
+Decisões do Gabriel (04/10/2026):
+1. **% com 4 casas → arredondar a 3** (anotado em `observacoes`).
+2. **Fórmulas com TOTAL ≠ 100% → subir** (margem para ajuste; anotado em `observacoes`).
+3. **Preço da folha = preço atualizado na data do orçamento**: data impressa na folha → senão data do nome da pasta (dd/mm, todas 2026) → senão maio/2026.
+4. **MP que não existe no banco → cadastrar** (a fórmula não pode referenciar MP inexistente).
+5. **Alertas**: alta e variação.
 
-`backend/prisma/import-extracao-drive.ts` (`npm run import:extracao-drive`; PREVIEW por padrão, `--apply` grava tudo em UMA transação e escreve o rollback `.sql` untracked; opções `--sem-precos`, `--sem-formulas`):
+`backend/prisma/import-extracao-drive.ts` (`npm run import:extracao-drive`; PREVIEW por padrão; `--apply` grava tudo em UMA transação e escreve o rollback `.sql` untracked; opções `--sem-mps-novas`, `--sem-formulas`, `--sem-precos`, `--sem-alertas`):
 
-- **Fórmulas** (novas, `status='rascunho'`, `origem='extracao_drive'`, MP por código): entram `confirmada`, `origem_nao_fecha_100` e `pendente_conferencia` desde que **não haja pendência** ou a única seja "MP fora do kb de maio" (conferida no banco). Manuscrito, nome rasurado, código inferido, preço suspeito ou nome divergente **bloqueiam**. Nome do produto só com **dupla leitura** do título impresso (visual + OCR; 1 caso visual + conferência manual). Concentrações arredondadas e TOTAL ≠ 100% ficam anotados em `observacoes`.
-- **Preços**: 462 candidatos (5 códigos ambíguos — mesma data, preços diferentes — não entram). Atualiza só se a data da folha for **mais recente** que a `data_cotacao` gravada; grava `mp_historico_precos` (`origem='extracao_drive'`), `preco_anterior`, `aumento_pct`, `flag_aumento_relevante`; fornecedor só muda se o da folha for claramente outro. Não gera alerta in-app em lote.
+1. **MPs novas** — os 93 códigos fora do kb de maio são cadastrados **somente se não existirem no banco** (código existente nunca é recadastrado). Nome = leitura mais confirmada (transcrição visual > OCR mais frequente), todas as leituras do código precisam concordar; código com evidência forte (≥ 2 fotos, ou leitura visual, ou confiança OCR ≥ 0,98 — os 93 passam). Fornecedor/embalagem limpos de sujeira de OCR. Preço/data da folha quando houver (80); sem preço quando a folha não traz (MP do cliente), traz preço rasurado (ex.: Rice PDRN) ou ambíguo (13). `validado_pd`/`validado_compras` = false e observação de origem; histórico de preço inicial.
+2. **Fórmulas** — novas, `rascunho`, `origem='extracao_drive'`, MP por código. Entram `confirmada`, `origem_nao_fecha_100` e `pendente_conferencia` sem pendência além de "MP fora do kb" (agora existente/cadastrada). Manuscrito, nome rasurado, código inferido, preço suspeito ou nome divergente **bloqueiam**. Nome do produto com **dupla leitura** do título impresso. `data_criacao` = data do orçamento.
+3. **Preços** — atualiza se a data do orçamento for **mais recente** que a `data_cotacao` gravada; `mp_historico_precos` (`origem='extracao_drive'`), `preco_anterior`, `aumento_pct`, `flag_aumento_relevante`; fornecedor só muda se o da folha for claramente outro. Linha citada em anotação manuscrita (ex.: preço riscado) nunca é fonte de preço.
+4. **Alertas** (respeita `alertas_ativos`): alta ≥ limite → `aumento_mp` (mesmo texto/severidade do sistema: critical ≥ 50%); queda ≥ limite → `variacao_mp` (warn ≤ −50%); 1 alerta-resumo `mp_nova` com as MPs cadastradas.
 
 Smoke em Postgres local (cópia do kb de maio + seed + 1 orçamento "enviado" com snapshot):
-- 45 fórmulas importadas (38 confirmadas, 7 com TOTAL ≠ 100% anotadas), 685 linhas, 10 concentrações arredondadas; 77 puladas (44 MP inexistente **na cópia de maio** — em produção tendem a existir —, 31 composição idêntica a fórmula existente, 2 nome divergente no banco).
-- 369 preços atualizados (26 sobem, 10 descem, 333 só renovam a data; 13 com alta ≥ 20%; 259 com data da folha, 110 com referência maio; 5 trocas de fornecedor); 93 não (13 o banco já tinha cotação igual/mais recente, 80 MP inexistente na cópia de maio).
-- Orçamento (snapshot) e fórmulas pré-existentes **byte a byte inalterados**; 2ª execução = 0; rollback devolve MPs, fórmulas e histórico ao estado exato anterior.
-- **Em produção os números vão diferir** (banco real ≠ kb de maio): rodar o PREVIEW primeiro e conferir a saída antes do `--apply`.
+- **93 MPs cadastradas** (80 com preço, 13 sem); **88 fórmulas** (38 confirmadas, 9 com TOTAL ≠ 100%, 41 que dependiam de MP nova), 1.293 linhas, todas com `mp_id`, 10 concentrações arredondadas; 34 puladas (31 composição idêntica a fórmula existente, 3 nome divergente no banco).
+- **380 preços** atualizados (32 sobem, 13 descem, 335 renovam a data; datas: 216 da folha, 164 da pasta, 0 maio; 6 trocas de fornecedor); 5 não (banco já tinha cotação igual/mais recente); 1 código ambíguo.
+- **22 alertas**: 13 `aumento_mp` (5 critical), 8 `variacao_mp`, 1 `mp_nova`.
+- Orçamento (snapshot) e fórmulas pré-existentes **byte a byte inalterados**; 2ª execução = 0 em tudo; rollback devolve MPs, fórmulas, histórico e alertas ao estado exato anterior.
+- **Em produção os números vão diferir** (banco real ≠ kb de maio; muitas das 93 MPs provavelmente já existem e virarão atualização de preço): rodar o PREVIEW primeiro e conferir a saída antes do `--apply`.
