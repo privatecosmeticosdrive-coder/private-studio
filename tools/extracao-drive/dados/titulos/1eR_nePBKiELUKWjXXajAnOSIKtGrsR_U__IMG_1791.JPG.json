@@ -1,9 +1,10 @@
 {
- "arquivo": "1eR_nePBKiELUKWjXXajAnOSIKtGrsR_U__IMG_1791.JPG",
- "nome_impresso": "Hidratante Facial Anti Sinais",
- "nome_impresso_legivel": true,
- "nome_manuscrito": "(slow-aging)",
- "nome_impresso_riscado": false,
- "linha_produto_cliente": "Cotação 15/07/26 / B.U Cosméticos",
- "observacoes": "Numero '4' circulado a mao ao lado do logo (nao e nome)."
+  "arquivo": "1eR_nePBKiELUKWjXXajAnOSIKtGrsR_U__IMG_1791.JPG",
+  "nome_impresso": "Hidratante Facial Anti Sinais",
+  "nome_impresso_legivel": true,
+  "nome_manuscrito": "(slow-aging)",
+  "nome_impresso_riscado": false,
+  "linha_produto_cliente": "Cotação 15/07/26 / B.U Cosméticos",
+  "observacoes": "Numero '4' circulado a mao ao lado do logo (nao e nome).",
+  "conferido_manual": "Claude, 3ª leitura em 2026-10-04: título impresso confere ('Hidratante Facial Anti Sinais'); OCR não detectou a caixa do título"
 }

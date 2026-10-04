@@ -50,13 +50,10 @@ paddlex 3.7.2) e rodar `python bin/ocr_worker.py 1` (e `2` em paralelo). ~75 s/f
 
 ```bash
 cd backend
-npm run import:extracao-drive              # PREVIEW: lista o que entraria e o que seria pulado, e por quê
+npm run import:extracao-drive              # PREVIEW: fórmulas e preços que entrariam / seriam pulados, e por quê
 npm run import:extracao-drive -- --apply   # grava em UMA transação + escreve rollback .sql (untracked)
+# opções: --sem-precos | --sem-formulas
 ```
-Só cria fórmulas novas (`status='rascunho'`, `origem='extracao_drive'`) das `confirmada`; casa MP por **código**;
-pula código inexistente/nome divergente no banco, concentração com >3 casas (Decimal(6,3)), composição idêntica a
-fórmula existente e foto já importada. **Não altera preço de MP nem fórmula existente.**
-
-Smoke em Postgres local (cópia do kb, 2026-10-04): 35 importadas / 34 puladas; 35/35 idênticas ao staging
-(ordem, código, %); soma 100% em todas; MPs e fórmulas pré-existentes byte a byte iguais; 2ª execução = 0;
-rollback devolve o baseline exato.
+Regras completas e números do smoke: `docs/extracao-drive-2026-10/RELATORIO_EXTRACAO.md` §8.
+O nome do produto vem de `dados/titulos/` (leitura visual dedicada do título impresso, conferida contra o OCR;
+instruções em `INSTRUCOES_TITULO.md`).

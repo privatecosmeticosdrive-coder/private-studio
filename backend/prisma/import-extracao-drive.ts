@@ -49,6 +49,7 @@ type FormulaStaging = {
   pendencias_cadastro: string[];
   nome_produto: string | null;
   nome_fonte?: string | null;
+  nome_confirmado_ocr?: boolean | null;
   cliente_original: string | null;
   data_folha: string | null;
   batelada: string | null;
@@ -141,13 +142,12 @@ function assinatura(itens: { mp_id: number | null; pct: Prisma.Decimal }[]): str
 
 const SO_FORA_DO_KB = /: código não existe no cadastro \(kb-source\)$/;
 
+// 'origem_nao_fecha_100' e 'pendente_conferencia' só entram se não houver pendência OU se a única pendência for
+// "código fora do kb de maio" (o script confere no banco). Manuscrito, nome rasurado, código inferido, preço suspeito
+// ou nome divergente BLOQUEIAM, qualquer que seja o status.
 function elegivel(f: FormulaStaging): boolean {
-  if (f.status_extracao === 'confirmada' || f.status_extracao === 'origem_nao_fecha_100') return true;
-  return (
-    f.status_extracao === 'pendente_conferencia' &&
-    f.pendencias_cadastro.length > 0 &&
-    f.pendencias_cadastro.every((p) => SO_FORA_DO_KB.test(p))
-  );
+  if (!['confirmada', 'origem_nao_fecha_100', 'pendente_conferencia'].includes(f.status_extracao)) return false;
+  return f.pendencias_cadastro.every((p) => SO_FORA_DO_KB.test(p));
 }
 
 type ItemPlano = Item & { mp_id: number; conc: Prisma.Decimal; arredondado: boolean };
@@ -200,8 +200,8 @@ async function main() {
   const planos: Plano[] = candidatas.map((f) => {
     if (!f.nome_produto) return { f, itens: [], motivo: 'nome do produto não lido' };
     // o topo da folha tem logo, manuscritos e cliente: só vale nome lido no TÍTULO impresso (leitura visual dedicada)
-    if (f.nome_fonte !== 'visual_titulo')
-      return { f, itens: [], motivo: `nome do produto não conferido no título impresso (fonte: ${f.nome_fonte ?? 'desconhecida'})` };
+    if (f.nome_fonte !== 'visual_titulo' || f.nome_confirmado_ocr !== true)
+      return { f, itens: [], motivo: `nome do produto sem dupla leitura do título impresso (fonte: ${f.nome_fonte ?? 'desconhecida'}, confirmado: ${f.nome_confirmado_ocr ?? 'não'})` };
     if (f.fontes.some((x) => jaImportadas.has(x.sha256))) return { f, itens: [], motivo: 'já importada antes (mesma foto)' };
     const itens: ItemPlano[] = [];
     for (const it of f.composicao) {

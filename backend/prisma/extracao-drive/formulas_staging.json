@@ -10,8 +10,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "SHAMPOO HOME CARE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Bianca 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -426,8 +426,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Mascara Cond.Essence Nutrição Repair",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Bianca 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -766,8 +766,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Mascara Cond.Essence Hidratação Repair",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Bianca 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -1145,8 +1145,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Mascara Cond.Essence Restauração Repair 300gr",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Bianca 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -1511,8 +1511,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Óleo de Barba",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Denny 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": "31/07/26",
@@ -1606,8 +1606,8 @@
     "981 Ronaflair LDP White: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Pomada Capilar Toque - Matte",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Denny 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": "31/07/26",
@@ -1868,8 +1868,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Balm pra Barba",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Denny 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": "31/07/26",
@@ -2039,8 +2039,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Shampoo Barba",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Denny 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": "31/07/26",
@@ -2255,8 +2255,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Condicionador Barba",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Denny 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": "31/07/26",
@@ -2504,8 +2504,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Balm pra Barba",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Denny 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": "31/07/26",
@@ -2675,8 +2675,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Shampoo Auto Oxidante",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Doaa- 08/07",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -2909,8 +2909,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "SHAMPOO HOME CARE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Dr Alan- 07/07",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -3314,8 +3314,8 @@
    ],
    "pendencias_cadastro": [],
    "nome_produto": "Serum Facial",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Fernanda 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": "31/07/26",
@@ -3487,8 +3487,8 @@
     "1572 BioGenic MagicSpear-200CPRND: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Creme p/Cabelo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Fernanda 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -3716,8 +3716,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Tonico Capilar",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Fernanda 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -3862,8 +3862,8 @@
     "PREÇO/FORNECEDOR SUSPEITO na folha: 191 Jaguar C 13S (SN-1330)"
    ],
    "nome_produto": "SHAMPOO HOME CARE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "João dias - 19/09",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -4309,9 +4309,9 @@
    "pendencias_cadastro": [
     "1558 Óleo de Camelia: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "Ludmila",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Finalizador Capilar com Silicone",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Ludimila 27/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -4458,8 +4458,8 @@
     "1558 Óleo de Camelia: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Finalizador Capilar Óleo Vegetal",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Ludimila 27/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -4620,9 +4620,9 @@
     "1559 Behenamidopropyl Dimethylamine(Polymine BHA): código não existe no cadastro (kb-source)",
     "1560 Dipalmitoylethyl Hydroxyethymonium Methosulfate: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "Ludmila",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Leave-in Bruma",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Ludimila 27/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -4833,8 +4833,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Progressiva Blue",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Soya Beauty - france 05/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -5123,9 +5123,9 @@
     "1583 Rice PDRN: código não existe no cadastro (kb-source)",
     "ANOTAÇÃO MANUSCRITA (riscado) na linha 1583 Rice PDRN: traço/X manuscrito sobre parte do Valor (Kg) 'R$ 12.115,06' (estendendo-se até a linha de baixo, 'R$ 884,00' do Oxy 229 CB); ao lado escrito 'LIGA' (leitura incerta, parece 'EIGA'/'LIGA')"
    ],
-   "nome_produto": "THe HAIR SUREEON -USA",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Progressiva Natural",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "The hair Surgeon - Usa 04/08",
    "categoria_pasta": "Capilar",
    "data_folha": null,
@@ -5427,9 +5427,9 @@
     "1432 Acido salicílico: código não existe no cadastro (kb-source)",
     "NOME DO PRODUTO ALTERADO À MÃO: Manuscrito 'GIOVANA' ao lado de 'Cliente: elab 3'; na faixa roxa 'Elab' há uma palavra curta rabiscada/riscada à caneta (ilegível)."
    ],
-   "nome_produto": "GiOVANA",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Creme Exfoliante",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "08/07- Giovanna",
    "categoria_pasta": "Corporal",
    "data_folha": "02/07/26",
@@ -5692,8 +5692,8 @@
     "0 Agua Desmineralizada: CÓDIGO INFERIDO 0: impresso cortado/coberto na foto (visível ''); nome idêntico e único no cadastro — confirmar"
    ],
    "nome_produto": "Gel Redutor de Medidas",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/03- Yenefer",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -5935,8 +5935,8 @@
     "261 Essencia: CÓDIGO INFERIDO 261: impresso cortado/coberto na foto (visível '261'); nome idêntico e único no cadastro e código termina em '261' — confirmar"
    ],
    "nome_produto": "Óleo Clareador Intimo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/03- Yenefer",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -6120,8 +6120,8 @@
     "145 Mipa 99% ( Isopropanolamine): CÓDIGO INFERIDO 145: impresso cortado/coberto na foto (visível '5'); nome idêntico e único no cadastro e código termina em '5' — confirmar"
    ],
    "nome_produto": "Gel Redutor de Medidas",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/03- Yenefer",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -6284,8 +6284,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Gel Clareador Intimo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/03- Yenefer",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -6509,9 +6509,9 @@
     "1495 Dihidroxiacetona: código não existe no cadastro (kb-source)",
     "1496 Erythrulose: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "Auto bronzeador-Spray",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Auto bronzeador - Spray",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Amanda/Andre",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -6726,8 +6726,8 @@
     "778 Fenoxietanol/Etilhexil glicerina: nome não bate com o cadastro (sim 0.76; cadastro='Fenoxietanol/ethilhrxil')"
    ],
    "nome_produto": "Brozeador Instantaneop com Enxague",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Amanda/Andre",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -6955,9 +6955,9 @@
     "1506 Iron Oxides - Mica Dourada/Champagne: código não existe no cadastro (kb-source)",
     "1497 Óleo de Urucum: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "Óleo Brozeador e lluminador",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Óleo Brozeador e Iluminador",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Amanda/Andre",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -7119,8 +7119,8 @@
     "1496 Erythrulose: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Autobronzeador Creme",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Amanda/Andre",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -7375,9 +7375,9 @@
     "1490 Sericin (Proteina da Seda): código não existe no cadastro (kb-source)",
     "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "gão-",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "NeveSeda Pó de Banho Terapêutico - Infantil",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Estrela de Davi",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -7545,8 +7545,8 @@
     "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "PuraSkin Pomada Andira - Infantil",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Estrela de Davi",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -7694,9 +7694,9 @@
     "750 FM SCI 85 (SODIUM COCOYL ISOTHIONATE): nome não bate com o cadastro (sim 0.20; cadastro='Isetionato de Sodio (SCI) Pó')",
     "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "Barra Syndet - Adulto (Betta)",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Barra Syndet - Adulto ( Betta)",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Estrela de Davi",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -7922,9 +7922,9 @@
     "1494 Ceramidas Complex CLR PE-F: código não existe no cadastro (kb-source)",
     "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "PuraSkin Pomada Andira-Adulto (Betta)",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "PuraSkin Pomada Andira - Adulto ( Betta)",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Estrela de Davi",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -8112,8 +8112,8 @@
     "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Barra Syndet - Infantil",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Estrela de Davi",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -8303,11 +8303,12 @@
     "1498 Magnesium Glycinate: código não existe no cadastro (kb-source)",
     "1491 Gloconate de Zinco: código não existe no cadastro (kb-source)",
     "1490 Sericin (Proteina da Seda): código não existe no cadastro (kb-source)",
-    "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)"
+    "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)",
+    "NOME DO PRODUTO ALTERADO À MÃO: impresso 'Nebe Seda Pó de Banho Terapêutico - Adulto (Betta)' riscado; manuscrito: Neve (letra 'v' escrita a mao sobre o 'b' de 'Nebe')"
    ],
-   "nome_produto": "XIVATE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Nebe Seda Pó de Banho Terapêutico - Adulto (Betta)",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Estrela de Davi",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -8500,9 +8501,9 @@
     "1494 Ceramidas Complex CLR PE-F: código não existe no cadastro (kb-source)",
     "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "Creme Corporal Trifasico - Adulto (Betta)",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Creme Corporal Trifasico - Adulto ( Betta)",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Estrela de Davi",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -8845,9 +8846,9 @@
     "750 FM SCI 85 (SODIUM COCOYL ISOTHIONATE): nome não bate com o cadastro (sim 0.20; cadastro='Isetionato de Sodio (SCI) Pó')",
     "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "0g/of",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Sabonete Liquidos Bifasico - Infantil",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Estrela de Davi",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -9073,9 +9074,9 @@
     "750 FM SCI 85 (SODIUM COCOYL ISOTHIONATE): nome não bate com o cadastro (sim 0.20; cadastro='Isetionato de Sodio (SCI) Pó')",
     "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "Sabonete Liquido Bifasico - Adulto (Betta)",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Sabonete Liquido Bifasico - Adulto ( Betta)",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Estrela de Davi",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -9354,8 +9355,8 @@
     "1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Creme Corporal Trifasico - Infantil",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/07- Estrela de Davi",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -9657,8 +9658,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Intimate Moisturizing And Firming Serum",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "15/05- biolube",
    "categoria_pasta": "Corporal",
    "data_folha": "13/05/26",
@@ -9958,8 +9959,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Fresh & Ready",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "15/05- biolube",
    "categoria_pasta": "Corporal",
    "data_folha": "13/05/26",
@@ -10207,8 +10208,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "The Flow Intimate Gel",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "15/05- biolube",
    "categoria_pasta": "Corporal",
    "data_folha": "13/05/26",
@@ -10430,8 +10431,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Happy Everyday Intimate Cleansing Moisturizing Lotion",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "15/05- biolube",
    "categoria_pasta": "Corporal",
    "data_folha": "13/05/26",
@@ -10716,8 +10717,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Óleo de Banho",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/08- Carla Brandão",
    "categoria_pasta": "Corporal",
    "data_folha": "23/07/26",
@@ -10822,8 +10823,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "hidratante Corporal",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/08- Carla Brandão",
    "categoria_pasta": "Corporal",
    "data_folha": "23/07/26",
@@ -11100,8 +11101,8 @@
     "1522 Cafeina Anidra 100% Pura Em Pó 1kg: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Mellow Lipe Care 24H ( Creme Para Lipedema)",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/08- Carla Brandão",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -11355,8 +11356,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Creme para massagem Loff",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/09- logo",
    "categoria_pasta": "Corporal",
    "data_folha": "17/09/26",
@@ -11608,8 +11609,8 @@
     "1471 Purabeetp(BETAINE): código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Gel Lubrificante Intimo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "21/07 - linha dione",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -11779,8 +11780,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Hidratante corporal Ambar",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "25/09- Amanda",
    "categoria_pasta": "Corporal",
    "data_folha": "23/09/26",
@@ -12052,8 +12053,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Sabonete Liquido Transparente",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "25/09- Amanda",
    "categoria_pasta": "Corporal",
    "data_folha": "23/09/26",
@@ -12223,8 +12224,8 @@
     "ANOTAÇÃO MANUSCRITA (outro) na linha TOTAL linha TOTAL (coluna Valor (un)): '2,229' escrito à mão (caneta azul) no lugar do total de Valor (un), que não está impresso nesta folha"
    ],
    "nome_produto": "Body Splash",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "25/09- Amanda",
    "categoria_pasta": "Corporal",
    "data_folha": "23/09/26",
@@ -12332,8 +12333,8 @@
     "1527 Nano UP Lift: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Creme p/Estrias",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "31/07- tratamento estrias",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -12616,8 +12617,8 @@
     "1527 Nano UP Lift: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "PREV. ESTRIAS",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "31/07- tratamento estrias",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -12896,9 +12897,9 @@
     "1522 Cafeina Anidra 100% Pura Em Pó 1kg: código não existe no cadastro (kb-source)",
     "1534 Remoduline B GRV: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "stação-",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Creme Anti Celulite",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "31/07- tratamento estrias",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -13168,9 +13169,9 @@
     "1526 Óleo Essencial de Zimbro (Junípero): código não existe no cadastro (kb-source)",
     "1529 Capilmax: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "Daily Adonay Tonico Capilar Michelle Marques",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Tonico Capilar",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "31/07- tratamento estrias",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -13376,8 +13377,8 @@
     "15 Alcool Etilico Extra Neutro 96GL: nome não bate com o cadastro (sim 0.43; cadastro='Alcool  Refinado')"
    ],
    "nome_produto": "Body Splash Brilho",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Duo bloom - 16/03",
    "categoria_pasta": "Corporal",
    "data_folha": "13/03/26",
@@ -13500,8 +13501,8 @@
     "1058 Dimeticona 350 CST: nome não bate com o cadastro (sim 0.53; cadastro='Silicone 200/350')"
    ],
    "nome_produto": "Óleo de Barba",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Heloísa - 17/09",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -13657,9 +13658,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "Pomada Capilar Modeladora  - Baixo custo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Pomada Capilar Modeladora - Baixo custo",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Heloísa - 17/09",
    "categoria_pasta": "Corporal",
    "data_folha": "17/09/26",
@@ -13855,8 +13856,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Creme Corporal Hidratante Sculp",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Julya Freitas - 02/04",
    "categoria_pasta": "Corporal",
    "data_folha": "01/04/26",
@@ -14117,8 +14118,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Hidratante p/Corpo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Julya Freitas - 02/04",
    "categoria_pasta": "Corporal",
    "data_folha": "31/03/26",
@@ -14390,8 +14391,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Sérum Pele c/Acne / Manchas",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Julya Freitas - 02/04",
    "categoria_pasta": "Corporal",
    "data_folha": null,
@@ -14604,8 +14605,8 @@
     "1046 Etil Parabeno: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Gel Redutor de Medidas",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Julya Freitas - 02/04",
    "categoria_pasta": "Corporal",
    "data_folha": "01/04/26",
@@ -14869,9 +14870,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "Lig.crennes DifisoRes",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Gel Clareador Manchas",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Julya Freitas - 02/04",
    "categoria_pasta": "Corporal",
    "data_folha": "31/03/26",
@@ -15002,8 +15003,8 @@
     "1470 Fragrancia Belle Vita LPS (SCE944869): código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Óleo corporal",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Marcela - 17/06",
    "categoria_pasta": "Corporal",
    "data_folha": "17/06/26",
@@ -15084,8 +15085,8 @@
     "PREÇO/FORNECEDOR SUSPEITO na folha: 749 Ácido Hialuronico - Baixo peso (atípico), 1097 Extrato de leveduras (Beta-Glu, 202 Acido Latico"
    ],
    "nome_produto": "Serum Intimo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Marcela - 17/06",
    "categoria_pasta": "Corporal",
    "data_folha": "17/06/26",
@@ -15301,8 +15302,8 @@
     "1470 Fragrancia Belle Vita LPS (SCE944869): código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Óleo Hidratante Corporal",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Marcela - 17/06",
    "categoria_pasta": "Corporal",
    "data_folha": "17/06/26",
@@ -15411,8 +15412,8 @@
     "1470 Fragrancia Belle Vita LPS(SCE944869): código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Óleo Massagem corporal",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Marcela - 17/06",
    "categoria_pasta": "Corporal",
    "data_folha": "17/06/26",
@@ -15519,8 +15520,8 @@
     "1471 Purabeetp(BETAINE): código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Gel Lubrificante Intimo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Marcela - 17/06",
    "categoria_pasta": "Corporal",
    "data_folha": "17/06/26",
@@ -15692,8 +15693,8 @@
     "1432 Acido salicilico: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Creme Exfoliante",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Márcia",
    "categoria_pasta": "Corporal",
    "data_folha": "15/05/26",
@@ -15944,8 +15945,8 @@
     "PREÇO/FORNECEDOR SUSPEITO na folha: 150 Aristoflex Tac"
    ],
    "nome_produto": "Body Splash",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Rafaela e Nicole - 23/06",
    "categoria_pasta": "Corporal",
    "data_folha": "22/06/26",
@@ -16051,8 +16052,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Hidratante p/Corpo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Ronaldo 30/04",
    "categoria_pasta": "Corporal",
    "data_folha": "30/04/26",
@@ -16298,8 +16299,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Esfoliante Nuun - Reajuste Final - 5874",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Victor - 29/04",
    "categoria_pasta": "Corporal",
    "data_folha": "28/04/26",
@@ -16615,9 +16616,9 @@
     "1350 Matrixyl 3000: ANOTAÇÃO MANUSCRITA na linha: marca manuscrita (x) ao lado de 'Biovital' (possível troca/ajuste — conferir na foto)",
     "ANOTAÇÃO MANUSCRITA na tabela: Marcas manuscritas (asterisco/x) ao lado dos fornecedores 'Biovital -Basf' e 'Biovital' (linhas 1388 e 1350)"
    ],
-   "nome_produto": "Hidratante Nuun  - Reajuste Final - 5262",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Hidratante Nuun - Reajuste Final - 5262",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Victor - 29/04",
    "categoria_pasta": "Corporal",
    "data_folha": "27/04/26",
@@ -16962,8 +16963,8 @@
     "1488 Silica HDK N20: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Gloss - Ultima Versão",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "01/07- Kause Bê",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -17094,8 +17095,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Stick sem FPS- Beige -01",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "01/07- Kause Bê",
    "categoria_pasta": "Facial",
    "data_folha": "01/07/26",
@@ -17357,11 +17358,12 @@
     "a própria folha imprime TOTAL = 100,050% e a soma das linhas lidas = 100.0500%: a FÓRMULA DE ORIGEM não fecha 100% (decisão do laboratório; nada foi ajustado)"
    ],
    "pendencias_cadastro": [
-    "NOME DO PRODUTO ALTERADO À MÃO: No título 'Stick FPS 50', o '50' está riscado e escrito '30' ao lado; abaixo manuscrito 'Base Stick FPS30 -'."
+    "NOME DO PRODUTO ALTERADO À MÃO: No título 'Stick FPS 50', o '50' está riscado e escrito '30' ao lado; abaixo manuscrito 'Base Stick FPS30 -'.",
+    "NOME DO PRODUTO ALTERADO À MÃO: impresso 'Stick FPS 50' riscado; manuscrito: Base Stick FPS30 -"
    ],
-   "nome_produto": "KIVATE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Stick FPS 50",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "01/07- Kause Bê",
    "categoria_pasta": "Facial",
    "data_folha": "01/07/26",
@@ -17587,8 +17589,8 @@
     "497 CI16035- Blue Solution: nome não bate com o cadastro (sim 0.28; cadastro='CI 19140')"
    ],
    "nome_produto": "Hair Mist Spray",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "01/09 - Noue",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -17819,9 +17821,9 @@
    "pendencias_cadastro": [
     "1603 Bio Tech4 Antigray: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "YITRAY",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Anti Gray Hair Spray - Noue",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "01/09 - Noue",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -17943,8 +17945,8 @@
     "1613 Essencia Scalp Reset SCE964029: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Serum Capilar GHK-CU",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "01/09 - Noue",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -18158,9 +18160,9 @@
    "pendencias_cadastro": [
     "1058 Dimeticona 350 CST: nome não bate com o cadastro (sim 0.53; cadastro='Silicone 200/350')"
    ],
-   "nome_produto": "1f0A0",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Protetor FPS 50",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "03/09 João",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -18514,8 +18516,8 @@
     "1602 Repelente de Insetos 3535: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Filtro Solar FPS 60",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "03/09- Fernando",
    "categoria_pasta": "Facial",
    "data_folha": "03/09/26",
@@ -18802,8 +18804,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Filtro Solar FPS 60",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "03/09- Fernando",
    "categoria_pasta": "Facial",
    "data_folha": "03/09/26",
@@ -19077,8 +19079,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Spray Repelente Neem Pet 190ml",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "03/09- Fernando",
    "categoria_pasta": "Facial",
    "data_folha": "03/09/26",
@@ -19235,8 +19237,8 @@
     "1058 Dimeticona 350 CST: nome não bate com o cadastro (sim 0.53; cadastro='Silicone 200/350')"
    ],
    "nome_produto": "Protetor FPS 50",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "03/09- Fernando",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -19552,9 +19554,9 @@
    "pendencias_cadastro": [
     "1488 Silica HDK N20: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "JATE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Gloss - Ultima Versão",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/08 - Geisa",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -19686,9 +19688,9 @@
    "pendencias_cadastro": [
     "1488 Silica HDK N20: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "JATE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Gloss - Ultima Versão",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/08 - Geisa",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -19818,9 +19820,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "ElumiNADoR",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Hidratante Facial Stick",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/08 - Geisa",
    "categoria_pasta": "Facial",
    "data_folha": "31/07/26",
@@ -20094,9 +20096,9 @@
     "1550 Amihope LL (Lauroy Lysine): código não existe no cadastro (kb-source)",
     "NOME DO PRODUTO ALTERADO À MÃO: 'Base Liquida - MATTE' escrito à mão logo abaixo do título impresso 'Intense Liquido Blush' (título impresso não está riscado) — possível renomeação/identificação do produto. Demais: 'Cotação 01', 'In Neauty - Mariana, Camila e Simone.', batelada 0,030 (impressos)"
    ],
-   "nome_produto": "BASe LigmiDA - MATTE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Intense Liquido Blush",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/08 - Geisa",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -20409,9 +20411,9 @@
     "1551 C47A053 SUNCROMA TITANIUM DIOXIDE: código não existe no cadastro (kb-source)",
     "778 Fenoxietanol/Etilhexilglicerina: nome não bate com o cadastro (sim 0.78; cadastro='Fenoxietanol/ethilhrxil')"
    ],
-   "nome_produto": "NATE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Sobra/Iluminador",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/08 - Geisa",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -20639,8 +20641,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Balm Labial com mel",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "09/03 - Leora",
    "categoria_pasta": "Facial",
    "data_folha": "09/03/26",
@@ -20758,8 +20760,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Stick sem FPS- Beige -01",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "10/04 Letícia Mofato",
    "categoria_pasta": "Facial",
    "data_folha": "06/04/26",
@@ -21020,8 +21022,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Stick FPS 50 - Beige -01",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "10/04 Letícia Mofato",
    "categoria_pasta": "Facial",
    "data_folha": "06/04/26",
@@ -21282,8 +21284,8 @@
    ],
    "pendencias_cadastro": [],
    "nome_produto": "Hidratante Facial Stick",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "13/03 - Lúcio Trajano",
    "categoria_pasta": "Facial",
    "data_folha": "13/03/26",
@@ -21596,8 +21598,8 @@
    ],
    "pendencias_cadastro": [],
    "nome_produto": "Hidratante Facial Stick",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "13/03 - Lúcio Trajano",
    "categoria_pasta": "Facial",
    "data_folha": "12/03/26",
@@ -21882,8 +21884,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Hidratante Facial Stick",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "15/05- Corlib",
    "categoria_pasta": "Facial",
    "data_folha": "15/05/26",
@@ -22146,8 +22148,8 @@
    ],
    "pendencias_cadastro": [],
    "nome_produto": "Gloss Labial Efeito Glow",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "16/03 - Natália Valeno",
    "categoria_pasta": "Facial",
    "data_folha": "13/03/26",
@@ -22257,9 +22259,9 @@
     "a própria folha imprime TOTAL = 98,990% e a soma das linhas lidas = 98.9900%: a FÓRMULA DE ORIGEM não fecha 100% (decisão do laboratório; nada foi ajustado)"
    ],
    "pendencias_cadastro": [],
-   "nome_produto": "Layla",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Serum com PDRN /Niacinamida",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/02 Layla",
    "categoria_pasta": "Facial",
    "data_folha": "17/02/26",
@@ -22427,8 +22429,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Serum Rugas",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/02 Layla",
    "categoria_pasta": "Facial",
    "data_folha": "17/02/26",
@@ -22635,8 +22637,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Creme Facial c/ Dmae",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/06- Valeska",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -22883,9 +22885,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "ação -",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Filtro Solar FPS 50",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/07- Larissa",
    "categoria_pasta": "Facial",
    "data_folha": "17/07/26",
@@ -23159,8 +23161,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Filtro Solar FPS 50",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/07- Larissa",
    "categoria_pasta": "Facial",
    "data_folha": "17/07/26",
@@ -23517,8 +23519,8 @@
     "1494 Ceramidas Complex CLR PE-F: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Lip Balm FPS 50",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/07- Larissa",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -23859,8 +23861,8 @@
     "1321 Corante Vermelho Bordo: nome não bate com o cadastro (sim 0.50; cadastro='Solção em Propileno Glicol 0,1% Vermelho Bordo')"
    ],
    "nome_produto": "Serum para linhas Finas",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "17/09- Jordan José",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -24075,8 +24077,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Stick FPS 50",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "18/09- Sthella",
    "categoria_pasta": "Facial",
    "data_folha": "18/09/26",
@@ -24290,9 +24292,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "FR: ESCOUA SILiLONE ESpUmAnOR",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Espuma de limpeza Facial",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "19/02 Sabrina Uess",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -24499,8 +24501,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Serum Rugas",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "19/02 Sabrina Uess",
    "categoria_pasta": "Facial",
    "data_folha": "03/02/26",
@@ -24694,8 +24696,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Stick FPS 95",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "19/02 Sabrina Uess",
    "categoria_pasta": "Facial",
    "data_folha": "19/02/26",
@@ -24903,11 +24905,12 @@
    "status_extracao": "pendente_conferencia",
    "motivos": [],
    "pendencias_cadastro": [
+    "NOME DO PRODUTO ALTERADO À MÃO: impresso 'Serum Rugas - PDRN' riscado; manuscrito: NOVANO",
     "NOME DO PRODUTO ALTERADO À MÃO: Título impresso 'Serum Rugas - PDRN': 'Rugas' rabiscado/sobrescrito à mão e 'PDRN' riscado; escrito à mão ao lado: 'NONANO'"
    ],
    "nome_produto": "Serum Rugas - PDRN",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": false,
    "cliente_original": "19/02 Sabrina Uess",
    "categoria_pasta": "Facial",
    "data_folha": "03/02/26",
@@ -25088,8 +25091,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Serum Rugas",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "19/02 Sabrina Uess",
    "categoria_pasta": "Facial",
    "data_folha": "03/02/26",
@@ -25283,8 +25286,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Serum Rugas - Exossossomas",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "19/03 Silmara",
    "categoria_pasta": "Facial",
    "data_folha": "19/03/26",
@@ -25464,11 +25467,12 @@
    "status_extracao": "pendente_conferencia",
    "motivos": [],
    "pendencias_cadastro": [
+    "NOME DO PRODUTO ALTERADO À MÃO: impresso 'Perfume Creme' riscado; manuscrito: CUPUACU CLOUD - NMF CREAM",
     "NOME DO PRODUTO ALTERADO À MÃO: Nome impresso do produto 'Perfume Creme' riscado à mão; escrito à mão ao lado/abaixo: 'CUPUACU CLOUD - NMF CREAM'"
    ],
    "nome_produto": "Perfume Creme",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": false,
    "cliente_original": "19/03 Silmara",
    "categoria_pasta": "Facial",
    "data_folha": "21/01/26",
@@ -25674,11 +25678,12 @@
    "status_extracao": "pendente_conferencia",
    "motivos": [],
    "pendencias_cadastro": [
-    "NOME DO PRODUTO ALTERADO À MÃO: Nome impresso do produto (aparenta '...a Creme', ilegível) riscado/rabiscado à caneta e substituído por manuscrito 'BIO-DEW PDRN FIRST ESSENCE. (HIDRATANTE)'."
+    "NOME DO PRODUTO ALTERADO À MÃO: Nome impresso do produto (aparenta '...a Creme', ilegível) riscado/rabiscado à caneta e substituído por manuscrito 'BIO-DEW PDRN FIRST ESSENCE. (HIDRATANTE)'.",
+    "NOME DO PRODUTO ALTERADO À MÃO: impresso 'Perfume Creme' riscado; manuscrito: Bio-Dew PDRN First Essence. (Hidratante)"
    ],
-   "nome_produto": "BiO-DeW PDRN GiRST ESSence.",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Perfume Creme",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": false,
    "cliente_original": "19/03 Silmara",
    "categoria_pasta": "Facial",
    "data_folha": "21/01/26",
@@ -25884,9 +25889,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "Óleobe limpeza",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Sabonete em Óleo",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "19/03 Silmara",
    "categoria_pasta": "Facial",
    "data_folha": "19/03/26",
@@ -26027,9 +26032,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "Hipaahawte",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Perfume Creme-Cupuaçu Cloud - NMF Cream",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "19/03 Silmara",
    "categoria_pasta": "Facial",
    "data_folha": "19/03/26",
@@ -26235,9 +26240,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "Hiosahawle",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Perfume Creme-Bio Dew PDRN First Essence",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "19/03 Silmara",
    "categoria_pasta": "Facial",
    "data_folha": "19/03/26",
@@ -26443,11 +26448,12 @@
    "status_extracao": "pendente_conferencia",
    "motivos": [],
    "pendencias_cadastro": [
-    "NOME DO PRODUTO ALTERADO À MÃO: No nome do produto 'Serum Rugas - PDRN', a palavra 'PDRN' está riscada à caneta e substituída por manuscrito 'EXOSSOMAS'."
+    "NOME DO PRODUTO ALTERADO À MÃO: No nome do produto 'Serum Rugas - PDRN', a palavra 'PDRN' está riscada à caneta e substituída por manuscrito 'EXOSSOMAS'.",
+    "NOME DO PRODUTO ALTERADO À MÃO: impresso 'Serum Rugas - PDRN' riscado; manuscrito: Etossomas"
    ],
-   "nome_produto": "Serum Rugas - FDRN t tossom AS",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Serum Rugas - PDRN",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": false,
    "cliente_original": "19/03 Silmara",
    "categoria_pasta": "Facial",
    "data_folha": "21/01/26",
@@ -26628,8 +26634,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Óleo de limpeza Facial",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "19/03 Silmara",
    "categoria_pasta": "Facial",
    "data_folha": "21/01/26",
@@ -26777,8 +26783,8 @@
     "1321 Corante Vermelho Bordo: nome não bate com o cadastro (sim 0.50; cadastro='Solção em Propileno Glicol 0,1% Vermelho Bordo')"
    ],
    "nome_produto": "Serum com GH",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "19/08- Noue",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -27001,9 +27007,9 @@
     "NOME DO PRODUTO ALTERADO À MÃO: Campo Produto: texto impresso rabiscado/riscado à caneta (ilegível) e manuscrito 'MENOALIV' ao lado.",
     "PREÇO/FORNECEDOR SUSPEITO na folha: 1335 Cica -PDRN (atípico)"
    ],
-   "nome_produto": "menonhiv",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Serum PDRN + Exossomas+Peptideos",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "24/06 Menoaliv",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -27220,9 +27226,9 @@
     "1324 Propolis Vermelho: código não existe no cadastro (kb-source)",
     "1323 Geleia Real: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "Fgel Hidratante -Wellness",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Fgel Hidratante - Wellness",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "24/08- welness",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -27412,11 +27418,12 @@
     "a própria folha imprime TOTAL = 101,440% e a soma das linhas lidas = 101.4400%: a FÓRMULA DE ORIGEM não fecha 100% (decisão do laboratório; nada foi ajustado)"
    ],
    "pendencias_cadastro": [
-    "NOME DO PRODUTO ALTERADO À MÃO: No nome do produto 'Serum Rugas - PDRN', a palavra impressa 'PDRN' esta riscada a caneta e ao lado escrito 'Peptideos' (produto passa a ser Serum Rugas - Peptideos)"
+    "NOME DO PRODUTO ALTERADO À MÃO: No nome do produto 'Serum Rugas - PDRN', a palavra impressa 'PDRN' esta riscada a caneta e ao lado escrito 'Peptideos' (produto passa a ser Serum Rugas - Peptideos)",
+    "NOME DO PRODUTO ALTERADO À MÃO: impresso 'Serum Rugas - PDRN' riscado; manuscrito: Peptideos"
    ],
-   "nome_produto": "Serum Rugas-PD PeTioeos",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Serum Rugas - PDRN",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": false,
    "cliente_original": "26/01 - Gizelli",
    "categoria_pasta": "Facial",
    "data_folha": "22/01/26",
@@ -27597,8 +27604,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Sabonete Facial",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "26/01 - Gizelli",
    "categoria_pasta": "Facial",
    "data_folha": "22/01/26",
@@ -27740,8 +27747,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Serum Rugas - PDRN",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "26/01 - Gizelli",
    "categoria_pasta": "Facial",
    "data_folha": "22/01/26",
@@ -27938,8 +27945,8 @@
     "ANOTAÇÃO MANUSCRITA (outro) na linha 873 Extrato Glicolico de Hamamelis: 'X' a caneta após a descrição"
    ],
    "nome_produto": "Serum Rugas - PDRN",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "27/01 Cássia",
    "categoria_pasta": "Facial",
    "data_folha": "22/01/26",
@@ -28097,8 +28104,8 @@
     "ANOTAÇÃO MANUSCRITA (outro) na linha 873 Extrato Glicolico de Hamamelis: 'X' ao lado da descrição"
    ],
    "nome_produto": "Serum Rugas - PDRN",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "27/01 Cássia",
    "categoria_pasta": "Facial",
    "data_folha": "22/01/26",
@@ -28256,8 +28263,8 @@
     "ANOTAÇÃO MANUSCRITA (outro) na linha 873 Extrato Glicolico de Hamamelis: 'X' ao lado da descrição"
    ],
    "nome_produto": "Serum Rugas - PDRN",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "27/01 Cássia",
    "categoria_pasta": "Facial",
    "data_folha": "22/01/26",
@@ -28442,8 +28449,8 @@
     "ANOTAÇÃO MANUSCRITA (nota_ao_lado) na linha 33 Phenoxyethanol (and) Caprylyl Glycol( Kem Diol 10)/Microcare PHG: 'X' sobreposto a um visto (✓) a lápis no fim da descrição"
    ],
    "nome_produto": "Serum Rugas - PDRN",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "27/01 Cássia",
    "categoria_pasta": "Facial",
    "data_folha": "22/01/26",
@@ -28612,9 +28619,9 @@
    "pendencias_cadastro": [
     "1493 Pó de Extrato de Tremella: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "JATE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Sabonete Liquido Facial",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Isabel 08/07",
    "categoria_pasta": "Facial",
    "data_folha": "02/07/26",
@@ -28799,9 +28806,9 @@
     "1478 Oxido Zinco Micronizado: código não existe no cadastro (kb-source)",
     "1493 Pó de Extrato de Tremella: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "Hremell",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Creme Facial",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Isabel 08/07",
    "categoria_pasta": "Facial",
    "data_folha": "02/07/26",
@@ -29105,8 +29112,8 @@
     "1493 Pó de Extrato de Tremella: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Creme para area dos olhos",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Isabel 08/07",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -29369,8 +29376,8 @@
     "778 Fenoxietanol/Etilhexil glicerina: nome não bate com o cadastro (sim 0.76; cadastro='Fenoxietanol/ethilhrxil')"
    ],
    "nome_produto": "Gel Creme - Sugestão Cliente",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": "15/07/26",
@@ -29596,8 +29603,8 @@
    ],
    "pendencias_cadastro": [],
    "nome_produto": "Sérum Pele Mista",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -29778,8 +29785,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Sérum Pele Oleosa",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -29977,8 +29984,8 @@
    ],
    "pendencias_cadastro": [],
    "nome_produto": "Gel de Limpeza",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": "15/07/26",
@@ -30146,8 +30153,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Sabonete Liquido Base Óleo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": "15/07/26",
@@ -30407,9 +30414,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "(PoRO)",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Creme Facial Pele Oleosa",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": "15/07/26",
@@ -30687,8 +30694,8 @@
     "1480 Transcutol CG(Ethoxydiglycol): código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Serum Dia",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -30864,8 +30871,8 @@
    ],
    "pendencias_cadastro": [],
    "nome_produto": "Hidratante Facial Calmante",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": "15/07/26",
@@ -31150,8 +31157,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Stick FPS 90",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": "15/07/26",
@@ -31359,9 +31366,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "15-16-17-18",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Filtro Solar FPS 60",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": "15/07/26",
@@ -31638,9 +31645,9 @@
     "636 Óleo Essencial de Copaiba - Canbe: código não existe no cadastro (kb-source)",
     "637 Óleo Essencial de Benzoin - Canbe: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "B.U Cosméticos",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Hidratante Facial Anti Sinais",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": "15/07/26",
@@ -31948,8 +31955,8 @@
     "PREÇO/FORNECEDOR SUSPEITO na folha: 1412 Steareth-21"
    ],
    "nome_produto": "Roll on",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -32110,8 +32117,8 @@
     "637 Óleo Essencial de Benzoin - Canbe: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Espuma de limpeza Facial",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": null,
@@ -32342,9 +32349,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "(facial",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Serum Rugas",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": "15/07/26",
@@ -32512,8 +32519,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Creme para area dos olhos",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "Me.Linda 15/07",
    "categoria_pasta": "Facial",
    "data_folha": "15/07/26",
@@ -32697,8 +32704,8 @@
     "137 Propilenoglicol: CÓDIGO INFERIDO 137: impresso cortado/coberto na foto (visível '37'); nome idêntico e único no cadastro e código termina em '37' — confirmar"
    ],
    "nome_produto": "Deo Colonia ( Nicolas)",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/07 Memorie - Nicolás",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "28/01/26",
@@ -32805,8 +32812,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Deo Colonia Page One - Memoire",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/07 Memorie - Nicolás",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": null,
@@ -32911,8 +32918,8 @@
     "0 Agua Desmineralizada: CÓDIGO INFERIDO 0: impresso cortado/coberto na foto (visível ''); nome idêntico e único no cadastro — confirmar"
    ],
    "nome_produto": "Deo Colonia ( Nicolas)",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/07 Memorie - Nicolás",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": null,
@@ -33017,8 +33024,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Deo Colonia Flash Back - Memoire",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/07 Memorie - Nicolás",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "25/03/26",
@@ -33121,8 +33128,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Deo Colonia Timeless - Memoire",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/07 Memorie - Nicolás",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "25/03/26",
@@ -33227,8 +33234,8 @@
     "0 Agua Desmineralizada: CÓDIGO INFERIDO 0: impresso cortado/coberto na foto (visível ''); nome idêntico e único no cadastro — confirmar"
    ],
    "nome_produto": "Deo Colonia Flash Back - Memoire",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "04/07 Memorie - Nicolás",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": null,
@@ -33337,8 +33344,8 @@
     "1460 Tens UP: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Creme Facial- Pescoço",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "07/04- welness",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": null,
@@ -33632,8 +33639,8 @@
     "1324 Propolis Vermelho: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Creme Íntimo Firmo Intimo 2",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "07/04- welness",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "15/06/26",
@@ -33925,8 +33932,8 @@
     "1323 Geleia Real: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Base Gloss Color Mix",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "07/04- welness",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "07/04/26",
@@ -34033,8 +34040,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Creme hidratante",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "07/04- welness",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "15/06/26",
@@ -34322,8 +34329,8 @@
     "1323 Geleia Real: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Creme Facial- Pescoço",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "07/04- welness",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": null,
@@ -34624,9 +34631,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "Creme hidratante Corpopal",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Creme hidratante",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "07/04- welness",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "06/04/26",
@@ -34922,9 +34929,9 @@
     "1456 Apitoxina: código não existe no cadastro (kb-source)",
     "1458 Microcare Emollient EHG: código não existe no cadastro (kb-source)"
    ],
-   "nome_produto": "KIVATE",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Gel de Elastomero/Hidrat.Rosto e Pescoço 2",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "07/04- welness",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": null,
@@ -35142,8 +35149,8 @@
     "1324 Propolis Vermelho: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Creme Íntimo Firmo Intimo",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "07/04- welness",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "07/04/26",
@@ -35394,8 +35401,8 @@
     "1323 Geleia Real: código não existe no cadastro (kb-source)"
    ],
    "nome_produto": "Creme Facial- Pescoço",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "07/04- welness",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": null,
@@ -35683,9 +35690,9 @@
    "status_extracao": "confirmada",
    "motivos": [],
    "pendencias_cadastro": [],
-   "nome_produto": "Deo Colonia -Masc/Fem",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_produto": "Deo Colonia - Masc/Fem",
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "10/04- Claudinei Santos",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "06/04/26",
@@ -35788,8 +35795,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Bastão Anti Atrito - 6641",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "15/04 - anti atrito stick",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "14/04/26",
@@ -35948,8 +35955,8 @@
     "15 Alcool Etilico Extra Neutro 96GL: nome não bate com o cadastro (sim 0.43; cadastro='Alcool  Refinado')"
    ],
    "nome_produto": "Antiperspirante 6694",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "28/04- projeto roll on",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "28/04/26",
@@ -36030,8 +36037,8 @@
     "15 Alcool Etilico Extra Neutro 96GL: nome não bate com o cadastro (sim 0.43; cadastro='Alcool  Refinado')"
    ],
    "nome_produto": "Antiperspirante 6695",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "28/04- projeto roll on",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "28/04/26",
@@ -36114,8 +36121,8 @@
     "15 Alcool Etilico Extra Neutro 96GL: nome não bate com o cadastro (sim 0.43; cadastro='Alcool  Refinado')"
    ],
    "nome_produto": "Antiperspirante 6697",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "28/04- projeto roll on",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "28/04/26",
@@ -36194,8 +36201,8 @@
    "motivos": [],
    "pendencias_cadastro": [],
    "nome_produto": "Roll on",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "28/04- projeto roll on",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": "28/04/26",
@@ -36347,8 +36354,8 @@
     "778 Fenoxietanol/Etilhexil glicerina: nome não bate com o cadastro (sim 0.76; cadastro='Fenoxietanol/ethilhrxil')"
    ],
    "nome_produto": "Spray Fixador de Perfume",
-   "nome_fonte": "ocr_topo",
-   "nome_confirmado_ocr": null,
+   "nome_fonte": "visual_titulo",
+   "nome_confirmado_ocr": true,
    "cliente_original": "29/07- linha Felipe",
    "categoria_pasta": "Perfume mês 4 ao mês 7",
    "data_folha": null,
@@ -63920,7 +63927,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1900.JPG (https://drive.google.com/file/d/10OSubp1hXdC2_W60XksPQs8WsEMF2Ku1/view) sha256 f72bf0e500bc3b663966454b03407aff370b80ceef2597da98075824880180e5",
    "formula": 31,
-   "produto": "gão-"
+   "produto": "NeveSeda Pó de Banho Terapêutico - Infantil"
   },
   {
    "mp_codigo": 17,
@@ -63956,7 +63963,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /08/07- Giovanna /IMG_1907.JPG (https://drive.google.com/file/d/1kvwbnYZEq6TQz9xM5h8_TZAJn1_evFbf/view) sha256 0f32b0c268d65fd9b4f05c22e5b496b54e9890a978ba5d1519c669c68950f0c0",
    "formula": 22,
-   "produto": "GiOVANA"
+   "produto": "Creme Exfoliante"
   },
   {
    "mp_codigo": 23,
@@ -64004,7 +64011,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Heloísa - 17/09 /IMG_1871.JPG (https://drive.google.com/file/d/1BSGQdH1KSZepYEj5eE4XqjH7clrbgH4P/view) sha256 535494bc8ab384afadad4910f3121548ba9e91db2719ff89eacc566f860c939c",
    "formula": 59,
-   "produto": "Pomada Capilar Modeladora  - Baixo custo"
+   "produto": "Pomada Capilar Modeladora - Baixo custo"
   },
   {
    "mp_codigo": 29,
@@ -64016,7 +64023,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Me.Linda 15/07 /IMG_1797.JPG (https://drive.google.com/file/d/1TlPlgt29aEA7LsWWv90LiwJi0of_563Y/view) sha256 caf40f33de20a346bef4ee0de114f32a9ca9c5f516f051fa09a45b5744b96dc9",
    "formula": 137,
-   "produto": "(PoRO)"
+   "produto": "Creme Facial Pele Oleosa"
   },
   {
    "mp_codigo": 30,
@@ -64040,7 +64047,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /31/07- tratamento estrias /IMG_1888.JPG (https://drive.google.com/file/d/1g_g-S6XaGoJVGobtgsu-iTPol8qpuxIc/view) sha256 3b32716dd6f30975070a258b6ccc93b349471572ab4e3be823a21a6dce402e84",
    "formula": 55,
-   "produto": "stação-"
+   "produto": "Creme Anti Celulite"
   },
   {
    "mp_codigo": 32,
@@ -64136,7 +64143,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /19/02 Sabrina Uess /IMG_1748.JPG (https://drive.google.com/file/d/16tLedG7RLNAmPnCRGJgCGTtsTzifoM1I/view) sha256 bd4656b6fad20c3391e02616ef732ff8834564b96ae9fabbbff0c4036ce342b2",
    "formula": 106,
-   "produto": "FR: ESCOUA SILiLONE ESpUmAnOR"
+   "produto": "Espuma de limpeza Facial"
   },
   {
    "mp_codigo": 44,
@@ -64172,7 +64179,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /03/09 João /IMG_1829.JPG (https://drive.google.com/file/d/1FavA1UyCNEklILKKtG-xmNpjfX7JvCVT/view) sha256 1c4d9df6d9017e5ee30bb6e42bdd8b3afff928b51615d042f50f5fb7dc982986",
    "formula": 81,
-   "produto": "1f0A0"
+   "produto": "Protetor FPS 50"
   },
   {
    "mp_codigo": 48,
@@ -64184,7 +64191,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /19/02 Sabrina Uess /IMG_1748.JPG (https://drive.google.com/file/d/16tLedG7RLNAmPnCRGJgCGTtsTzifoM1I/view) sha256 bd4656b6fad20c3391e02616ef732ff8834564b96ae9fabbbff0c4036ce342b2",
    "formula": 106,
-   "produto": "FR: ESCOUA SILiLONE ESpUmAnOR"
+   "produto": "Espuma de limpeza Facial"
   },
   {
    "mp_codigo": 49,
@@ -64304,7 +64311,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Isabel 08/07 /IMG_1783.JPG (https://drive.google.com/file/d/10yB3lqRRk2S5BEXGUn-VMu442R-SSFoA/view) sha256 023e5abb34855f4ff528ec4b568f84a627d390d4a068cfee3a0b48162fa93cc9",
    "formula": 129,
-   "produto": "JATE"
+   "produto": "Sabonete Liquido Facial"
   },
   {
    "mp_codigo": 79,
@@ -64316,7 +64323,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Me.Linda 15/07 /IMG_1797.JPG (https://drive.google.com/file/d/1TlPlgt29aEA7LsWWv90LiwJi0of_563Y/view) sha256 caf40f33de20a346bef4ee0de114f32a9ca9c5f516f051fa09a45b5744b96dc9",
    "formula": 137,
-   "produto": "(PoRO)"
+   "produto": "Creme Facial Pele Oleosa"
   },
   {
    "mp_codigo": 81,
@@ -64340,7 +64347,7 @@
    "data_origem": "folha",
    "fonte": "Facial /04/08 - Geisa /IMG_1811.JPG (https://drive.google.com/file/d/1KNJ6XVg3gi7HztAkl8PmqUUf2qQfpa1B/view) sha256 5c19a19517f873aa5de3ce272651e95848eb08a021b35675cf59992737368c28",
    "formula": 88,
-   "produto": "ElumiNADoR"
+   "produto": "Hidratante Facial Stick"
   },
   {
    "mp_codigo": 84,
@@ -64388,7 +64395,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1900.JPG (https://drive.google.com/file/d/10OSubp1hXdC2_W60XksPQs8WsEMF2Ku1/view) sha256 f72bf0e500bc3b663966454b03407aff370b80ceef2597da98075824880180e5",
    "formula": 31,
-   "produto": "gão-"
+   "produto": "NeveSeda Pó de Banho Terapêutico - Infantil"
   },
   {
    "mp_codigo": 89,
@@ -64412,7 +64419,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Me.Linda 15/07 /IMG_1797.JPG (https://drive.google.com/file/d/1TlPlgt29aEA7LsWWv90LiwJi0of_563Y/view) sha256 caf40f33de20a346bef4ee0de114f32a9ca9c5f516f051fa09a45b5744b96dc9",
    "formula": 137,
-   "produto": "(PoRO)"
+   "produto": "Creme Facial Pele Oleosa"
   },
   {
    "mp_codigo": 91,
@@ -64484,7 +64491,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Heloísa - 17/09 /IMG_1871.JPG (https://drive.google.com/file/d/1BSGQdH1KSZepYEj5eE4XqjH7clrbgH4P/view) sha256 535494bc8ab384afadad4910f3121548ba9e91db2719ff89eacc566f860c939c",
    "formula": 59,
-   "produto": "Pomada Capilar Modeladora  - Baixo custo"
+   "produto": "Pomada Capilar Modeladora - Baixo custo"
   },
   {
    "mp_codigo": 98,
@@ -64496,7 +64503,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Heloísa - 17/09 /IMG_1871.JPG (https://drive.google.com/file/d/1BSGQdH1KSZepYEj5eE4XqjH7clrbgH4P/view) sha256 535494bc8ab384afadad4910f3121548ba9e91db2719ff89eacc566f860c939c",
    "formula": 59,
-   "produto": "Pomada Capilar Modeladora  - Baixo custo"
+   "produto": "Pomada Capilar Modeladora - Baixo custo"
   },
   {
    "mp_codigo": 99,
@@ -64712,7 +64719,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Me.Linda 15/07 /IMG_1797.JPG (https://drive.google.com/file/d/1TlPlgt29aEA7LsWWv90LiwJi0of_563Y/view) sha256 caf40f33de20a346bef4ee0de114f32a9ca9c5f516f051fa09a45b5744b96dc9",
    "formula": 137,
-   "produto": "(PoRO)"
+   "produto": "Creme Facial Pele Oleosa"
   },
   {
    "mp_codigo": 146,
@@ -65144,7 +65151,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1902.JPG (https://drive.google.com/file/d/1K3ouTimQGivxc8U2DZ0FhbeDnm26DUQ7/view) sha256 27233eba20a75a6854a0829bfcda9fee3a7fdbdcd35b86e5eeeb42263896508b",
    "formula": 33,
-   "produto": "Barra Syndet - Adulto (Betta)"
+   "produto": "Barra Syndet - Adulto ( Betta)"
   },
   {
    "mp_codigo": 269,
@@ -65156,7 +65163,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Heloísa - 17/09 /IMG_1871.JPG (https://drive.google.com/file/d/1BSGQdH1KSZepYEj5eE4XqjH7clrbgH4P/view) sha256 535494bc8ab384afadad4910f3121548ba9e91db2719ff89eacc566f860c939c",
    "formula": 59,
-   "produto": "Pomada Capilar Modeladora  - Baixo custo"
+   "produto": "Pomada Capilar Modeladora - Baixo custo"
   },
   {
    "mp_codigo": 271,
@@ -65168,7 +65175,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1900.JPG (https://drive.google.com/file/d/10OSubp1hXdC2_W60XksPQs8WsEMF2Ku1/view) sha256 f72bf0e500bc3b663966454b03407aff370b80ceef2597da98075824880180e5",
    "formula": 31,
-   "produto": "gão-"
+   "produto": "NeveSeda Pó de Banho Terapêutico - Infantil"
   },
   {
    "mp_codigo": 280,
@@ -65180,7 +65187,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /08/07- Giovanna /IMG_1907.JPG (https://drive.google.com/file/d/1kvwbnYZEq6TQz9xM5h8_TZAJn1_evFbf/view) sha256 0f32b0c268d65fd9b4f05c22e5b496b54e9890a978ba5d1519c669c68950f0c0",
    "formula": 22,
-   "produto": "GiOVANA"
+   "produto": "Creme Exfoliante"
   },
   {
    "mp_codigo": 289,
@@ -65312,7 +65319,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /19/02 Sabrina Uess /IMG_1748.JPG (https://drive.google.com/file/d/16tLedG7RLNAmPnCRGJgCGTtsTzifoM1I/view) sha256 bd4656b6fad20c3391e02616ef732ff8834564b96ae9fabbbff0c4036ce342b2",
    "formula": 106,
-   "produto": "FR: ESCOUA SILiLONE ESpUmAnOR"
+   "produto": "Espuma de limpeza Facial"
   },
   {
    "mp_codigo": 411,
@@ -65360,7 +65367,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Isabel 08/07 /IMG_1783.JPG (https://drive.google.com/file/d/10yB3lqRRk2S5BEXGUn-VMu442R-SSFoA/view) sha256 023e5abb34855f4ff528ec4b568f84a627d390d4a068cfee3a0b48162fa93cc9",
    "formula": 129,
-   "produto": "JATE"
+   "produto": "Sabonete Liquido Facial"
   },
   {
    "mp_codigo": 434,
@@ -65372,7 +65379,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /08/07- Giovanna /IMG_1907.JPG (https://drive.google.com/file/d/1kvwbnYZEq6TQz9xM5h8_TZAJn1_evFbf/view) sha256 0f32b0c268d65fd9b4f05c22e5b496b54e9890a978ba5d1519c669c68950f0c0",
    "formula": 22,
-   "produto": "GiOVANA"
+   "produto": "Creme Exfoliante"
   },
   {
    "mp_codigo": 446,
@@ -65408,7 +65415,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Isabel 08/07 /IMG_1783.JPG (https://drive.google.com/file/d/10yB3lqRRk2S5BEXGUn-VMu442R-SSFoA/view) sha256 023e5abb34855f4ff528ec4b568f84a627d390d4a068cfee3a0b48162fa93cc9",
    "formula": 129,
-   "produto": "JATE"
+   "produto": "Sabonete Liquido Facial"
   },
   {
    "mp_codigo": 483,
@@ -65456,7 +65463,7 @@
    "data_origem": "folha",
    "fonte": "Facial /04/08 - Geisa /IMG_1811.JPG (https://drive.google.com/file/d/1KNJ6XVg3gi7HztAkl8PmqUUf2qQfpa1B/view) sha256 5c19a19517f873aa5de3ce272651e95848eb08a021b35675cf59992737368c28",
    "formula": 88,
-   "produto": "ElumiNADoR"
+   "produto": "Hidratante Facial Stick"
   },
   {
    "mp_codigo": 492,
@@ -65648,7 +65655,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /08/07- Giovanna /IMG_1907.JPG (https://drive.google.com/file/d/1kvwbnYZEq6TQz9xM5h8_TZAJn1_evFbf/view) sha256 0f32b0c268d65fd9b4f05c22e5b496b54e9890a978ba5d1519c669c68950f0c0",
    "formula": 22,
-   "produto": "GiOVANA"
+   "produto": "Creme Exfoliante"
   },
   {
    "mp_codigo": 606,
@@ -65660,7 +65667,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1902.JPG (https://drive.google.com/file/d/1K3ouTimQGivxc8U2DZ0FhbeDnm26DUQ7/view) sha256 27233eba20a75a6854a0829bfcda9fee3a7fdbdcd35b86e5eeeb42263896508b",
    "formula": 33,
-   "produto": "Barra Syndet - Adulto (Betta)"
+   "produto": "Barra Syndet - Adulto ( Betta)"
   },
   {
    "mp_codigo": 622,
@@ -65876,7 +65883,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /03/09 João /IMG_1829.JPG (https://drive.google.com/file/d/1FavA1UyCNEklILKKtG-xmNpjfX7JvCVT/view) sha256 1c4d9df6d9017e5ee30bb6e42bdd8b3afff928b51615d042f50f5fb7dc982986",
    "formula": 81,
-   "produto": "1f0A0"
+   "produto": "Protetor FPS 50"
   },
   {
    "mp_codigo": 701,
@@ -65960,7 +65967,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /01/09 - Noue /IMG_1822.JPG (https://drive.google.com/file/d/1QuoLBKJCzY88QeFQWjZdDIOd3PoyBQJn/view) sha256 d72c8179c4b1adfda6a8b39b1c0fbd20e846dc5bce8c34b2fdd093cadd75a76d",
    "formula": 79,
-   "produto": "YITRAY"
+   "produto": "Anti Gray Hair Spray - Noue"
   },
   {
    "mp_codigo": 749,
@@ -65984,7 +65991,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Victor - 29/04 /IMG_1965.JPG (https://drive.google.com/file/d/1bUZDUFvEF2DxhPrAZIUQeA62NCe2qLuY/view) sha256 0ac868468829225348be4a74db1df8c90ea7c76d4fc4092caaafee61ef40c377",
    "formula": 74,
-   "produto": "Hidratante Nuun  - Reajuste Final - 5262"
+   "produto": "Hidratante Nuun - Reajuste Final - 5262"
   },
   {
    "mp_codigo": 757,
@@ -66008,7 +66015,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Capilar /Ludimila 27/08 /IMG_1999.JPG (https://drive.google.com/file/d/13bjhCMpx0bA3paNOl_RZ43uSI2VUbZyO/view) sha256 80e11e092131210b75bc6667c7b07f828a88435408ab4f61eabfa5d5b00f92d5",
    "formula": 17,
-   "produto": "Ludmila"
+   "produto": "Finalizador Capilar com Silicone"
   },
   {
    "mp_codigo": 763,
@@ -66104,7 +66111,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /31/07- tratamento estrias /IMG_1889.JPG (https://drive.google.com/file/d/1zyAMtunvt1n90tLSYvxapyWhEbMeNcoD/view) sha256 036229c649e6c7a4562e07778d5b27565b166aaeb9826f5bd6fa5998bf3f608f",
    "formula": 56,
-   "produto": "Daily Adonay Tonico Capilar Michelle Marques"
+   "produto": "Tonico Capilar"
   },
   {
    "mp_codigo": 804,
@@ -66116,7 +66123,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /03/09 João /IMG_1829.JPG (https://drive.google.com/file/d/1FavA1UyCNEklILKKtG-xmNpjfX7JvCVT/view) sha256 1c4d9df6d9017e5ee30bb6e42bdd8b3afff928b51615d042f50f5fb7dc982986",
    "formula": 81,
-   "produto": "1f0A0"
+   "produto": "Protetor FPS 50"
   },
   {
    "mp_codigo": 808,
@@ -66140,7 +66147,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /03/09 João /IMG_1829.JPG (https://drive.google.com/file/d/1FavA1UyCNEklILKKtG-xmNpjfX7JvCVT/view) sha256 1c4d9df6d9017e5ee30bb6e42bdd8b3afff928b51615d042f50f5fb7dc982986",
    "formula": 81,
-   "produto": "1f0A0"
+   "produto": "Protetor FPS 50"
   },
   {
    "mp_codigo": 821,
@@ -66164,7 +66171,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /03/09 João /IMG_1829.JPG (https://drive.google.com/file/d/1FavA1UyCNEklILKKtG-xmNpjfX7JvCVT/view) sha256 1c4d9df6d9017e5ee30bb6e42bdd8b3afff928b51615d042f50f5fb7dc982986",
    "formula": 81,
-   "produto": "1f0A0"
+   "produto": "Protetor FPS 50"
   },
   {
    "mp_codigo": 826,
@@ -66200,7 +66207,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /03/09 João /IMG_1829.JPG (https://drive.google.com/file/d/1FavA1UyCNEklILKKtG-xmNpjfX7JvCVT/view) sha256 1c4d9df6d9017e5ee30bb6e42bdd8b3afff928b51615d042f50f5fb7dc982986",
    "formula": 81,
-   "produto": "1f0A0"
+   "produto": "Protetor FPS 50"
   },
   {
    "mp_codigo": 835,
@@ -66260,7 +66267,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Heloísa - 17/09 /IMG_1871.JPG (https://drive.google.com/file/d/1BSGQdH1KSZepYEj5eE4XqjH7clrbgH4P/view) sha256 535494bc8ab384afadad4910f3121548ba9e91db2719ff89eacc566f860c939c",
    "formula": 59,
-   "produto": "Pomada Capilar Modeladora  - Baixo custo"
+   "produto": "Pomada Capilar Modeladora - Baixo custo"
   },
   {
    "mp_codigo": 865,
@@ -66272,7 +66279,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Me.Linda 15/07 /IMG_1797.JPG (https://drive.google.com/file/d/1TlPlgt29aEA7LsWWv90LiwJi0of_563Y/view) sha256 caf40f33de20a346bef4ee0de114f32a9ca9c5f516f051fa09a45b5744b96dc9",
    "formula": 137,
-   "produto": "(PoRO)"
+   "produto": "Creme Facial Pele Oleosa"
   },
   {
    "mp_codigo": 869,
@@ -66332,7 +66339,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Capilar /Ludimila 27/08 /IMG_1998.JPG (https://drive.google.com/file/d/1wdmCbyz5ubGyezGzNInaHcDRvAQV0_bO/view) sha256 e1575ccac728f6a72e10e02eeeed578b745714753be0c219620554bdabc3c2d2",
    "formula": 19,
-   "produto": "Ludmila"
+   "produto": "Leave-in Bruma"
   },
   {
    "mp_codigo": 883,
@@ -66452,7 +66459,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Julya Freitas - 02/04 /IMG_1968.JPG (https://drive.google.com/file/d/1o13GWVnanJNI222qKdPlAsHZlS12EFnF/view) sha256 ae9102c0cefa1f7a2c8bfcf51bbc74aaca2b5daccd1b2b86ed5c1918413a1440",
    "formula": 64,
-   "produto": "Lig.crennes DifisoRes"
+   "produto": "Gel Clareador Manchas"
   },
   {
    "mp_codigo": 904,
@@ -66572,7 +66579,7 @@
    "data_origem": "folha",
    "fonte": "Facial /04/08 - Geisa /IMG_1811.JPG (https://drive.google.com/file/d/1KNJ6XVg3gi7HztAkl8PmqUUf2qQfpa1B/view) sha256 5c19a19517f873aa5de3ce272651e95848eb08a021b35675cf59992737368c28",
    "formula": 88,
-   "produto": "ElumiNADoR"
+   "produto": "Hidratante Facial Stick"
   },
   {
    "mp_codigo": 966,
@@ -66644,7 +66651,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Capilar /Ludimila 27/08 /IMG_1999.JPG (https://drive.google.com/file/d/13bjhCMpx0bA3paNOl_RZ43uSI2VUbZyO/view) sha256 80e11e092131210b75bc6667c7b07f828a88435408ab4f61eabfa5d5b00f92d5",
    "formula": 17,
-   "produto": "Ludmila"
+   "produto": "Finalizador Capilar com Silicone"
   },
   {
    "mp_codigo": 1001,
@@ -66764,7 +66771,7 @@
    "data_origem": "folha",
    "fonte": "Facial /04/08 - Geisa /IMG_1811.JPG (https://drive.google.com/file/d/1KNJ6XVg3gi7HztAkl8PmqUUf2qQfpa1B/view) sha256 5c19a19517f873aa5de3ce272651e95848eb08a021b35675cf59992737368c28",
    "formula": 88,
-   "produto": "ElumiNADoR"
+   "produto": "Hidratante Facial Stick"
   },
   {
    "mp_codigo": 1025,
@@ -66812,7 +66819,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Me.Linda 15/07 /IMG_1797.JPG (https://drive.google.com/file/d/1TlPlgt29aEA7LsWWv90LiwJi0of_563Y/view) sha256 caf40f33de20a346bef4ee0de114f32a9ca9c5f516f051fa09a45b5744b96dc9",
    "formula": 137,
-   "produto": "(PoRO)"
+   "produto": "Creme Facial Pele Oleosa"
   },
   {
    "mp_codigo": 1045,
@@ -66860,7 +66867,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Me.Linda 15/07 /IMG_1797.JPG (https://drive.google.com/file/d/1TlPlgt29aEA7LsWWv90LiwJi0of_563Y/view) sha256 caf40f33de20a346bef4ee0de114f32a9ca9c5f516f051fa09a45b5744b96dc9",
    "formula": 137,
-   "produto": "(PoRO)"
+   "produto": "Creme Facial Pele Oleosa"
   },
   {
    "mp_codigo": 1054,
@@ -66884,7 +66891,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Me.Linda 15/07 /IMG_1797.JPG (https://drive.google.com/file/d/1TlPlgt29aEA7LsWWv90LiwJi0of_563Y/view) sha256 caf40f33de20a346bef4ee0de114f32a9ca9c5f516f051fa09a45b5744b96dc9",
    "formula": 137,
-   "produto": "(PoRO)"
+   "produto": "Creme Facial Pele Oleosa"
   },
   {
    "mp_codigo": 1059,
@@ -66896,7 +66903,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /08/07- Giovanna /IMG_1907.JPG (https://drive.google.com/file/d/1kvwbnYZEq6TQz9xM5h8_TZAJn1_evFbf/view) sha256 0f32b0c268d65fd9b4f05c22e5b496b54e9890a978ba5d1519c669c68950f0c0",
    "formula": 22,
-   "produto": "GiOVANA"
+   "produto": "Creme Exfoliante"
   },
   {
    "mp_codigo": 1066,
@@ -66920,7 +66927,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /03/09 João /IMG_1829.JPG (https://drive.google.com/file/d/1FavA1UyCNEklILKKtG-xmNpjfX7JvCVT/view) sha256 1c4d9df6d9017e5ee30bb6e42bdd8b3afff928b51615d042f50f5fb7dc982986",
    "formula": 81,
-   "produto": "1f0A0"
+   "produto": "Protetor FPS 50"
   },
   {
    "mp_codigo": 1070,
@@ -66944,7 +66951,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /03/09 João /IMG_1829.JPG (https://drive.google.com/file/d/1FavA1UyCNEklILKKtG-xmNpjfX7JvCVT/view) sha256 1c4d9df6d9017e5ee30bb6e42bdd8b3afff928b51615d042f50f5fb7dc982986",
    "formula": 81,
-   "produto": "1f0A0"
+   "produto": "Protetor FPS 50"
   },
   {
    "mp_codigo": 1072,
@@ -66956,7 +66963,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /31/07- tratamento estrias /IMG_1888.JPG (https://drive.google.com/file/d/1g_g-S6XaGoJVGobtgsu-iTPol8qpuxIc/view) sha256 3b32716dd6f30975070a258b6ccc93b349471572ab4e3be823a21a6dce402e84",
    "formula": 55,
-   "produto": "stação-"
+   "produto": "Creme Anti Celulite"
   },
   {
    "mp_codigo": 1073,
@@ -66992,7 +66999,7 @@
    "data_origem": "folha",
    "fonte": "Facial /04/08 - Geisa /IMG_1811.JPG (https://drive.google.com/file/d/1KNJ6XVg3gi7HztAkl8PmqUUf2qQfpa1B/view) sha256 5c19a19517f873aa5de3ce272651e95848eb08a021b35675cf59992737368c28",
    "formula": 88,
-   "produto": "ElumiNADoR"
+   "produto": "Hidratante Facial Stick"
   },
   {
    "mp_codigo": 1083,
@@ -67004,7 +67011,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1902.JPG (https://drive.google.com/file/d/1K3ouTimQGivxc8U2DZ0FhbeDnm26DUQ7/view) sha256 27233eba20a75a6854a0829bfcda9fee3a7fdbdcd35b86e5eeeb42263896508b",
    "formula": 33,
-   "produto": "Barra Syndet - Adulto (Betta)"
+   "produto": "Barra Syndet - Adulto ( Betta)"
   },
   {
    "mp_codigo": 1101,
@@ -67040,7 +67047,7 @@
    "data_origem": "folha",
    "fonte": "Facial /04/08 - Geisa /IMG_1811.JPG (https://drive.google.com/file/d/1KNJ6XVg3gi7HztAkl8PmqUUf2qQfpa1B/view) sha256 5c19a19517f873aa5de3ce272651e95848eb08a021b35675cf59992737368c28",
    "formula": 88,
-   "produto": "ElumiNADoR"
+   "produto": "Hidratante Facial Stick"
   },
   {
    "mp_codigo": 1112,
@@ -67052,7 +67059,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Heloísa - 17/09 /IMG_1871.JPG (https://drive.google.com/file/d/1BSGQdH1KSZepYEj5eE4XqjH7clrbgH4P/view) sha256 535494bc8ab384afadad4910f3121548ba9e91db2719ff89eacc566f860c939c",
    "formula": 59,
-   "produto": "Pomada Capilar Modeladora  - Baixo custo"
+   "produto": "Pomada Capilar Modeladora - Baixo custo"
   },
   {
    "mp_codigo": 1113,
@@ -67064,7 +67071,7 @@
    "data_origem": "folha",
    "fonte": "Facial /04/08 - Geisa /IMG_1811.JPG (https://drive.google.com/file/d/1KNJ6XVg3gi7HztAkl8PmqUUf2qQfpa1B/view) sha256 5c19a19517f873aa5de3ce272651e95848eb08a021b35675cf59992737368c28",
    "formula": 88,
-   "produto": "ElumiNADoR"
+   "produto": "Hidratante Facial Stick"
   },
   {
    "mp_codigo": 1116,
@@ -67196,7 +67203,7 @@
    "data_origem": "folha",
    "fonte": "Facial /19/03 Silmara /IMG_1764.JPG (https://drive.google.com/file/d/1Kx4FU3cmHGiIPUAvvfC048tB3JlpuqeM/view) sha256 4eddab3904da9fcbf8f9c1c9f3a8c1eeae55039f8a16a626f2f66aaf94f8daf0",
    "formula": 115,
-   "produto": "Hipaahawte"
+   "produto": "Perfume Creme-Cupuaçu Cloud - NMF Cream"
   },
   {
    "mp_codigo": 1130,
@@ -67244,7 +67251,7 @@
    "data_origem": "folha",
    "fonte": "Facial /19/03 Silmara /IMG_1764.JPG (https://drive.google.com/file/d/1Kx4FU3cmHGiIPUAvvfC048tB3JlpuqeM/view) sha256 4eddab3904da9fcbf8f9c1c9f3a8c1eeae55039f8a16a626f2f66aaf94f8daf0",
    "formula": 115,
-   "produto": "Hipaahawte"
+   "produto": "Perfume Creme-Cupuaçu Cloud - NMF Cream"
   },
   {
    "mp_codigo": 1150,
@@ -67448,7 +67455,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Perfume mês 4 ao mês 7 /07/04- welness /IMG_1858.JPG (https://drive.google.com/file/d/1qvKY7rUR3QaFk2_0VsiEvqE8ZKbtO5Ah/view) sha256 8775f2c73febc55974a1e6e6163f333650f34eb0faa47d77b348e67732b83d4f",
    "formula": 159,
-   "produto": "KIVATE"
+   "produto": "Gel de Elastomero/Hidrat.Rosto e Pescoço 2"
   },
   {
    "mp_codigo": 1210,
@@ -67484,7 +67491,7 @@
    "data_origem": "folha",
    "fonte": "Facial /17/02 Layla /IMG_1744.JPG (https://drive.google.com/file/d/13XEvcx6zujb4O-3YLh0vgekqKBSkUH7d/view) sha256 8d9c245e6181f45236a2ae14c310763aa602bc2623b56908ac0e6294b00f8c84",
    "formula": 98,
-   "produto": "Layla"
+   "produto": "Serum com PDRN /Niacinamida"
   },
   {
    "mp_codigo": 1218,
@@ -67640,7 +67647,7 @@
    "data_origem": "folha",
    "fonte": "Facial /01/07- Kause Bê /IMG_1780.JPG (https://drive.google.com/file/d/1tp0NcbN-HYU6e3xUPl83qKajuVL8FCpZ/view) sha256 7442d39f99c1af2bbc13099ad7382f6b48cb4aab3c0dcc8ca65257eaaa606614",
    "formula": 77,
-   "produto": "KIVATE"
+   "produto": "Stick FPS 50"
   },
   {
    "mp_codigo": 1262,
@@ -67652,7 +67659,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Isabel 08/07 /IMG_1783.JPG (https://drive.google.com/file/d/10yB3lqRRk2S5BEXGUn-VMu442R-SSFoA/view) sha256 023e5abb34855f4ff528ec4b568f84a627d390d4a068cfee3a0b48162fa93cc9",
    "formula": 129,
-   "produto": "JATE"
+   "produto": "Sabonete Liquido Facial"
   },
   {
    "mp_codigo": 1282,
@@ -67664,7 +67671,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Amanda/Andre /IMG_1891.JPG (https://drive.google.com/file/d/1lnsCV7YJ4pVqEMM_6keS3nRMKtEjVdOt/view) sha256 ba24ee56343f3afd23255b4fcf00b6a974f349f1d9621b58c73f46a90ad636b4",
    "formula": 29,
-   "produto": "Óleo Brozeador e lluminador"
+   "produto": "Óleo Brozeador e Iluminador"
   },
   {
    "mp_codigo": 1284,
@@ -67736,7 +67743,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Amanda/Andre /IMG_1892.JPG (https://drive.google.com/file/d/14yvJhQFFpvgX6ufSkGx7GrQTuIzXXd3a/view) sha256 0b6e18b4feebc73070d7b23107deb098d0e2acdafc07da7544cafc9e823c6ee9",
    "formula": 27,
-   "produto": "Auto bronzeador-Spray"
+   "produto": "Auto bronzeador - Spray"
   },
   {
    "mp_codigo": 1310,
@@ -67748,7 +67755,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Heloísa - 17/09 /IMG_1871.JPG (https://drive.google.com/file/d/1BSGQdH1KSZepYEj5eE4XqjH7clrbgH4P/view) sha256 535494bc8ab384afadad4910f3121548ba9e91db2719ff89eacc566f860c939c",
    "formula": 59,
-   "produto": "Pomada Capilar Modeladora  - Baixo custo"
+   "produto": "Pomada Capilar Modeladora - Baixo custo"
   },
   {
    "mp_codigo": 1311,
@@ -67772,7 +67779,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Julya Freitas - 02/04 /IMG_1968.JPG (https://drive.google.com/file/d/1o13GWVnanJNI222qKdPlAsHZlS12EFnF/view) sha256 ae9102c0cefa1f7a2c8bfcf51bbc74aaca2b5daccd1b2b86ed5c1918413a1440",
    "formula": 64,
-   "produto": "Lig.crennes DifisoRes"
+   "produto": "Gel Clareador Manchas"
   },
   {
    "mp_codigo": 1313,
@@ -67892,7 +67899,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /24/08- welness /IMG_1817.JPG (https://drive.google.com/file/d/19JgEw-z54wUgLe-cWYH18tW-WGCJqnu4/view) sha256 ad8960327acb8427d9c59d0f118378cf5047a4077f8e7ecb81993697b5fe0ba3",
    "formula": 121,
-   "produto": "Fgel Hidratante -Wellness"
+   "produto": "Fgel Hidratante - Wellness"
   },
   {
    "mp_codigo": 1341,
@@ -67952,7 +67959,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Victor - 29/04 /IMG_1965.JPG (https://drive.google.com/file/d/1bUZDUFvEF2DxhPrAZIUQeA62NCe2qLuY/view) sha256 0ac868468829225348be4a74db1df8c90ea7c76d4fc4092caaafee61ef40c377",
    "formula": 74,
-   "produto": "Hidratante Nuun  - Reajuste Final - 5262"
+   "produto": "Hidratante Nuun - Reajuste Final - 5262"
   },
   {
    "mp_codigo": 1350,
@@ -68168,7 +68175,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Victor - 29/04 /IMG_1965.JPG (https://drive.google.com/file/d/1bUZDUFvEF2DxhPrAZIUQeA62NCe2qLuY/view) sha256 0ac868468829225348be4a74db1df8c90ea7c76d4fc4092caaafee61ef40c377",
    "formula": 74,
-   "produto": "Hidratante Nuun  - Reajuste Final - 5262"
+   "produto": "Hidratante Nuun - Reajuste Final - 5262"
   },
   {
    "mp_codigo": 1386,
@@ -68180,7 +68187,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Victor - 29/04 /IMG_1965.JPG (https://drive.google.com/file/d/1bUZDUFvEF2DxhPrAZIUQeA62NCe2qLuY/view) sha256 0ac868468829225348be4a74db1df8c90ea7c76d4fc4092caaafee61ef40c377",
    "formula": 74,
-   "produto": "Hidratante Nuun  - Reajuste Final - 5262"
+   "produto": "Hidratante Nuun - Reajuste Final - 5262"
   },
   {
    "mp_codigo": 1387,
@@ -68192,7 +68199,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Victor - 29/04 /IMG_1965.JPG (https://drive.google.com/file/d/1bUZDUFvEF2DxhPrAZIUQeA62NCe2qLuY/view) sha256 0ac868468829225348be4a74db1df8c90ea7c76d4fc4092caaafee61ef40c377",
    "formula": 74,
-   "produto": "Hidratante Nuun  - Reajuste Final - 5262"
+   "produto": "Hidratante Nuun - Reajuste Final - 5262"
   },
   {
    "mp_codigo": 1388,
@@ -68216,7 +68223,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Victor - 29/04 /IMG_1965.JPG (https://drive.google.com/file/d/1bUZDUFvEF2DxhPrAZIUQeA62NCe2qLuY/view) sha256 0ac868468829225348be4a74db1df8c90ea7c76d4fc4092caaafee61ef40c377",
    "formula": 74,
-   "produto": "Hidratante Nuun  - Reajuste Final - 5262"
+   "produto": "Hidratante Nuun - Reajuste Final - 5262"
   },
   {
    "mp_codigo": 1390,
@@ -68228,7 +68235,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Victor - 29/04 /IMG_1965.JPG (https://drive.google.com/file/d/1bUZDUFvEF2DxhPrAZIUQeA62NCe2qLuY/view) sha256 0ac868468829225348be4a74db1df8c90ea7c76d4fc4092caaafee61ef40c377",
    "formula": 74,
-   "produto": "Hidratante Nuun  - Reajuste Final - 5262"
+   "produto": "Hidratante Nuun - Reajuste Final - 5262"
   },
   {
    "mp_codigo": 1391,
@@ -68240,7 +68247,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /Victor - 29/04 /IMG_1965.JPG (https://drive.google.com/file/d/1bUZDUFvEF2DxhPrAZIUQeA62NCe2qLuY/view) sha256 0ac868468829225348be4a74db1df8c90ea7c76d4fc4092caaafee61ef40c377",
    "formula": 74,
-   "produto": "Hidratante Nuun  - Reajuste Final - 5262"
+   "produto": "Hidratante Nuun - Reajuste Final - 5262"
   },
   {
    "mp_codigo": 1394,
@@ -68252,7 +68259,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Amanda/Andre /IMG_1892.JPG (https://drive.google.com/file/d/14yvJhQFFpvgX6ufSkGx7GrQTuIzXXd3a/view) sha256 0b6e18b4feebc73070d7b23107deb098d0e2acdafc07da7544cafc9e823c6ee9",
    "formula": 27,
-   "produto": "Auto bronzeador-Spray"
+   "produto": "Auto bronzeador - Spray"
   },
   {
    "mp_codigo": 1397,
@@ -68456,7 +68463,7 @@
    "data_origem": "folha",
    "fonte": "Corporal /08/07- Giovanna /IMG_1907.JPG (https://drive.google.com/file/d/1kvwbnYZEq6TQz9xM5h8_TZAJn1_evFbf/view) sha256 0f32b0c268d65fd9b4f05c22e5b496b54e9890a978ba5d1519c669c68950f0c0",
    "formula": 22,
-   "produto": "GiOVANA"
+   "produto": "Creme Exfoliante"
   },
   {
    "mp_codigo": 1439,
@@ -68468,7 +68475,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Perfume mês 4 ao mês 7 /07/04- welness /IMG_1858.JPG (https://drive.google.com/file/d/1qvKY7rUR3QaFk2_0VsiEvqE8ZKbtO5Ah/view) sha256 8775f2c73febc55974a1e6e6163f333650f34eb0faa47d77b348e67732b83d4f",
    "formula": 159,
-   "produto": "KIVATE"
+   "produto": "Gel de Elastomero/Hidrat.Rosto e Pescoço 2"
   },
   {
    "mp_codigo": 1440,
@@ -68492,7 +68499,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Perfume mês 4 ao mês 7 /07/04- welness /IMG_1858.JPG (https://drive.google.com/file/d/1qvKY7rUR3QaFk2_0VsiEvqE8ZKbtO5Ah/view) sha256 8775f2c73febc55974a1e6e6163f333650f34eb0faa47d77b348e67732b83d4f",
    "formula": 159,
-   "produto": "KIVATE"
+   "produto": "Gel de Elastomero/Hidrat.Rosto e Pescoço 2"
   },
   {
    "mp_codigo": 1442,
@@ -68504,7 +68511,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Perfume mês 4 ao mês 7 /07/04- welness /IMG_1858.JPG (https://drive.google.com/file/d/1qvKY7rUR3QaFk2_0VsiEvqE8ZKbtO5Ah/view) sha256 8775f2c73febc55974a1e6e6163f333650f34eb0faa47d77b348e67732b83d4f",
    "formula": 159,
-   "produto": "KIVATE"
+   "produto": "Gel de Elastomero/Hidrat.Rosto e Pescoço 2"
   },
   {
    "mp_codigo": 1448,
@@ -68516,7 +68523,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Perfume mês 4 ao mês 7 /07/04- welness /IMG_1858.JPG (https://drive.google.com/file/d/1qvKY7rUR3QaFk2_0VsiEvqE8ZKbtO5Ah/view) sha256 8775f2c73febc55974a1e6e6163f333650f34eb0faa47d77b348e67732b83d4f",
    "formula": 159,
-   "produto": "KIVATE"
+   "produto": "Gel de Elastomero/Hidrat.Rosto e Pescoço 2"
   },
   {
    "mp_codigo": 1454,
@@ -68540,7 +68547,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Perfume mês 4 ao mês 7 /07/04- welness /IMG_1858.JPG (https://drive.google.com/file/d/1qvKY7rUR3QaFk2_0VsiEvqE8ZKbtO5Ah/view) sha256 8775f2c73febc55974a1e6e6163f333650f34eb0faa47d77b348e67732b83d4f",
    "formula": 159,
-   "produto": "KIVATE"
+   "produto": "Gel de Elastomero/Hidrat.Rosto e Pescoço 2"
   },
   {
    "mp_codigo": 1457,
@@ -68552,7 +68559,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Perfume mês 4 ao mês 7 /07/04- welness /IMG_1858.JPG (https://drive.google.com/file/d/1qvKY7rUR3QaFk2_0VsiEvqE8ZKbtO5Ah/view) sha256 8775f2c73febc55974a1e6e6163f333650f34eb0faa47d77b348e67732b83d4f",
    "formula": 159,
-   "produto": "KIVATE"
+   "produto": "Gel de Elastomero/Hidrat.Rosto e Pescoço 2"
   },
   {
    "mp_codigo": 1458,
@@ -68564,7 +68571,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Perfume mês 4 ao mês 7 /07/04- welness /IMG_1858.JPG (https://drive.google.com/file/d/1qvKY7rUR3QaFk2_0VsiEvqE8ZKbtO5Ah/view) sha256 8775f2c73febc55974a1e6e6163f333650f34eb0faa47d77b348e67732b83d4f",
    "formula": 159,
-   "produto": "KIVATE"
+   "produto": "Gel de Elastomero/Hidrat.Rosto e Pescoço 2"
   },
   {
    "mp_codigo": 1460,
@@ -68624,7 +68631,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Isabel 08/07 /IMG_1784.JPG (https://drive.google.com/file/d/17z5l2OxnwwXt5V6lNGi_U5h4jmdIk-HF/view) sha256 be92fdb6cb5d09d47bb306ec21f8c9e711065cf72bd973b4cecf318eabbf0ac8",
    "formula": 130,
-   "produto": "Hremell"
+   "produto": "Creme Facial"
   },
   {
    "mp_codigo": 1488,
@@ -68648,7 +68655,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1900.JPG (https://drive.google.com/file/d/10OSubp1hXdC2_W60XksPQs8WsEMF2Ku1/view) sha256 f72bf0e500bc3b663966454b03407aff370b80ceef2597da98075824880180e5",
    "formula": 31,
-   "produto": "gão-"
+   "produto": "NeveSeda Pó de Banho Terapêutico - Infantil"
   },
   {
    "mp_codigo": 1490,
@@ -68660,7 +68667,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1900.JPG (https://drive.google.com/file/d/10OSubp1hXdC2_W60XksPQs8WsEMF2Ku1/view) sha256 f72bf0e500bc3b663966454b03407aff370b80ceef2597da98075824880180e5",
    "formula": 31,
-   "produto": "gão-"
+   "produto": "NeveSeda Pó de Banho Terapêutico - Infantil"
   },
   {
    "mp_codigo": 1491,
@@ -68672,7 +68679,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1900.JPG (https://drive.google.com/file/d/10OSubp1hXdC2_W60XksPQs8WsEMF2Ku1/view) sha256 f72bf0e500bc3b663966454b03407aff370b80ceef2597da98075824880180e5",
    "formula": 31,
-   "produto": "gão-"
+   "produto": "NeveSeda Pó de Banho Terapêutico - Infantil"
   },
   {
    "mp_codigo": 1493,
@@ -68684,7 +68691,7 @@
    "data_origem": "folha",
    "fonte": "Facial /Isabel 08/07 /IMG_1783.JPG (https://drive.google.com/file/d/10yB3lqRRk2S5BEXGUn-VMu442R-SSFoA/view) sha256 023e5abb34855f4ff528ec4b568f84a627d390d4a068cfee3a0b48162fa93cc9",
    "formula": 129,
-   "produto": "JATE"
+   "produto": "Sabonete Liquido Facial"
   },
   {
    "mp_codigo": 1494,
@@ -68708,7 +68715,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Amanda/Andre /IMG_1892.JPG (https://drive.google.com/file/d/14yvJhQFFpvgX6ufSkGx7GrQTuIzXXd3a/view) sha256 0b6e18b4feebc73070d7b23107deb098d0e2acdafc07da7544cafc9e823c6ee9",
    "formula": 27,
-   "produto": "Auto bronzeador-Spray"
+   "produto": "Auto bronzeador - Spray"
   },
   {
    "mp_codigo": 1496,
@@ -68720,7 +68727,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Amanda/Andre /IMG_1892.JPG (https://drive.google.com/file/d/14yvJhQFFpvgX6ufSkGx7GrQTuIzXXd3a/view) sha256 0b6e18b4feebc73070d7b23107deb098d0e2acdafc07da7544cafc9e823c6ee9",
    "formula": 27,
-   "produto": "Auto bronzeador-Spray"
+   "produto": "Auto bronzeador - Spray"
   },
   {
    "mp_codigo": 1497,
@@ -68732,7 +68739,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Amanda/Andre /IMG_1891.JPG (https://drive.google.com/file/d/1lnsCV7YJ4pVqEMM_6keS3nRMKtEjVdOt/view) sha256 ba24ee56343f3afd23255b4fcf00b6a974f349f1d9621b58c73f46a90ad636b4",
    "formula": 29,
-   "produto": "Óleo Brozeador e lluminador"
+   "produto": "Óleo Brozeador e Iluminador"
   },
   {
    "mp_codigo": 1498,
@@ -68744,7 +68751,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1900.JPG (https://drive.google.com/file/d/10OSubp1hXdC2_W60XksPQs8WsEMF2Ku1/view) sha256 f72bf0e500bc3b663966454b03407aff370b80ceef2597da98075824880180e5",
    "formula": 31,
-   "produto": "gão-"
+   "produto": "NeveSeda Pó de Banho Terapêutico - Infantil"
   },
   {
    "mp_codigo": 1499,
@@ -68756,7 +68763,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Estrela de Davi /IMG_1900.JPG (https://drive.google.com/file/d/10OSubp1hXdC2_W60XksPQs8WsEMF2Ku1/view) sha256 f72bf0e500bc3b663966454b03407aff370b80ceef2597da98075824880180e5",
    "formula": 31,
-   "produto": "gão-"
+   "produto": "NeveSeda Pó de Banho Terapêutico - Infantil"
   },
   {
    "mp_codigo": 1500,
@@ -68816,7 +68823,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /09/07- Amanda/Andre /IMG_1891.JPG (https://drive.google.com/file/d/1lnsCV7YJ4pVqEMM_6keS3nRMKtEjVdOt/view) sha256 ba24ee56343f3afd23255b4fcf00b6a974f349f1d9621b58c73f46a90ad636b4",
    "formula": 29,
-   "produto": "Óleo Brozeador e lluminador"
+   "produto": "Óleo Brozeador e Iluminador"
   },
   {
    "mp_codigo": 1522,
@@ -68876,7 +68883,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /31/07- tratamento estrias /IMG_1889.JPG (https://drive.google.com/file/d/1zyAMtunvt1n90tLSYvxapyWhEbMeNcoD/view) sha256 036229c649e6c7a4562e07778d5b27565b166aaeb9826f5bd6fa5998bf3f608f",
    "formula": 56,
-   "produto": "Daily Adonay Tonico Capilar Michelle Marques"
+   "produto": "Tonico Capilar"
   },
   {
    "mp_codigo": 1527,
@@ -68900,7 +68907,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /31/07- tratamento estrias /IMG_1889.JPG (https://drive.google.com/file/d/1zyAMtunvt1n90tLSYvxapyWhEbMeNcoD/view) sha256 036229c649e6c7a4562e07778d5b27565b166aaeb9826f5bd6fa5998bf3f608f",
    "formula": 56,
-   "produto": "Daily Adonay Tonico Capilar Michelle Marques"
+   "produto": "Tonico Capilar"
   },
   {
    "mp_codigo": 1529,
@@ -68912,7 +68919,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /31/07- tratamento estrias /IMG_1889.JPG (https://drive.google.com/file/d/1zyAMtunvt1n90tLSYvxapyWhEbMeNcoD/view) sha256 036229c649e6c7a4562e07778d5b27565b166aaeb9826f5bd6fa5998bf3f608f",
    "formula": 56,
-   "produto": "Daily Adonay Tonico Capilar Michelle Marques"
+   "produto": "Tonico Capilar"
   },
   {
    "mp_codigo": 1533,
@@ -68924,7 +68931,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /31/07- tratamento estrias /IMG_1889.JPG (https://drive.google.com/file/d/1zyAMtunvt1n90tLSYvxapyWhEbMeNcoD/view) sha256 036229c649e6c7a4562e07778d5b27565b166aaeb9826f5bd6fa5998bf3f608f",
    "formula": 56,
-   "produto": "Daily Adonay Tonico Capilar Michelle Marques"
+   "produto": "Tonico Capilar"
   },
   {
    "mp_codigo": 1534,
@@ -68936,7 +68943,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Corporal /31/07- tratamento estrias /IMG_1888.JPG (https://drive.google.com/file/d/1g_g-S6XaGoJVGobtgsu-iTPol8qpuxIc/view) sha256 3b32716dd6f30975070a258b6ccc93b349471572ab4e3be823a21a6dce402e84",
    "formula": 55,
-   "produto": "stação-"
+   "produto": "Creme Anti Celulite"
   },
   {
    "mp_codigo": 1535,
@@ -68996,7 +69003,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1541,
@@ -69008,7 +69015,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1542,
@@ -69020,7 +69027,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1543,
@@ -69032,7 +69039,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1544,
@@ -69044,7 +69051,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1545,
@@ -69056,7 +69063,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1546,
@@ -69068,7 +69075,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1547,
@@ -69080,7 +69087,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1548,
@@ -69092,7 +69099,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1549,
@@ -69104,7 +69111,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1812.JPG (https://drive.google.com/file/d/1eQOxP11c2DRrof61mYnAa5cFiY7tESS3/view) sha256 11c801b85d5ee2834b74d3a6b92edaaea1e7bfb799ea3fbe3de65627ad15c1ac",
    "formula": 90,
-   "produto": "NATE"
+   "produto": "Sobra/Iluminador"
   },
   {
    "mp_codigo": 1550,
@@ -69116,7 +69123,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1551,
@@ -69128,7 +69135,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1812.JPG (https://drive.google.com/file/d/1eQOxP11c2DRrof61mYnAa5cFiY7tESS3/view) sha256 11c801b85d5ee2834b74d3a6b92edaaea1e7bfb799ea3fbe3de65627ad15c1ac",
    "formula": 90,
-   "produto": "NATE"
+   "produto": "Sobra/Iluminador"
   },
   {
    "mp_codigo": 1552,
@@ -69140,7 +69147,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /04/08 - Geisa /IMG_1813.JPG (https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) sha256 be4ac08de38dd8a54aeed77c21277ba7008ba7d101139f698b5333cc2173071f",
    "formula": 89,
-   "produto": "BASe LigmiDA - MATTE"
+   "produto": "Intense Liquido Blush"
   },
   {
    "mp_codigo": 1558,
@@ -69152,7 +69159,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Capilar /Ludimila 27/08 /IMG_1999.JPG (https://drive.google.com/file/d/13bjhCMpx0bA3paNOl_RZ43uSI2VUbZyO/view) sha256 80e11e092131210b75bc6667c7b07f828a88435408ab4f61eabfa5d5b00f92d5",
    "formula": 17,
-   "produto": "Ludmila"
+   "produto": "Finalizador Capilar com Silicone"
   },
   {
    "mp_codigo": 1559,
@@ -69164,7 +69171,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Capilar /Ludimila 27/08 /IMG_1998.JPG (https://drive.google.com/file/d/1wdmCbyz5ubGyezGzNInaHcDRvAQV0_bO/view) sha256 e1575ccac728f6a72e10e02eeeed578b745714753be0c219620554bdabc3c2d2",
    "formula": 19,
-   "produto": "Ludmila"
+   "produto": "Leave-in Bruma"
   },
   {
    "mp_codigo": 1560,
@@ -69176,7 +69183,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Capilar /Ludimila 27/08 /IMG_1998.JPG (https://drive.google.com/file/d/1wdmCbyz5ubGyezGzNInaHcDRvAQV0_bO/view) sha256 e1575ccac728f6a72e10e02eeeed578b745714753be0c219620554bdabc3c2d2",
    "formula": 19,
-   "produto": "Ludmila"
+   "produto": "Leave-in Bruma"
   },
   {
    "mp_codigo": 1561,
@@ -69236,7 +69243,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Capilar /The hair Surgeon - Usa 04/08 /IMG_2013.JPG (https://drive.google.com/file/d/1D6XMK1HIZgKnqLTYOhfL9ralE0qDjAPu/view) sha256 0c04dc3832abef0f86d265a7c8a70ccbc108bfc8905f2c9d75562157a355965e",
    "formula": 21,
-   "produto": "THe HAIR SUREEON -USA"
+   "produto": "Progressiva Natural"
   },
   {
    "mp_codigo": 1600,
@@ -69284,7 +69291,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /01/09 - Noue /IMG_1822.JPG (https://drive.google.com/file/d/1QuoLBKJCzY88QeFQWjZdDIOd3PoyBQJn/view) sha256 d72c8179c4b1adfda6a8b39b1c0fbd20e846dc5bce8c34b2fdd093cadd75a76d",
    "formula": 79,
-   "produto": "YITRAY"
+   "produto": "Anti Gray Hair Spray - Noue"
   },
   {
    "mp_codigo": 1604,
@@ -69320,7 +69327,7 @@
    "data_origem": "referencia_maio",
    "fonte": "Facial /24/08- welness /IMG_1817.JPG (https://drive.google.com/file/d/19JgEw-z54wUgLe-cWYH18tW-WGCJqnu4/view) sha256 ad8960327acb8427d9c59d0f118378cf5047a4077f8e7ecb81993697b5fe0ba3",
    "formula": 121,
-   "produto": "Fgel Hidratante -Wellness"
+   "produto": "Fgel Hidratante - Wellness"
   },
   {
    "mp_codigo": 1613,

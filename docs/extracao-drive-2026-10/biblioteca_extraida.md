@@ -377,7 +377,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.200 kg |
 | Soma dos % | 99.9995 |
 | Foto(s) | [IMG_2023.JPG](https://drive.google.com/file/d/1Ywqg5sqIKTNmjtRD_QcDb-CtLca4sCU-/view) |
-| Notas | topo (manuscrito): Sob 'Folha de Formulação' manuscrito 'SHAMPOO HIDRATANTE' (nome do produto); à esquerda do título 'QUANTIDADE DE MATÉRIA PRIMA...' manuscrito 'DR. ALAN'. Impresso: 'PRODUTO: SHAMPOO HOME CARE', batelada 0,200. |
+| Notas | topo (manuscrito): Sob 'Folha de Formulação' manuscrito 'SHAMPOO HIDRATANTE' (nome do produto); à esquerda do título 'QUANTIDADE DE MATÉRIA PRIMA...' manuscrito 'DR. ALAN'. Impresso: 'PRODUTO: SHAMPOO HOME CARE', batelada 0,200. · nome manuscrito junto ao título: SHAMPOO HIDRATANTE |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -502,7 +502,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1996.JPG](https://drive.google.com/file/d/1JlbenFFdCyURg9SsYCkgequnEhSoGQ8k/view) |
 | Pendências | 1626 Piritionato de Zinco: código não existe no cadastro (kb-source); PREÇO/FORNECEDOR SUSPEITO na folha: 191 Jaguar C 13S (SN-1330) |
-| Notas | topo (manuscrito): Manuscrito '(SHAMPOO ANTI CASPA)' ao lado de 'Folha de Formulação'; manuscrito 'João Dias' (com barra antes) ao lado de 'PRODUTO: SHAMPOO HOME CARE'. |
+| Notas | topo (manuscrito): Manuscrito '(SHAMPOO ANTI CASPA)' ao lado de 'Folha de Formulação'; manuscrito 'João Dias' (com barra antes) ao lado de 'PRODUTO: SHAMPOO HOME CARE'. · nome manuscrito junto ao título: (shampoo anti caspa) |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -539,7 +539,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 31 |  | 1626 | Piritionato de Zinco | _a definir_ | 2,0000% | 198.00 |  |
 | 32 |  | 304 | Mentol | _a definir_ | 0,5000% | 254.80 |  |
 
-## 17. Ludmila — Ludimila 27/08
+## 17. Finalizador Capilar com Silicone — Ludimila 27/08
 
 | Campo | Valor |
 |---|---|
@@ -589,7 +589,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 9 | 09 | 311 | Óleo de Jojoba | _a definir_ | 0,5000% | 556.400 | Destilaria Bauru |
 | 10 | 10 | 1251 | Óleo De Pracaxi 100% | _a definir_ | 1,0000% | 260.000 | Mercado Livre |
 
-## 19. Ludmila — Ludimila 27/08
+## 19. Leave-in Bruma — Ludimila 27/08
 
 | Campo | Valor |
 |---|---|
@@ -653,7 +653,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 19 |  | 189 | Ester Liss | _a definir_ | 38,0000% | 12.90 | Mundiquimica |
 | 20 |  | 136 | Flocare PSD 1037 (Polyquaternium 37) | _a definir_ | 0,6000% | 350.00 | Barentz |
 
-## 21. THe HAIR SUREEON -USA — The hair Surgeon - Usa 04/08
+## 21. Progressiva Natural — The hair Surgeon - Usa 04/08
 
 | Campo | Valor |
 |---|---|
@@ -665,7 +665,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Foto(s) | [IMG_2013.JPG](https://drive.google.com/file/d/1D6XMK1HIZgKnqLTYOhfL9ralE0qDjAPu/view) |
 | Motivos | a própria folha imprime TOTAL = 100,0020% e a soma das linhas lidas = 100.0020%: a FÓRMULA DE ORIGEM não fecha 100% (decisão do laboratório; nada foi ajustado) |
 | Pendências | 1583 Rice PDRN: código não existe no cadastro (kb-source); ANOTAÇÃO MANUSCRITA (riscado) na linha 1583 Rice PDRN: traço/X manuscrito sobre parte do Valor (Kg) 'R$ 12.115,06' (estendendo-se até a linha de baixo, 'R$ 884,00' do Oxy 229 CB); ao lado escrito 'LIGA' (leitura incerta, parece 'EIGA'/'LIGA') |
-| Notas | marca manuscrita (outro) na linha 660 Sunquart DHE: marca de visto (✓) na coluna Fornecedor, ao lado de R$ 176,80 · topo (manuscrito): Acima/à direita do rótulo 'Protein' escrito 'NANOPLASTIA L' e na célula do produto/cliente 'THE HAIR SURGEON - USA' (título impresso 'Progressiva Natural'). |
+| Notas | marca manuscrita (outro) na linha 660 Sunquart DHE: marca de visto (✓) na coluna Fornecedor, ao lado de R$ 176,80 · topo (manuscrito): Acima/à direita do rótulo 'Protein' escrito 'NANOPLASTIA L' e na célula do produto/cliente 'THE HAIR SURGEON - USA' (título impresso 'Progressiva Natural'). · nome manuscrito junto ao título: NANOPLASTIA L / The Hair Surgeon -USA |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -691,7 +691,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 20 |  | 1583 | Rice PDRN | _a definir_ | 0,0010% | 12115.06 | CIGA Inovassel |
 | 21 |  | 1334 | Oxy 229 CB | _a definir_ | 0,0010% | 884.00 | Focus |
 
-## 22. GiOVANA — 08/07- Giovanna
+## 22. Creme Exfoliante — 08/07- Giovanna
 
 | Campo | Valor |
 |---|---|
@@ -840,7 +840,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 14 |  | 778 | Fenoxietanol/ethilhrxil | _a definir_ | 0,8000% | 230.000 | ngenharia das essencia |
 | 15 |  | 32 | Trietanolamina 99% | _a definir_ | 0,3000% | 48.000 | Quimesp |
 
-## 27. Auto bronzeador-Spray — 09/07- Amanda/Andre
+## 27. Auto bronzeador - Spray — 09/07- Amanda/Andre
 
 | Campo | Valor |
 |---|---|
@@ -900,7 +900,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 14 | 14 | 261 | Essencia | _a definir_ | 0,3000% | 234.000 | Private |
 | 15 | 15 | 11 | Acido Citrico | _a definir_ | 0,5000% | 21.800 | Mundiquimica |
 
-## 29. Óleo Brozeador e lluminador — 09/07- Amanda/Andre
+## 29. Óleo Brozeador e Iluminador — 09/07- Amanda/Andre
 
 | Campo | Valor |
 |---|---|
@@ -958,7 +958,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 16 | 16 | 1495 | Dihidroxiacetona | _a definir_ | 10,0000% | 556.400 | Midelt Quimica |
 | 17 | 17 | 1496 | Erythrulose | _a definir_ | 3,0000% | 1575.600 | Midelt Quimica |
 
-## 31. gão- — 09/07- Estrela de Davi
+## 31. NeveSeda Pó de Banho Terapêutico - Infantil — 09/07- Estrela de Davi
 
 | Campo | Valor |
 |---|---|
@@ -1007,7 +1007,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 8 | 08 | 148 | Acetato de Tocoferol(Vitamina E) | _a definir_ | 0,5000% | 320.000 | Focus/Hall Star |
 | 9 | 09 | 1489 | PROBIOAGE CR12 (Lactobacillus Ferment Lysate) | _a definir_ | 2,0000% | 3690.000 | Embacaps |
 
-## 33. Barra Syndet - Adulto (Betta) — 09/07- Estrela de Davi
+## 33. Barra Syndet - Adulto ( Betta) — 09/07- Estrela de Davi
 
 | Campo | Valor |
 |---|---|
@@ -1037,7 +1037,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 14 | 14 | 606 | Lactato de Sodio | _a definir_ | 1,0000% | 98.600 | Engenharia das essencias |
 | 15 | 15 | 11 | Acido Citrico | _a definir_ | 0,1000% | 21.800 | Mundiquimica |
 
-## 34. PuraSkin Pomada Andira-Adulto (Betta) — 09/07- Estrela de Davi
+## 34. PuraSkin Pomada Andira - Adulto ( Betta) — 09/07- Estrela de Davi
 
 | Campo | Valor |
 |---|---|
@@ -1091,7 +1091,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 11 | 11 | 606 | Lactato de Sodio | _a definir_ | 1,0000% | 98.600 | Engenharia das essencias |
 | 12 | 12 | 11 | Acido Citrico | _a definir_ | 0,1000% | 21.800 | Mundiquimica |
 
-## 36. XIVATE — 09/07- Estrela de Davi
+## 36. Nebe Seda Pó de Banho Terapêutico - Adulto (Betta) — 09/07- Estrela de Davi
 
 | Campo | Valor |
 |---|---|
@@ -1102,8 +1102,8 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 91.0000 |
 | Foto(s) | [IMG_1905.JPG](https://drive.google.com/file/d/1fQS9vlhxe3pxmGErOI9SB1ia7lC99jBF/view) |
 | Motivos | a própria folha imprime TOTAL = 91,000% e a soma das linhas lidas = 91.0000%: a FÓRMULA DE ORIGEM não fecha 100% (decisão do laboratório; nada foi ajustado) |
-| Pendências | 1499 Amido de Arroz (Farinha de Arroz): código não existe no cadastro (kb-source); 1498 Magnesium Glycinate: código não existe no cadastro (kb-source); 1491 Gloconate de Zinco: código não existe no cadastro (kb-source); 1490 Sericin (Proteina da Seda): código não existe no cadastro (kb-source); 1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source) |
-| Notas | topo (manuscrito): No nome do produto, a 3ª letra impressa de 'Nece' (aparenta 'c') foi corrigida à caneta com um 'v' escrito por cima, resultando em 'Neve Seda Pó de Banho Terapêutico - Adulto (Betta)'. |
+| Pendências | 1499 Amido de Arroz (Farinha de Arroz): código não existe no cadastro (kb-source); 1498 Magnesium Glycinate: código não existe no cadastro (kb-source); 1491 Gloconate de Zinco: código não existe no cadastro (kb-source); 1490 Sericin (Proteina da Seda): código não existe no cadastro (kb-source); 1489 PROBIOAGE CR12 (Lactobacillus Ferment Lysate): código não existe no cadastro (kb-source); NOME DO PRODUTO ALTERADO À MÃO: impresso 'Nebe Seda Pó de Banho Terapêutico - Adulto (Betta)' riscado; manuscrito: Neve (letra 'v' escrita a mao sobre o 'b' de 'Nebe') |
+| Notas | topo (manuscrito): No nome do produto, a 3ª letra impressa de 'Nece' (aparenta 'c') foi corrigida à caneta com um 'v' escrito por cima, resultando em 'Neve Seda Pó de Banho Terapêutico - Adulto (Betta)'. · nome manuscrito junto ao título: Neve (letra 'v' escrita a mao sobre o 'b' de 'Nebe') |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -1120,7 +1120,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 11 | 11 | 83 | Manteiga de Cupuaçu | _a definir_ | 8,0000% | 70.000 | Mundiquimica/EBPM |
 | 12 | 12 | 87 | Óleo de Copaiba | _a definir_ | 3,0000% | 218.400 | Copaíba da Amazonia |
 
-## 37. Creme Corporal Trifasico - Adulto (Betta) — 09/07- Estrela de Davi
+## 37. Creme Corporal Trifasico - Adulto ( Betta) — 09/07- Estrela de Davi
 
 | Campo | Valor |
 |---|---|
@@ -1159,7 +1159,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 23 | 23 | 35 | Euxyl PE9010 - Phenoxyethanol | _a definir_ | 0,8000% | 289.796 | Emfal 一 |
 | 24 | 24 | 717 | Etilhexilglicerina | _a definir_ | 0,2000% | 312.000 | Jovii 25 |
 
-## 38. 0g/of — 09/07- Estrela de Davi
+## 38. Sabonete Liquidos Bifasico - Infantil — 09/07- Estrela de Davi
 
 | Campo | Valor |
 |---|---|
@@ -1190,7 +1190,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 14 | 14 | 35 | Euxyl PE9010- Phenoxyethanol | _a definir_ | 0,8000% | 289.796 | Emfal 一 |
 | 15 | 15 | 717 | Etilhexilglicerina | _a definir_ | 0,2000% | 312.000 | Jovii 25 |
 
-## 39. Sabonete Liquido Bifasico - Adulto (Betta) — 09/07- Estrela de Davi
+## 39. Sabonete Liquido Bifasico - Adulto ( Betta) — 09/07- Estrela de Davi
 
 | Campo | Valor |
 |---|---|
@@ -1406,7 +1406,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.120 kg |
 | Soma dos % | 100.000 |
 | Foto(s) | [IMG_1884.JPG](https://drive.google.com/file/d/1VtlUXMb3K2PykMi4dewMXOSdnbmyRGNl/view) |
-| Notas | nota: Topo: manuscrito 'Sabão em' antes do nome impresso 'Óleo de Banho' (lido como 'Sabão em Óleo de Banho') · nota: Linha Produto: impresso 'Private' + manuscrito 'liquidos - creme - difusores' · nota: Abaixo da tabela (fora da fórmula): 'Valor: 19,14'; 'FR: 120 mL - [riscado] - Solution - 120 mL - 2,80 Berlack'; 'DOSADOR - 3,31 - Berlack'; 'ROT - 2,10'; 'CX - 0,05'; soma '8,26' |
+| Notas | nome manuscrito junto ao título: Sabão Em · nota: Topo: manuscrito 'Sabão em' antes do nome impresso 'Óleo de Banho' (lido como 'Sabão em Óleo de Banho') · nota: Linha Produto: impresso 'Private' + manuscrito 'liquidos - creme - difusores' · nota: Abaixo da tabela (fora da fórmula): 'Valor: 19,14'; 'FR: 120 mL - [riscado] - Solution - 120 mL - 2,80 Berlack'; 'DOSADOR - 3,31 - Berlack'; 'ROT - 2,10'; 'CX - 0,05'; soma '8,26' |
 | Já existe no sistema (kb id) | 604 |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
@@ -1692,7 +1692,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 18 | 16 | 1527 | Nano UP Lift | _a definir_ | 0,6000% | 510.000 | Nanovetores |
 | 19 | 17 | 261 | Essencia | _a definir_ | 0,5000% | 234.000 | Private |
 
-## 55. stação- — 31/07- tratamento estrias
+## 55. Creme Anti Celulite — 31/07- tratamento estrias
 
 | Campo | Valor |
 |---|---|
@@ -1725,7 +1725,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 17 | 17 | 1522 | Cafeina Anidra 100% Pura Em Pó 1kg | _a definir_ | 0,5000% | 580.000 | Mercado Livre |
 | 18 | 18 | 1534 | Remoduline B GRV | _a definir_ | 1,0000% | 1455.545 | Silab |
 
-## 56. Daily Adonay Tonico Capilar Michelle Marques — 31/07- tratamento estrias
+## 56. Tonico Capilar — 31/07- tratamento estrias
 
 | Campo | Valor |
 |---|---|
@@ -1802,7 +1802,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 9 | 09 | 23 | Butil Hidróxido Tolueno (BHT) | _a definir_ | 0,0500% | 62.400 | Volp/Engenh./Emfal |
 | 10 | 10 | 261 | Essencia | _a definir_ | 0,7000% | 234.000 | Private |
 
-## 59. Pomada Capilar Modeladora  - Baixo custo — Heloísa - 17/09
+## 59. Pomada Capilar Modeladora - Baixo custo — Heloísa - 17/09
 
 | Campo | Valor |
 |---|---|
@@ -1840,7 +1840,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.150 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1969.JPG](https://drive.google.com/file/d/18sgW9EOMfp8nRVg1S1tFvuk69Kd3etC8/view) |
-| Notas | nota: Topo: manuscrito 'aumenta peito e bumbum' abaixo do nome do produto · nota: Topo: número '3' manuscrito circulado · nota: Linha 1313 Sculp-up com realce amarelo impresso (padrão de célula), total de custo também em amarelo |
+| Notas | nome manuscrito junto ao título: aumenta peito e bumbum · nota: Topo: manuscrito 'aumenta peito e bumbum' abaixo do nome do produto · nota: Topo: número '3' manuscrito circulado · nota: Linha 1313 Sculp-up com realce amarelo impresso (padrão de célula), total de custo também em amarelo |
 | Já existe no sistema (kb id) | 133 |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
@@ -1874,7 +1874,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.300 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1971.JPG](https://drive.google.com/file/d/1Q6f1CcL2mRCDEAA8fwMqDw_30ePfIMAf/view) |
-| Notas | marca manuscrita na linha 1316 Hydra360: marca-texto verde-limao aplicado a mao sobre descricao 'Hydra360', 0,00900 e 3,0000% · nota: '5' manuscrito circulado no topo (entre logo e nome do produto) · nota: Total qtde g 300,000; total custo R$ 5,5620 · nota: Abaixo da tabela (manuscrito, fora da formula): 'Frasco Pump Marbella 300mL - 3,17'; 'Valor: 33,53' sublinhado |
+| Notas | marca manuscrita na linha 1316 Hydra360: marca-texto verde-limao aplicado a mao sobre descricao 'Hydra360', 0,00900 e 3,0000% · nome manuscrito junto ao título: (5) · nota: '5' manuscrito circulado no topo (entre logo e nome do produto) · nota: Total qtde g 300,000; total custo R$ 5,5620 · nota: Abaixo da tabela (manuscrito, fora da formula): 'Frasco Pump Marbella 300mL - 3,17'; 'Valor: 33,53' sublinhado |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -1962,7 +1962,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 17 | 04 | 35 | Euxyl PE9010 - Phenoxyethanol | _a definir_ | 0,5000% | 312.09 | Emfal |
 | 18 | 04 | 1311 | Lipout | _a definir_ | 1,0000% | 2372.50 | Provital |
 
-## 64. Lig.crennes DifisoRes — Julya Freitas - 02/04
+## 64. Gel Clareador Manchas — Julya Freitas - 02/04
 
 | Campo | Valor |
 |---|---|
@@ -2225,7 +2225,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 21 |  | 33 | Phenoxyethanol (and) Caprylyl Glycol( Kem Diol 10)/Microcare PHG | _a definir_ | 1,0000% | 90.000 | Focus |
 | 22 |  | 220 | Hidroxido de Sódio escama | _a definir_ | 0,1000% | 4.970 | Sarfam |
 
-## 74. Hidratante Nuun  - Reajuste Final - 5262 — Victor - 29/04
+## 74. Hidratante Nuun - Reajuste Final - 5262 — Victor - 29/04
 
 | Campo | Valor |
 |---|---|
@@ -2298,7 +2298,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.005 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1779.JPG](https://drive.google.com/file/d/1lZMkgIg3TntxGzcAcJmOV2bIvUuQBCLk/view) |
-| Notas | nota: manuscrito 'BLUSH EM STICK' abaixo do nome do produto · nota: manuscrito 'KAUSE.BE' ao lado de 'Leticia Mofato / 3 cores' (campo Produto) |
+| Notas | nome manuscrito junto ao título: Blush em Stick · nota: manuscrito 'BLUSH EM STICK' abaixo do nome do produto · nota: manuscrito 'KAUSE.BE' ao lado de 'Leticia Mofato / 3 cores' (campo Produto) |
 | Já existe no sistema (kb id) | 749 |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
@@ -2322,7 +2322,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 17 |  | 1011 | Focusica 5028 ( Silica) | _a definir_ | 2,0000% | 450.000 | Focus Quimica |
 | 18 |  | 1284 | Lex Film Sun MB | _a definir_ | 2,0000% | 358.890 | Inolex(Importado) |
 
-## 77. KIVATE — 01/07- Kause Bê
+## 77. Stick FPS 50 — 01/07- Kause Bê
 
 | Campo | Valor |
 |---|---|
@@ -2333,7 +2333,8 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 100.0500 |
 | Foto(s) | [IMG_1780.JPG](https://drive.google.com/file/d/1tp0NcbN-HYU6e3xUPl83qKajuVL8FCpZ/view) |
 | Motivos | a própria folha imprime TOTAL = 100,050% e a soma das linhas lidas = 100.0500%: a FÓRMULA DE ORIGEM não fecha 100% (decisão do laboratório; nada foi ajustado) |
-| Pendências | NOME DO PRODUTO ALTERADO À MÃO: No título 'Stick FPS 50', o '50' está riscado e escrito '30' ao lado; abaixo manuscrito 'Base Stick FPS30 -'. |
+| Pendências | NOME DO PRODUTO ALTERADO À MÃO: No título 'Stick FPS 50', o '50' está riscado e escrito '30' ao lado; abaixo manuscrito 'Base Stick FPS30 -'.; NOME DO PRODUTO ALTERADO À MÃO: impresso 'Stick FPS 50' riscado; manuscrito: Base Stick FPS30 - |
+| Notas | nome manuscrito junto ao título: Base Stick FPS30 - |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -2383,7 +2384,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 14 |  | 497 | CI16035- Blue Solution | _a definir_ | 0,1200% | 249.60 | S/fornecedor |
 | 15 |  | 496 | CI 42090 - Red Solution | _a definir_ | 0,0200% | 249.60 | S/fornecedor |
 
-## 79. YITRAY — 01/09 - Noue
+## 79. Anti Gray Hair Spray - Noue — 01/09 - Noue
 
 | Campo | Valor |
 |---|---|
@@ -2434,7 +2435,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 13 |  | 304 | Mentol | _a definir_ | 0,0500% | 254.80 | Embacaps |
 | 14 |  | 26 | Sodium Gluconate Granular | _a definir_ | 0,1000% | 19.00 | Sarfam/AurosQuimica |
 
-## 81. 1f0A0 — 03/09 João
+## 81. Protetor FPS 50 — 03/09 João
 
 | Campo | Valor |
 |---|---|
@@ -2445,7 +2446,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 100.000 |
 | Foto(s) | [IMG_1829.JPG](https://drive.google.com/file/d/1FavA1UyCNEklILKKtG-xmNpjfX7JvCVT/view) |
 | Pendências | 1058 Dimeticona 350 CST: nome não bate com o cadastro (sim 0.53; cadastro='Silicone 200/350') |
-| Notas | topo (manuscrito): '/ João' escrito à mão (azul) ao lado de 'Private' na linha Produto |
+| Notas | topo (manuscrito): '/ João' escrito à mão (azul) ao lado de 'Private' na linha Produto · nome manuscrito junto ao título: / João |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -2606,7 +2607,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 21 | 06 | 148 | Acetato de Tocoferol( Vitamina E) | _a definir_ | 1,000% | 320.00 | Focus/Hall Star |
 | 22 | 06 | 1069 | Talco Micronizado ( Farmaceutico) | _a definir_ | 1,000% | 23.00 | Imafabi do Brasil |
 
-## 86. JATE — 04/08 - Geisa
+## 86. Gloss - Ultima Versão — 04/08 - Geisa
 
 | Campo | Valor |
 |---|---|
@@ -2629,7 +2630,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 7 | 07 | 705 | Mica Pearl Copper | _a definir_ | 0,1000% | 182.000 | Focus |
 | 8 | 08 | 1488 | Silica HDK N20 | _a definir_ | 4,0000% | 112.320 | Focus |
 
-## 87. JATE — 04/08 - Geisa
+## 87. Gloss - Ultima Versão — 04/08 - Geisa
 
 | Campo | Valor |
 |---|---|
@@ -2652,7 +2653,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 7 | 07 | 705 | Mica Pearl Copper | _a definir_ | 0,1000% | 182.000 | Focus |
 | 8 | 08 | 1488 | Silica HDK N20 | _a definir_ | 4,0000% | 112.320 | Focus |
 
-## 88. ElumiNADoR — 04/08 - Geisa
+## 88. Hidratante Facial Stick — 04/08 - Geisa
 
 | Campo | Valor |
 |---|---|
@@ -2662,7 +2663,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.030 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1811.JPG](https://drive.google.com/file/d/1KNJ6XVg3gi7HztAkl8PmqUUf2qQfpa1B/view) |
-| Notas | topo (manuscrito): 'Eliminador' manuscrito logo abaixo do título impresso 'Hidratante Facial Stick'. |
+| Notas | topo (manuscrito): 'Eliminador' manuscrito logo abaixo do título impresso 'Hidratante Facial Stick'. · nome manuscrito junto ao título: Eliminador |
 | Já existe no sistema (kb id) | 338 |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
@@ -2686,7 +2687,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 17 |  | 261 | Essencia | _a definir_ | 0,3000% | 234.000 | Private |
 | 18 |  | 1024 | Extrato de Alecrim | _a definir_ | 0,2000% | 75.000 | Cantinho das Essencias |
 
-## 89. BASe LigmiDA - MATTE — 04/08 - Geisa
+## 89. Intense Liquido Blush — 04/08 - Geisa
 
 | Campo | Valor |
 |---|---|
@@ -2697,6 +2698,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1813.JPG](https://drive.google.com/file/d/1RVrNlXJ-JIxcqvDSdwluwxQpLZHcflNP/view) |
 | Pendências | 1541 Emulium Illustro: código não existe no cadastro (kb-source); 1542 Actirice MB: código não existe no cadastro (kb-source); 1543 Compritol 888 ATO: código não existe no cadastro (kb-source); 1541 Emulium Illustro: código não existe no cadastro (kb-source); 1544 BTD-401: código não existe no cadastro (kb-source); 1545 BYO-12: código não existe no cadastro (kb-source); 1546 BRO-12: código não existe no cadastro (kb-source); 1547 Unique Red LC 3075: código não existe no cadastro (kb-source); 1548 BBO-12: código não existe no cadastro (kb-source); 1540 Sulfato de Magnesio: código não existe no cadastro (kb-source); 1552 Silicca Bead SB-300: código não existe no cadastro (kb-source); 1550 Amihope LL (Lauroy Lysine): código não existe no cadastro (kb-source); NOME DO PRODUTO ALTERADO À MÃO: 'Base Liquida - MATTE' escrito à mão logo abaixo do título impresso 'Intense Liquido Blush' (título impresso não está riscado) — possível renomeação/identificação do produto. Demais: 'Cotação 01', 'In Neauty - Mariana, Camila e Simone.', batelada 0,030 (impressos) |
+| Notas | nome manuscrito junto ao título: Base Liquida - MATTE |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -2721,7 +2723,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 19 | 19 | 1552 | Silicca Bead SB-300 | _a definir_ | 5,0000% | 113.900 | Mcassab |
 | 20 | 20 | 1550 | Amihope LL (Lauroy Lysine) | _a definir_ | 5,0000% | 3000.000 | Ajinomoto |
 
-## 90. NATE — 04/08 - Geisa
+## 90. Sobra/Iluminador — 04/08 - Geisa
 
 | Campo | Valor |
 |---|---|
@@ -2732,7 +2734,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1812.JPG](https://drive.google.com/file/d/1eQOxP11c2DRrof61mYnAa5cFiY7tESS3/view) |
 | Pendências | 1549 Cetearyl Alcohol and Cetearyl Glucoside (Montanov 68B): código não existe no cadastro (kb-source); 1506 Iron Oxides-Mica Dourada/Champagne: código não existe no cadastro (kb-source); 1551 C47A053 SUNCROMA TITANIUM DIOXIDE: código não existe no cadastro (kb-source); 778 Fenoxietanol/Etilhexilglicerina: nome não bate com o cadastro (sim 0.78; cadastro='Fenoxietanol/ethilhrxil') |
-| Notas | topo (manuscrito): Manuscrito abaixo do título impresso 'Sobra/Iluminador': 'Eluminado Creme/Gel' (lê-se como 'Iluminado creme/gel'). |
+| Notas | topo (manuscrito): Manuscrito abaixo do título impresso 'Sobra/Iluminador': 'Eluminado Creme/Gel' (lê-se como 'Iluminado creme/gel'). · nome manuscrito junto ao título: Eluminado creme/gel |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -2890,7 +2892,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 102.5000 |
 | Foto(s) | [IMG_1757.JPG](https://drive.google.com/file/d/1aHpQ9ADL76MmlWV3hl-TIXe1BD_jlXYd/view) |
 | Motivos | a própria folha imprime TOTAL = 102,500% e a soma das linhas lidas = 102.5000%: a FÓRMULA DE ORIGEM não fecha 100% (decisão do laboratório; nada foi ajustado) |
-| Notas | marca manuscrita na linha 147 Triglicérdes Cáprico Caprílico: pequeno traço manuscrito (tique) à direita da descrição · marca manuscrita na linha 1113 laurato de isoamila: pequeno traço manuscrito (tique) à direita da descrição · marca manuscrita na linha 488 Cetiol CC - Dicaprylyl Carbona: pequeno traço manuscrito (tique) à direita da descrição · marca manuscrita na linha 148 Acetato de Tocoferol( Vitamina: pequeno traço manuscrito (tique) à direita da descrição · nota: 'F' manuscrito ao lado do nome do produto no topo · nota: traços/tiques manuscritos ao lado das descrições 147, 1113, 488, 148 |
+| Notas | marca manuscrita na linha 147 Triglicérdes Cáprico Caprílico: pequeno traço manuscrito (tique) à direita da descrição · marca manuscrita na linha 1113 laurato de isoamila: pequeno traço manuscrito (tique) à direita da descrição · marca manuscrita na linha 488 Cetiol CC - Dicaprylyl Carbona: pequeno traço manuscrito (tique) à direita da descrição · marca manuscrita na linha 148 Acetato de Tocoferol( Vitamina: pequeno traço manuscrito (tique) à direita da descrição · nome manuscrito junto ao título: F · nota: 'F' manuscrito ao lado do nome do produto no topo · nota: traços/tiques manuscritos ao lado das descrições 147, 1113, 488, 148 |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -2969,7 +2971,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 5 | 07 | 1212 | Mica Focuspearl Cooper | _a definir_ | 0,2000% | 308.00 | Focus |
 | 6 | 08 | 85 | Óleo vegetal de Coco | _a definir_ | 20,0000% | 35.00 | MundQuimica |
 
-## 98. Layla — 17/02 Layla
+## 98. Serum com PDRN /Niacinamida — 17/02 Layla
 
 | Campo | Valor |
 |---|---|
@@ -3055,7 +3057,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 16 | 17 | 688 | Niacinamide (Nicotinamide) | _a definir_ | 2,0000% | 171.60 | Focus |
 | 17 | 12 | 865 | Quiditat SRC CF (Coco Nucifera) | _a definir_ | 1,0000% | 182.00 | Assessa |
 
-## 101. ação - — 17/07- Larissa
+## 101. Filtro Solar FPS 50 — 17/07- Larissa
 
 | Campo | Valor |
 |---|---|
@@ -3226,7 +3228,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 13 |  | 1119 | Kobotint 1 | _a definir_ | 12,0000% | 416.000 | Summit(Cosmotec) 25kg(120dias) |
 | 14 |  | 1120 | Kobo Mss 500W | _a definir_ | 4,0000% | 478.400 | Summit(Cosmotec) 5kg(98 dias) |
 
-## 106. FR: ESCOUA SILiLONE ESpUmAnOR — 19/02 Sabrina Uess
+## 106. Espuma de limpeza Facial — 19/02 Sabrina Uess
 
 | Campo | Valor |
 |---|---|
@@ -3265,7 +3267,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.030 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1750.JPG](https://drive.google.com/file/d/1NeKZIZaq654rzlx8cU39zHUKCHoKJpQ9/view) |
-| Notas | nota: Título: ao lado de 'Serum Rugas' impresso, manuscrito '/Hialuronico' |
+| Notas | nome manuscrito junto ao título: / Hialurônico · nota: Título: ao lado de 'Serum Rugas' impresso, manuscrito '/Hialuronico' |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3322,8 +3324,8 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.030 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1749.JPG](https://drive.google.com/file/d/1U10DOOrLgGKK64Gwj19FWRzO4cHD3n9V/view) |
-| Pendências | NOME DO PRODUTO ALTERADO À MÃO: Título impresso 'Serum Rugas - PDRN': 'Rugas' rabiscado/sobrescrito à mão e 'PDRN' riscado; escrito à mão ao lado: 'NONANO' |
-| Notas | nota: Campo Produto impresso 'Can Be / Camila Pagani' com manuscrito '/ DIFUSORES 2' ao lado · nota: Abaixo da tabela (fora da fórmula), manuscrito: 'Valor: 21,37' |
+| Pendências | NOME DO PRODUTO ALTERADO À MÃO: impresso 'Serum Rugas - PDRN' riscado; manuscrito: NOVANO; NOME DO PRODUTO ALTERADO À MÃO: Título impresso 'Serum Rugas - PDRN': 'Rugas' rabiscado/sobrescrito à mão e 'PDRN' riscado; escrito à mão ao lado: 'NONANO' |
+| Notas | nome manuscrito junto ao título: NOVANO · nota: Campo Produto impresso 'Can Be / Camila Pagani' com manuscrito '/ DIFUSORES 2' ao lado · nota: Abaixo da tabela (fora da fórmula), manuscrito: 'Valor: 21,37' |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3350,7 +3352,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.030 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1751.JPG](https://drive.google.com/file/d/1iG6kYSb8ke-JBbYmuoOvrE447iaItsYY/view) |
-| Notas | nota: Topo: ao lado do título impresso 'Serum Rugas' está manuscrito '/ ascórbico' · nota: Abaixo da tabela, tabela impressa de embalagem (FASE | QTDE. | VALOR UNIT. | TOTAL): Vidro branco fosco 30ml 1 1,0000 7,0000 R$ 7,0000; Rotulo/Silk 3 0,0000 0,0000 R$ 0,0000; Caixa de embarque 4 0,0200 3,5000 R$ 0,0700; Eiqueta 5 0,0200 3,2000 R$ 0,0640; total R$ 7,1340 (não faz parte da fórmula) · nota: Abaixo, manuscrito: 'Valor: 21,85' com traço horizontal |
+| Notas | nome manuscrito junto ao título: / ascórbico · nota: Topo: ao lado do título impresso 'Serum Rugas' está manuscrito '/ ascórbico' · nota: Abaixo da tabela, tabela impressa de embalagem (FASE | QTDE. | VALOR UNIT. | TOTAL): Vidro branco fosco 30ml 1 1,0000 7,0000 R$ 7,0000; Rotulo/Silk 3 0,0000 0,0000 R$ 0,0000; Caixa de embarque 4 0,0200 3,5000 R$ 0,0700; Eiqueta 5 0,0200 3,2000 R$ 0,0640; total R$ 7,1340 (não faz parte da fórmula) · nota: Abaixo, manuscrito: 'Valor: 21,85' com traço horizontal |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3404,8 +3406,8 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.050 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1768.JPG](https://drive.google.com/file/d/10G3TA6ORJsdpbmKOBv5zjEiceppHoJ9K/view) |
-| Pendências | NOME DO PRODUTO ALTERADO À MÃO: Nome impresso do produto 'Perfume Creme' riscado à mão; escrito à mão ao lado/abaixo: 'CUPUACU CLOUD - NMF CREAM' |
-| Notas | nota: Abaixo da tabela (fora da fórmula), manuscrito: 'Embalagem Pote - 9.00' |
+| Pendências | NOME DO PRODUTO ALTERADO À MÃO: impresso 'Perfume Creme' riscado; manuscrito: CUPUACU CLOUD - NMF CREAM; NOME DO PRODUTO ALTERADO À MÃO: Nome impresso do produto 'Perfume Creme' riscado à mão; escrito à mão ao lado/abaixo: 'CUPUACU CLOUD - NMF CREAM' |
+| Notas | nome manuscrito junto ao título: CUPUACU CLOUD - NMF CREAM · nota: Abaixo da tabela (fora da fórmula), manuscrito: 'Embalagem Pote - 9.00' |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3424,7 +3426,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 13 | 08 | 1126 | BIO PDRN ( 3º geração - origem microbial de Laboratório) | _a definir_ | 0,0500% | 60000.00 | Biovital |
 | 14 | 09 | 261 | Essencia | _a definir_ | 2,0000% | 252.00 | Private |
 
-## 113. BiO-DeW PDRN GiRST ESSence. — 19/03 Silmara
+## 113. Perfume Creme — 19/03 Silmara
 
 | Campo | Valor |
 |---|---|
@@ -3434,7 +3436,8 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.120 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1767.JPG](https://drive.google.com/file/d/161MvEbrfUmHQ0Nh4iVu1DLhzUhN0pVuq/view) |
-| Pendências | NOME DO PRODUTO ALTERADO À MÃO: Nome impresso do produto (aparenta '...a Creme', ilegível) riscado/rabiscado à caneta e substituído por manuscrito 'BIO-DEW PDRN FIRST ESSENCE. (HIDRATANTE)'. |
+| Pendências | NOME DO PRODUTO ALTERADO À MÃO: Nome impresso do produto (aparenta '...a Creme', ilegível) riscado/rabiscado à caneta e substituído por manuscrito 'BIO-DEW PDRN FIRST ESSENCE. (HIDRATANTE)'.; NOME DO PRODUTO ALTERADO À MÃO: impresso 'Perfume Creme' riscado; manuscrito: Bio-Dew PDRN First Essence. (Hidratante) |
+| Notas | nome manuscrito junto ao título: Bio-Dew PDRN First Essence. (Hidratante) |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3453,7 +3456,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 13 | 08 | 1126 | BIO PDRN (3º geração - origem microbial de Laboratório) | _a definir_ | 0,0500% | 60000.00 | Biovital |
 | 14 | 09 | 261 | Essencia | _a definir_ | 2,0000% | 252.00 | Private |
 
-## 114. Óleobe limpeza — 19/03 Silmara
+## 114. Sabonete em Óleo — 19/03 Silmara
 
 | Campo | Valor |
 |---|---|
@@ -3463,7 +3466,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.030 kg |
 | Soma dos % | 100.000 |
 | Foto(s) | [_IMG_1761.JPG](https://drive.google.com/file/d/1HZVuIUQWYpV1Kj9qCDXn2MWBxWzCFez_/view) |
-| Notas | topo (manuscrito): Abaixo do título impresso 'Sabonete em Óleo', manuscrito 'Óleo de Limpeza Facial' (na célula do título, acima da BATELADA). |
+| Notas | topo (manuscrito): Abaixo do título impresso 'Sabonete em Óleo', manuscrito 'Óleo de Limpeza Facial' (na célula do título, acima da BATELADA). · nome manuscrito junto ao título: Óleo de limpeza facial |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3477,7 +3480,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 8 | 07 | 586 | Óleo de Buriti | _a definir_ | 0,050% | 306.00 |  |
 | 9 | 08 | 688 | Niacinamide (Nicotinamide) | _a definir_ | 0,050% | 184.80 |  |
 
-## 115. Hipaahawte — 19/03 Silmara
+## 115. Perfume Creme-Cupuaçu Cloud - NMF Cream — 19/03 Silmara
 
 | Campo | Valor |
 |---|---|
@@ -3487,7 +3490,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.015 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1764.JPG](https://drive.google.com/file/d/1Kx4FU3cmHGiIPUAvvfC048tB3JlpuqeM/view) |
-| Notas | topo (manuscrito): 'Hidratante' manuscrito logo abaixo do nome do produto 'Perfume Creme-Cupuaçu Cloud - NMF Cream'. |
+| Notas | topo (manuscrito): 'Hidratante' manuscrito logo abaixo do nome do produto 'Perfume Creme-Cupuaçu Cloud - NMF Cream'. · nome manuscrito junto ao título: Hidratante |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3506,7 +3509,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 13 | 08 | 1126 | BIO PDRN (3° geraçao - origem microbial de Laboratório) | _a definir_ | 0,0500% | 60000.00 | Biovital |
 | 14 | 09 | 261 | Essencia | _a definir_ | 2,0000% | 252.00 | Private |
 
-## 116. Hiosahawle — 19/03 Silmara
+## 116. Perfume Creme-Bio Dew PDRN First Essence — 19/03 Silmara
 
 | Campo | Valor |
 |---|---|
@@ -3516,7 +3519,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.030 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1763.JPG](https://drive.google.com/file/d/1YdaRO3BpO0F51CPfVl-bwtXl_NTp_QS6/view) |
-| Notas | topo (manuscrito): Manuscrito logo abaixo do título 'Perfume Creme-Bio Dew PDRN First Essence', acima da batelada: provável 'Hidratante' (letra cursiva difícil) |
+| Notas | topo (manuscrito): Manuscrito logo abaixo do título 'Perfume Creme-Bio Dew PDRN First Essence', acima da batelada: provável 'Hidratante' (letra cursiva difícil) · nome manuscrito junto ao título: Hidratante (leitura incerta: 'thioabante') |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3535,7 +3538,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 13 | 08 | 1126 | BIO PDRN (3° geração - origem microbial de Laboratório) | _a definir_ | 0,0500% | 60000.00 | Biovital |
 | 14 | 09 | 261 | Essencia | _a definir_ | 2,0000% | 252.00 | Private |
 
-## 117. Serum Rugas - FDRN t tossom AS — 19/03 Silmara
+## 117. Serum Rugas - PDRN — 19/03 Silmara
 
 | Campo | Valor |
 |---|---|
@@ -3545,7 +3548,8 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.030 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1766.JPG](https://drive.google.com/file/d/1ZNCEJ8dojd7Oo7Xk6tffT9wD5c6tJ6zK/view) |
-| Pendências | NOME DO PRODUTO ALTERADO À MÃO: No nome do produto 'Serum Rugas - PDRN', a palavra 'PDRN' está riscada à caneta e substituída por manuscrito 'EXOSSOMAS'. |
+| Pendências | NOME DO PRODUTO ALTERADO À MÃO: No nome do produto 'Serum Rugas - PDRN', a palavra 'PDRN' está riscada à caneta e substituída por manuscrito 'EXOSSOMAS'.; NOME DO PRODUTO ALTERADO À MÃO: impresso 'Serum Rugas - PDRN' riscado; manuscrito: Etossomas |
+| Notas | nome manuscrito junto ao título: Etossomas |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3615,7 +3619,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 13 | 13 | 12 | Acido Hialuronico Medio | _a definir_ | 1,0000% | 190.000 | Focus |
 | 14 | 14 | 1334 | Oxy 229 CB | _a definir_ | 0,5000% | 884.000 | Focus |
 
-## 120. menonhiv — 24/06 Menoaliv
+## 120. Serum PDRN + Exossomas+Peptideos — 24/06 Menoaliv
 
 | Campo | Valor |
 |---|---|
@@ -3644,7 +3648,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 13 | 06 | 12 | Acido Hialuronico | _a definir_ | 1,000% | 380.00 |  |
 | 14 | 07 | 1334 | Oxy 229 CB | _a definir_ | 0,500% | 884.00 |  |
 
-## 121. Fgel Hidratante -Wellness — 24/08- welness
+## 121. Fgel Hidratante - Wellness — 24/08- welness
 
 | Campo | Valor |
 |---|---|
@@ -3672,7 +3676,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 11 | 11 | 1323 | Geleia Real | _a definir_ | 0,5000% | 0.000 | Cliente |
 | 12 | 12 | 240 | Gluconate de Sódio | _a definir_ | 0,1000% | 90.000 | Engenharia das essencias |
 
-## 122. Serum Rugas-PD PeTioeos — 26/01 - Gizelli
+## 122. Serum Rugas - PDRN — 26/01 - Gizelli
 
 | Campo | Valor |
 |---|---|
@@ -3683,7 +3687,8 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 101.4400 |
 | Foto(s) | [IMG_1734.JPG](https://drive.google.com/file/d/1SDUo9dG_3LmNtLz2Ttduy8T5w9GcoHZm/view) |
 | Motivos | a própria folha imprime TOTAL = 101,440% e a soma das linhas lidas = 101.4400%: a FÓRMULA DE ORIGEM não fecha 100% (decisão do laboratório; nada foi ajustado) |
-| Pendências | NOME DO PRODUTO ALTERADO À MÃO: No nome do produto 'Serum Rugas - PDRN', a palavra impressa 'PDRN' esta riscada a caneta e ao lado escrito 'Peptideos' (produto passa a ser Serum Rugas - Peptideos) |
+| Pendências | NOME DO PRODUTO ALTERADO À MÃO: No nome do produto 'Serum Rugas - PDRN', a palavra impressa 'PDRN' esta riscada a caneta e ao lado escrito 'Peptideos' (produto passa a ser Serum Rugas - Peptideos); NOME DO PRODUTO ALTERADO À MÃO: impresso 'Serum Rugas - PDRN' riscado; manuscrito: Peptideos |
+| Notas | nome manuscrito junto ao título: Peptideos |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3857,7 +3862,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 10 | 10 | 688 | Niacinamide (Nicotinamide) | _a definir_ | 1,0000% | 184.80 | Focus |
 | 11 | 10 | 1126 | BIO PDRN (3º geração - origem microbial de Laboratório) | _a definir_ | 0,0500% | 60000.00 | Biovital |
 
-## 129. JATE — Isabel 08/07
+## 129. Sabonete Liquido Facial — Isabel 08/07
 
 | Campo | Valor |
 |---|---|
@@ -3868,7 +3873,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1783.JPG](https://drive.google.com/file/d/10yB3lqRRk2S5BEXGUn-VMu442R-SSFoA/view) |
 | Pendências | 1493 Pó de Extrato de Tremella: código não existe no cadastro (kb-source) |
-| Notas | topo (manuscrito): 'Tremell' escrito à mão ao lado de 'elab 3 /Anita' (produto: Sabonete Liquido Facial, 02/07/26, batelada 0,100) |
+| Notas | topo (manuscrito): 'Tremell' escrito à mão ao lado de 'elab 3 /Anita' (produto: Sabonete Liquido Facial, 02/07/26, batelada 0,100) · nome manuscrito junto ao título: Tremell |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3885,7 +3890,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 11 |  | 482 | Extrato Glicolico de Centella | _a definir_ | 1,0000% | 100.000 | Bianquimica |
 | 12 |  | 1493 | Pó de Extrato de Tremella | _a definir_ | 1,0000% | 552.000 | Ali Express( Ayone) |
 
-## 130. Hremell — Isabel 08/07
+## 130. Creme Facial — Isabel 08/07
 
 | Campo | Valor |
 |---|---|
@@ -3896,7 +3901,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1784.JPG](https://drive.google.com/file/d/17z5l2OxnwwXt5V6lNGi_U5h4jmdIk-HF/view) |
 | Pendências | 1478 Oxido Zinco Micronizado: código não existe no cadastro (kb-source); 1493 Pó de Extrato de Tremella: código não existe no cadastro (kb-source) |
-| Notas | topo (manuscrito): 'Tremell' escrito à mão ao lado de 'B.U Cosméticos' na linha Produto (Creme Facial, 02/07/26, 'Preço Liquidos Cremes - difusores', batelada 0,050) |
+| Notas | topo (manuscrito): 'Tremell' escrito à mão ao lado de 'B.U Cosméticos' na linha Produto (Creme Facial, 02/07/26, 'Preço Liquidos Cremes - difusores', batelada 0,050) · nome manuscrito junto ao título: Tremell |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3933,7 +3938,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 100.000 |
 | Foto(s) | [_IMG_1785.JPG](https://drive.google.com/file/d/1oSmPOVifre9cff7lI6l8eLQ4RbdSbgF_/view) |
 | Pendências | 1493 Pó de Extrato de Tremella: código não existe no cadastro (kb-source) |
-| Notas | nota: Topo: 'Tremell' manuscrito ao lado de 'Private' na linha Produto · nota: Total qtde g 10,000; total custo R$ 0,1810 · nota: Abaixo da tabela (manuscrito, fora da formula): 'FR: 10mL - 3,49 (oleum vitta?)', 'ROT - 1,00', 'CX - 0,05', soma '4,54' |
+| Notas | nome manuscrito junto ao título: Tremell · nota: Topo: 'Tremell' manuscrito ao lado de 'Private' na linha Produto · nota: Total qtde g 10,000; total custo R$ 0,1810 · nota: Abaixo da tabela (manuscrito, fora da formula): 'FR: 10mL - 3,49 (oleum vitta?)', 'ROT - 1,00', 'CX - 0,05', soma '4,54' |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -3967,7 +3972,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1796.JPG](https://drive.google.com/file/d/1-EK8d2aX0vrFgIXiD-oZLjYVwCdkUsIE/view) |
 | Pendências | 778 Fenoxietanol/Etilhexil glicerina: nome não bate com o cadastro (sim 0.76; cadastro='Fenoxietanol/ethilhrxil') |
-| Notas | nota: Topo: manuscrito '(BARREIRA)' (leitura provável, grafia tipo 'BARFEIRA') ao lado do nome do produto · nota: Topo: número '12' manuscrito circulado ao lado do logo |
+| Notas | nome manuscrito junto ao título: (BARBEIRO) · nota: Topo: manuscrito '(BARREIRA)' (leitura provável, grafia tipo 'BARFEIRA') ao lado do nome do produto · nota: Topo: número '12' manuscrito circulado ao lado do logo |
 | Já existe no sistema (kb id) | 319 |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
@@ -4082,7 +4087,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.200 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1789.JPG](https://drive.google.com/file/d/1OhwZ4TmD8KvFhWV6yQdxdoT0ehHTpzYW/view) |
-| Notas | marca manuscrita (outro) na linha 91 Óleo Essencial de Semente  de Uva: pequeno traço curvo ')' em caneta roxa entre o código e a descrição (marca de conferência) · marca manuscrita (outro) na linha 94 Óleo de Amendoas Doce: pequeno traço curvo em caneta roxa entre o código e a descrição (marca de conferência) · marca manuscrita (outro) na linha 93 Óleo de Girassol: pequeno traço curvo em caneta roxa ao lado do código (marca de conferência) · marca manuscrita (outro) na linha 111 Óleo essencial Bergamota: pequeno traço curvo em caneta roxa ao lado do código (marca de conferência) · topo (manuscrito): '2' circulado (caneta) ao lado do logo PRIVATE; traço roxo sob o título 'Sabonete Liquido Base Óleo' |
+| Notas | marca manuscrita (outro) na linha 91 Óleo Essencial de Semente  de Uva: pequeno traço curvo ')' em caneta roxa entre o código e a descrição (marca de conferência) · marca manuscrita (outro) na linha 94 Óleo de Amendoas Doce: pequeno traço curvo em caneta roxa entre o código e a descrição (marca de conferência) · marca manuscrita (outro) na linha 93 Óleo de Girassol: pequeno traço curvo em caneta roxa ao lado do código (marca de conferência) · marca manuscrita (outro) na linha 111 Óleo essencial Bergamota: pequeno traço curvo em caneta roxa ao lado do código (marca de conferência) · topo (manuscrito): '2' circulado (caneta) ao lado do logo PRIVATE; traço roxo sob o título 'Sabonete Liquido Base Óleo' · nome manuscrito junto ao título: (2) |
 | Já existe no sistema (kb id) | 592 |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
@@ -4106,7 +4111,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 17 | 17 | 935 | Cumarina(Coumarin) | _a definir_ | 0,1000% | 1378.000 | Quinari |
 | 18 | 18 | 891 | Linalol | _a definir_ | 0,1000% | 199.900 | Destilaria Bauru |
 
-## 137. (PoRO) — Me.Linda 15/07
+## 137. Creme Facial Pele Oleosa — Me.Linda 15/07
 
 | Campo | Valor |
 |---|---|
@@ -4116,7 +4121,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.050 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1797.JPG](https://drive.google.com/file/d/1TlPlgt29aEA7LsWWv90LiwJi0of_563Y/view) |
-| Notas | topo (manuscrito): '(Poros)' manuscrito ao lado do título 'Creme Facial Pele Oleosa'; número '13' manuscrito e circulado ao lado do logo; na linha do cliente ('11 | Lais') escrito à mão 'Liquidos-Creme-Difusores'. |
+| Notas | topo (manuscrito): '(Poros)' manuscrito ao lado do título 'Creme Facial Pele Oleosa'; número '13' manuscrito e circulado ao lado do logo; na linha do cliente ('11 | Lais') escrito à mão 'Liquidos-Creme-Difusores'. · nome manuscrito junto ao título: (Poros) |
 | Já existe no sistema (kb id) | 145 |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
@@ -4234,7 +4239,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 13 |  | 1119 | Kobotint 1 | _a definir_ | 12,0000% | 416.000 | Summit(Cosmotec) |
 | 14 |  | 1120 | Kobo Mss 500W | _a definir_ | 4,0000% | 478.400 | Summit(Cosmotec) |
 
-## 141. 15-16-17-18 — Me.Linda 15/07
+## 141. Filtro Solar FPS 60 — Me.Linda 15/07
 
 | Campo | Valor |
 |---|---|
@@ -4269,7 +4274,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 18 | 08 | 962 | Alcool Etilico Refinado | _a definir_ | 10,0000% | 9.80 | D.A Brasil |
 | 19 | 09 | 1130 | Microcare PEHG | _a definir_ | 1,0000% | 71.00 | Focus Quimica/Barentz |
 
-## 142. B.U Cosméticos — Me.Linda 15/07
+## 142. Hidratante Facial Anti Sinais — Me.Linda 15/07
 
 | Campo | Valor |
 |---|---|
@@ -4280,7 +4285,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1791.JPG](https://drive.google.com/file/d/1eR_nePBKiELUKWjXXajAnOSIKtGrsR_U/view) |
 | Pendências | 635 Óleo Essencial de Erva Doce - Canbe: código não existe no cadastro (kb-source); 636 Óleo Essencial de Copaiba - Canbe: código não existe no cadastro (kb-source); 637 Óleo Essencial de Benzoin - Canbe: código não existe no cadastro (kb-source) |
-| Notas | topo (manuscrito): Ao lado do título impresso 'Hidratante Facial Anti Sinais' manuscrito '(SLOW-AGING)'; ao lado do logo PRIVATE manuscrito '4' circulado. · preço R$ 0,00 na folha p/ 635 Óleo Essencial de Erva Doce -  (provável MP fornecida pelo cliente) — fora da lista de preços · preço R$ 0,00 na folha p/ 636 Óleo Essencial de Copaiba - Ca (provável MP fornecida pelo cliente) — fora da lista de preços · preço R$ 0,00 na folha p/ 637 Óleo Essencial de Benzoin - Ca (provável MP fornecida pelo cliente) — fora da lista de preços |
+| Notas | topo (manuscrito): Ao lado do título impresso 'Hidratante Facial Anti Sinais' manuscrito '(SLOW-AGING)'; ao lado do logo PRIVATE manuscrito '4' circulado. · nome manuscrito junto ao título: (slow-aging) · preço R$ 0,00 na folha p/ 635 Óleo Essencial de Erva Doce -  (provável MP fornecida pelo cliente) — fora da lista de preços · preço R$ 0,00 na folha p/ 636 Óleo Essencial de Copaiba - Ca (provável MP fornecida pelo cliente) — fora da lista de preços · preço R$ 0,00 na folha p/ 637 Óleo Essencial de Benzoin - Ca (provável MP fornecida pelo cliente) — fora da lista de preços |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -4364,7 +4369,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 14 | 08 | 637 | Óleo Essencial de Benzoin - Canbe | _a definir_ | 0,0500% | 0.000 | B.U Cosmeticos |
 | 15 | 08 | 411 | Lauril Eter Sulfato de Sodio 70% | _a definir_ | 1,0000% | 15.080 | Mundiquimica |
 
-## 145. (facial — Me.Linda 15/07
+## 145. Serum Rugas — Me.Linda 15/07
 
 | Campo | Valor |
 |---|---|
@@ -4374,7 +4379,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.030 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1795.JPG](https://drive.google.com/file/d/1rRRooZeSAC10Y2RYxVr-tvb17dQQvg1M/view) |
-| Notas | topo (manuscrito): Ao lado do título impresso 'Serum Rugas' manuscrito '(FACIAL)'; ao lado do logo PRIVATE manuscrito '10' circulado (dígitos parcialmente sobrepostos, lido como 10). |
+| Notas | topo (manuscrito): Ao lado do título impresso 'Serum Rugas' manuscrito '(FACIAL)'; ao lado do logo PRIVATE manuscrito '10' circulado (dígitos parcialmente sobrepostos, lido como 10). · nome manuscrito junto ao título: (Facial) |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -4708,7 +4713,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 20 | 17 | 1323 | Geleia Real | _a definir_ | 1,0000% | 0.00 | Cliente |
 | 21 | 12 | 865 | Quiditat SRC CF (Coco Nucifera) | _a definir_ | 1,0000% | 182.00 | Assessa |
 
-## 158. Creme hidratante Corpopal — 07/04- welness
+## 158. Creme hidratante — 07/04- welness
 
 | Campo | Valor |
 |---|---|
@@ -4718,7 +4723,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | Batelada | 0.225 kg |
 | Soma dos % | 100.0000 |
 | Foto(s) | [IMG_1853.JPG](https://drive.google.com/file/d/1jj_Bm9WeUlSXhoirPZLx7Ysbu1_zJzy5/view) |
-| Notas | topo (manuscrito): 'CORPORAL' manuscrito ao lado do nome do produto 'Creme hidratante'. · preço R$ 0,00 na folha p/ 1187 Mel (provável MP fornecida pelo cliente) — fora da lista de preços · preço R$ 0,00 na folha p/ 1188 Propolis (provável MP fornecida pelo cliente) — fora da lista de preços |
+| Notas | topo (manuscrito): 'CORPORAL' manuscrito ao lado do nome do produto 'Creme hidratante'. · nome manuscrito junto ao título: CORPORAL · preço R$ 0,00 na folha p/ 1187 Mel (provável MP fornecida pelo cliente) — fora da lista de preços · preço R$ 0,00 na folha p/ 1188 Propolis (provável MP fornecida pelo cliente) — fora da lista de preços |
 
 | # | Fase | Código | Matéria-prima | INCI | Concentração (%) | R$/kg na folha | Fornecedor |
 |---|---|---|---|---|---|---|---|
@@ -4743,7 +4748,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 19 | 15 | 1188 | Propolis | _a definir_ | 1,0000% | 0.000 | Cliente |
 | 20 | 16 | 148 | Acetato de Tocoferol( Vitamina E) | _a definir_ | 0,5000% | 320.000 | Focus/Hall Star |
 
-## 159. KIVATE — 07/04- welness
+## 159. Gel de Elastomero/Hidrat.Rosto e Pescoço 2 — 07/04- welness
 
 | Campo | Valor |
 |---|---|
@@ -4841,7 +4846,7 @@ Status: **confirmada** = todas as contas da folha fecham, todo código bate com 
 | 19 | 17 | 865 | Quiditat SRC CF (Coco Nucifera) | _a definir_ | 1,0000% | 182.00 | Assessa |
 | 20 | 17 | 1339 | Vinup Lift | _a definir_ | 1,0000% | 4726.80 | Barentz |
 
-## 162. Deo Colonia -Masc/Fem — 10/04- Claudinei Santos
+## 162. Deo Colonia - Masc/Fem — 10/04- Claudinei Santos
 
 | Campo | Valor |
 |---|---|

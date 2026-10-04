@@ -72,7 +72,15 @@ Linhas com **R$ 0,00** (36, quase todas MP fornecida pelo cliente — mel, próp
 
 ## 8. Implementado nesta branch (não executado em produção)
 
-- `backend/prisma/import-extracao-drive.ts` (`npm run import:extracao-drive`): PREVIEW por padrão; `--apply` cria só as fórmulas `confirmada` como rascunho (`origem='extracao_drive'`), casando MP por código, numa transação, e escreve o rollback `.sql` (untracked). Não toca preço de MP nem fórmula existente.
-- Smoke em Postgres local com a cópia do kb: 35 importadas / 34 puladas (28 com composição idêntica a fórmula existente, 6 por concentração com 4 casas); 35/35 idênticas ao staging; soma 100% em todas; MPs e fórmulas pré-existentes inalteradas; 2ª execução não duplica; rollback devolve o baseline exato.
-- Em produção o resultado vai diferir (banco real ≠ kb de maio): rodar o PREVIEW primeiro.
-- Pipeline reproduzível em `tools/extracao-drive/` (OCR, leituras visuais e scripts versionados; fotos não).
+Decisões do Gabriel (04/10/2026): **% com 4 casas → arredondar a 3**; **fórmulas com TOTAL ≠ 100% → subir mesmo assim** (margem para ajuste); **preço da folha = preço atualizado na data da cotação impressa; sem data → maio/2026 (01/05/2026)**.
+
+`backend/prisma/import-extracao-drive.ts` (`npm run import:extracao-drive`; PREVIEW por padrão, `--apply` grava tudo em UMA transação e escreve o rollback `.sql` untracked; opções `--sem-precos`, `--sem-formulas`):
+
+- **Fórmulas** (novas, `status='rascunho'`, `origem='extracao_drive'`, MP por código): entram `confirmada`, `origem_nao_fecha_100` e `pendente_conferencia` desde que **não haja pendência** ou a única seja "MP fora do kb de maio" (conferida no banco). Manuscrito, nome rasurado, código inferido, preço suspeito ou nome divergente **bloqueiam**. Nome do produto só com **dupla leitura** do título impresso (visual + OCR; 1 caso visual + conferência manual). Concentrações arredondadas e TOTAL ≠ 100% ficam anotados em `observacoes`.
+- **Preços**: 462 candidatos (5 códigos ambíguos — mesma data, preços diferentes — não entram). Atualiza só se a data da folha for **mais recente** que a `data_cotacao` gravada; grava `mp_historico_precos` (`origem='extracao_drive'`), `preco_anterior`, `aumento_pct`, `flag_aumento_relevante`; fornecedor só muda se o da folha for claramente outro. Não gera alerta in-app em lote.
+
+Smoke em Postgres local (cópia do kb de maio + seed + 1 orçamento "enviado" com snapshot):
+- 45 fórmulas importadas (38 confirmadas, 7 com TOTAL ≠ 100% anotadas), 685 linhas, 10 concentrações arredondadas; 77 puladas (44 MP inexistente **na cópia de maio** — em produção tendem a existir —, 31 composição idêntica a fórmula existente, 2 nome divergente no banco).
+- 369 preços atualizados (26 sobem, 10 descem, 333 só renovam a data; 13 com alta ≥ 20%; 259 com data da folha, 110 com referência maio; 5 trocas de fornecedor); 93 não (13 o banco já tinha cotação igual/mais recente, 80 MP inexistente na cópia de maio).
+- Orçamento (snapshot) e fórmulas pré-existentes **byte a byte inalterados**; 2ª execução = 0; rollback devolve MPs, fórmulas e histórico ao estado exato anterior.
+- **Em produção os números vão diferir** (banco real ≠ kb de maio): rodar o PREVIEW primeiro e conferir a saída antes do `--apply`.

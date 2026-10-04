@@ -145,7 +145,7 @@ def validar(rec):
     if tt and tt.get("nome_impresso"):
         produto = re.sub(r"\s+", " ", tt["nome_impresso"]).strip()
         nome_fonte = "visual_titulo" if tt.get("nome_impresso_legivel", True) else "visual_titulo_parcial"
-        nome_conf_ocr = any(sim(produto, t) >= 0.85 or norm(produto) in norm(t) for t in texts if len(t) >= 3)
+        nome_conf_ocr = any(sim(produto, t) >= 0.85 or norm(produto) in norm(t) for t in texts if len(t) >= 3) or bool(tt.get("conferido_manual"))
     bat_tot = num(p["totais"].get("qtde_kg"))
     motivos = []
     info = []
