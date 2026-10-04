@@ -137,6 +137,15 @@ def validar(rec):
         bat_topo = num(rv["batelada_kg"]) if rv.get("batelada_kg") else bat_topo
         data = rv.get("data_folha") or data
         produto = rv.get("produto") or produto
+    # nome do produto: leitura visual dedicada do título impresso (dados/titulos) tem prioridade sobre o topo do OCR;
+    # confere se o mesmo texto aparece no OCR (duas leituras independentes)
+    tt_path = f"{S}/dados/titulos/{rec['arquivo']}.json"
+    tt = json.load(open(tt_path)) if os.path.exists(tt_path) else None
+    nome_fonte, nome_conf_ocr = "ocr_topo", None
+    if tt and tt.get("nome_impresso"):
+        produto = re.sub(r"\s+", " ", tt["nome_impresso"]).strip()
+        nome_fonte = "visual_titulo" if tt.get("nome_impresso_legivel", True) else "visual_titulo_parcial"
+        nome_conf_ocr = any(sim(produto, t) >= 0.85 or norm(produto) in norm(t) for t in texts if len(t) >= 3)
     bat_tot = num(p["totais"].get("qtde_kg"))
     motivos = []
     info = []
@@ -223,6 +232,13 @@ def validar(rec):
         if an.get("topo_manuscrito"):
             t = an["topo_manuscrito"]
             (anot if classe_anotacao("topo " + t) == "nome" else info).append(("NOME DO PRODUTO ALTERADO À MÃO: " if classe_anotacao("topo " + t) == "nome" else "topo (manuscrito): ") + t)
+    if tt:
+        if tt.get("nome_manuscrito"):
+            info.append(f"nome manuscrito junto ao título: {tt['nome_manuscrito']}")
+        if tt.get("nome_impresso_riscado"):
+            anot.append(f"NOME DO PRODUTO ALTERADO À MÃO: impresso '{tt.get('nome_impresso')}' riscado; manuscrito: {tt.get('nome_manuscrito')}")
+        if not tt.get("nome_impresso_legivel", True):
+            info.append(f"nome do produto parcialmente ilegível na foto ({tt.get('observacoes') or ''})")
     if rv:
         for m in rv.get("anotacoes_tabela") or []:
             m = m if isinstance(m, str) else json.dumps(m, ensure_ascii=False)
@@ -267,7 +283,7 @@ def validar(rec):
     else:
         motivos_origem = []
     return dict(base, status=status, motivos=motivos + motivos_origem, pendencias_cadastro=pend_cad, fonte_tabela=fonte, concordancia_ocr_visual=concord,
-                revisao_obs=(rv or {}).get("observacoes"), anotacoes_visuais=(an or {}).get("observacoes"), varredura_manuscrito=bool(an or rv), notas_informativas=info, modelo=p["modelo"], produto=produto, data_folha=data,
+                revisao_obs=(rv or {}).get("observacoes"), anotacoes_visuais=(an or {}).get("observacoes"), varredura_manuscrito=bool(an or rv), notas_informativas=info, nome_fonte=nome_fonte, nome_confirmado_ocr=nome_conf_ocr, modelo=p["modelo"], produto=produto, data_folha=data,
                 batelada_kg=str(bat) if bat is not None else None, soma_pct=str(soma), n_itens=len(itens), totais=p["totais"],
                 topo=[t["t"] for t in p["topo"]], manuscrito_abaixo=p["manuscrito_abaixo"], itens=itens)
 

@@ -87,7 +87,8 @@ for u in uni:
     r = u["r"]
     staging["formulas"].append(dict(
         n=u["n"], status_extracao=r["status"], motivos=r.get("motivos", []), pendencias_cadastro=r.get("pendencias_cadastro", []),
-        nome_produto=r.get("produto"), cliente_original=u["pasta_cliente"], categoria_pasta=u["categoria"], data_folha=r.get("data_folha"),
+        nome_produto=r.get("produto"), nome_fonte=r.get("nome_fonte"), nome_confirmado_ocr=r.get("nome_confirmado_ocr"),
+        cliente_original=u["pasta_cliente"], categoria_pasta=u["categoria"], data_folha=r.get("data_folha"),
         batelada=(f"{r['batelada_kg']} kg" if r.get("batelada_kg") else None), soma_pct=r.get("soma_pct"), modelo_folha=r.get("modelo"),
         ja_existe_no_kb_ids=u["kb_ids"],
         fontes=[dict(drive_id=x["drive_id"], caminho=x["drive"], sha256=x["sha256"], link=link(x["drive_id"])) for x in u["fotos"]],
@@ -105,6 +106,60 @@ for cod, os_ in sorted(obs.items()):
     if not kb:
         staging["mps_fora_do_cadastro"].append(dict(mp_codigo=cod, nomes_lidos=sorted({o["nome"] for o in os_}), precos=[str(v) for v in vals],
                                                     fornecedores=sorted({o["fornecedor"] or "" for o in os_}), n_formulas=len({o["formula"] for o in os_})))
+# ---------- preços para atualização (decisão do Gabriel, 04/10/2026) ----------
+# O R$/kg da folha vale como preço atualizado NA DATA DA COTAÇÃO impressa na folha; sem data, referência = maio/2026.
+# Fonte só de linha confiável: sem preço suspeito/atípico/zero, sem código inferido, sem nome divergente, sem
+# anotação manuscrita na linha. Por código vence a observação de data mais recente; empate de data com preços
+# diferentes = ambíguo (não atualiza). A comparação com a data já gravada no banco é feita no import (backend).
+REF_MAIO = "2026-05-01"
+DATA_MIN, DATA_MAX = "2025-01-01", GERADO
+
+
+def data_iso(d):
+    m = re.fullmatch(r"(\d{2})/(\d{2})/(\d{2}|\d{4})", d or "")
+    if not m:
+        return None
+    ano = int(m.group(3)) + (2000 if len(m.group(3)) == 2 else 0)
+    try:
+        import datetime
+        iso = datetime.date(ano, int(m.group(2)), int(m.group(1))).isoformat()
+    except ValueError:
+        return None
+    return iso if DATA_MIN <= iso <= DATA_MAX else None
+
+
+BLOQ = ("ANOTAÇÃO MANUSCRITA", "CÓDIGO INFERIDO", "nome não bate", "PREÇO/FORNECEDOR SUSPEITO", "PREÇO ATÍPICO")
+cand = defaultdict(list)
+for u in uni:
+    r = u["r"]
+    if r["status"] == "revisar":
+        continue
+    d = data_iso(r.get("data_folha"))
+    for i in r.get("itens", []):
+        if i["codigo"] is None or i["valor_kg"] is None or i.get("preco_suspeito") or i.get("preco_zero"):
+            continue
+        if any(pb.startswith(BLOQ) or BLOQ[0] in pb for pb in i["problemas"]):
+            continue
+        cand[i["codigo"]].append(dict(valor=i["valor_kg"], fornecedor=i["fornecedor"], data_cotacao=d or REF_MAIO,
+                                      data_origem="folha" if d else "referencia_maio", formula=u["n"], produto=r.get("produto"),
+                                      pasta=u["pasta_cliente"], foto=r["drive"], link=link(r["drive_id"]), sha256=r["sha256"]))
+staging["precos_para_atualizar"] = []
+staging["precos_ambiguos"] = []
+for cod, obs_ in sorted(cand.items()):
+    top = max(o["data_cotacao"] for o in obs_)
+    na_data = [o for o in obs_ if o["data_cotacao"] == top]
+    # o banco guarda R$/kg com 2 casas (Decimal(10,2)): 24,284 e 24,28 são o mesmo preço gravado
+    from decimal import ROUND_HALF_UP
+    vals = sorted({Decimal(o["valor"]).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP) for o in na_data})
+    reg = dict(mp_codigo=cod, nome_cadastro_kb=MP[cod]["nome"] if cod in MP else None, n_observacoes=len(obs_))
+    if len(vals) > 1:
+        staging["precos_ambiguos"].append(dict(reg, data_cotacao=top, precos=[str(v) for v in vals],
+                                               fontes=[f"{o['pasta']} (fórmula {o['formula']}): R$ {o['valor']}" for o in na_data]))
+        continue
+    o = na_data[0]
+    staging["precos_para_atualizar"].append(dict(reg, preco_kg_brl=str(vals[0]), fornecedor_folha=o["fornecedor"], data_cotacao=top,
+                                                 data_origem=o["data_origem"], fonte=f"{o['foto']} ({o['link']}) sha256 {o['sha256']}",
+                                                 formula=o["formula"], produto=o["produto"]))
 json.dump(staging, open(f"{OUT}/formulas_staging.json", "w"), ensure_ascii=False, indent=1)
 
 # ---------- markdown ----------
@@ -187,7 +242,7 @@ ws.column_dimensions["A"].width = 48
 ws.column_dimensions["B"].width = 140
 ws["A1"].font = Font(bold=True, size=14)
 
-aba("Fórmulas", ["Nº", "Status", "Produto (lido)", "Cliente (pasta)", "Categoria", "Data na folha", "Batelada (kg)", "Nº itens", "Soma %",
+aba("Fórmulas", ["Nº", "Status", "Produto (título impresso)", "Cliente (pasta)", "Categoria", "Data na folha", "Batelada (kg)", "Nº itens", "Soma %",
                  "Modelo folha", "Motivos", "Pendências (conferir antes de importar)", "Notas informativas (marcas, contas fora da fórmula)", "Fonte da tabela", "Concordância OCR × leitura visual", "Já existe no kb (ids)", "Foto(s)", "Link", "Fotos repetidas", "SHA-256"],
     [[u["n"], u["r"]["status"], u["r"].get("produto"), u["pasta_cliente"], u["categoria"], u["r"].get("data_folha"),
       float(u["r"]["batelada_kg"]) if u["r"].get("batelada_kg") else None, u["r"].get("n_itens"),
