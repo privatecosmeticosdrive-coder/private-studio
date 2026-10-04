@@ -1,0 +1,119 @@
+{
+ "arquivo": "199hWwyxmHmG2PyS7oSJ98_5r9kuOJrd8__IMG_1737.JPG",
+ "tipo": "custo",
+ "produto": "Linha Skin",
+ "data_folha": "27/01/2026",
+ "batelada_kg": null,
+ "linhas": [],
+ "total_pct": null,
+ "total_qtde_kg": null,
+ "continua_em_outra_foto": false,
+ "custo_dados": {
+  "ano_de_prod": "2026",
+  "taxa_correcao_dissidio": "6%",
+  "ref_dissidio": "nov-25",
+  "total_gastos_folha_mes": "R$ 39.282,26",
+  "total_provisoes_folha": "R$ 9.010,16",
+  "total_folha_provisoes": "R$ 48.292,42",
+  "linha_2026": "R$ 4.829,24",
+  "produtividade_estimada": "5 unid./min.",
+  "unid_h": "300 unid./h",
+  "tempo_producao_diaria": "8,0 h/dia",
+  "producao_diaria_estimada": "2.400 unid./dia",
+  "turnos_1": "2.400 unid./dia",
+  "necessidade_producao": "1.000 unid.",
+  "tempo_esta_producao": "0,417 dias",
+  "colab_pesagem": "1,00",
+  "colab_envase": "1,00",
+  "colab_linha": "4,00",
+  "colab_embalar": "2,00",
+  "qualidade": "1,00",
+  "abastecimento": "1,00",
+  "total_funcionarios": "10,00 colab.",
+  "salario_colaborador": "R$ 4.829,24 R$/mês",
+  "salarios_equipe": "R$ 48.292,42 R$/mês",
+  "despesas_administrativas": "R$ 48.292,42 R$/mês",
+  "custo_mo_mensal": "R$ 96.584,83 R$/mês",
+  "dias_uteis_mes": "20 dia/mês",
+  "custo_mo_diario": "R$ 4.829,24 R$/dia",
+  "custo_mo_unid_acab": "R$ 2,0122 R$/unid.",
+  "acrescimo": "R$ - R$/unid.",
+  "materia_prima": "R$ 1,7500 R$/unid.",
+  "material_embalagem": "R$ 6,5000 R$/unid.",
+  "linha_traco": "R$ - R$/unid.",
+  "frete": "R$ 0,6000 R$/unid.",
+  "desvio_10pct": "R$ 0,1750 R$/unid.",
+  "custo_mp_s_imposto_unid": "R$ 8,4250 R$/unid.",
+  "custo_mp_s_imposto_mil": "R$ 8.425,0000 R$/mil.",
+  "custo_mp_c_imposto_unid": "R$ 11,5844 R$/unid.",
+  "custo_mp_c_imposto_mil": "R$ 11.584,3750 R$/mil.",
+  "margem_liquida": "30,16% R$ 6,2000 R$/unid.",
+  "custo_diversos": "R$ 2,0122 R$/unid.",
+  "custo_mao_de_obra": "R$ 8,2122 R$/mil.",
+  "preco_final_c_impostos_unid": "R$ 8,9718 R$/unid.",
+  "preco_final_c_impostos_mil": "R$ 8.971,8111 R$/mil.",
+  "ao_lado_preco_final": "R$ 20,5562",
+  "tributos_acabado": {
+   "ICMS": "25,00%",
+   "PIS": "10,30%",
+   "COFINS": "2,20%",
+   "IPI": null,
+   "TOTAL": "37,50%"
+  },
+  "tributos_mao_de_obra": {
+   "PIS": "1,65%",
+   "COFINS": "7,60%",
+   "TOTAL": "9,25%"
+  },
+  "imposto": "46,75%",
+  "frete_pedido": "1.000 unid./carga",
+  "custo_total_frete": "R$ 600,00 R$/carga",
+  "frete_unitario": "R$ 0,6000 R$/unid.",
+  "margem_real": {
+   "pct": "30,16%",
+   "margem": "R$ 6,2000",
+   "custo": "R$ 20,5562"
+  },
+  "cotacao_no": "46049",
+  "nome": "Cassia",
+  "cidade": null,
+  "estado": "SP",
+  "produtos": [
+   {
+    "produto": "Serum Rugas PDRN/Exossomos 30ml",
+    "pct": "30,00%",
+    "margem": "R$ 6,10",
+    "custo": "R$ 20,30",
+    "manuscrito": "ao lado: 22,87 (primeiros dígitos sobrescritos)"
+   },
+   {
+    "produto": "Serum Rugas PDRN 30ml",
+    "pct": "30,00%",
+    "margem": "R$ 6,00",
+    "custo": "R$ 19,98",
+    "manuscrito": "ao lado: 18,45 (o '8' parece sobrescrito)"
+   },
+   {
+    "produto": "Serum Rugas PDRN Extrato Cetella Asiatica  30ml",
+    "pct": "30,00%",
+    "margem": "R$ 6,05",
+    "custo": "R$ 20,13",
+    "manuscrito": "seta '>' e escrito 'NIACINAMIDA' após o nome; ao lado: 21,78"
+   },
+   {
+    "produto": "Serum Rugas PDRN/Exossomos / Cetella Asiatica30ml",
+    "pct": "30,00%",
+    "margem": "R$ 6,20",
+    "custo": "R$ 20,56",
+    "manuscrito": "ao lado: 22,67 (leitura incerta do '6')"
+   }
+  ]
+ },
+ "anotacoes_tabela": [
+  "Rubrica/assinatura manuscrita abaixo da tabela de produtos",
+  "Valores manuscritos à direita da coluna Custo: 22,87 / 18,45 / 21,78 / 22,67",
+  "'NIACINAMIDA' manuscrito após 'Serum Rugas PDRN Extrato Cetella Asiatica 30ml'"
+ ],
+ "legibilidade": "boa",
+ "observacoes": "Planilha de custo/mão de obra (não é fórmula), foto de cabeça para baixo (lida girando 180°). Sem batelada nem lista de ingredientes; dados transcritos em custo_dados. Valores manuscritos com leitura parcialmente incerta (22,87 com dígitos sobrescritos; 22,67)."
+}

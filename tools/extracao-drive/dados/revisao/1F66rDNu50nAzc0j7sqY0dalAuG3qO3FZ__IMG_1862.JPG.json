@@ -1,0 +1,125 @@
+{
+ "arquivo": "1F66rDNu50nAzc0j7sqY0dalAuG3qO3FZ__IMG_1862.JPG",
+ "tipo": "custo",
+ "produto": "Linha Anti Transpirante",
+ "data_folha": "28/04/2026",
+ "batelada_kg": null,
+ "linhas": [],
+ "total_pct": null,
+ "total_qtde_kg": null,
+ "continua_em_outra_foto": false,
+ "campos_custo": {
+  "Ano de Prod.": "2026",
+  "Produtividade estimada da linha": "6 unid./min.",
+  "unid./h": "360 unid./h",
+  "Tempo de produção diária": "8,0 h/dia",
+  "Produção diária estimada": "2.880 unid./dia",
+  "1 turnos ou 1 equipes": "2.880 unid./dia",
+  "Necessidade de produção": "1.000 unid.",
+  "Tempo p/ esta produção": "0,347 dias",
+  "Nº colab. Pesagem": "1,00 colab./turno",
+  "Nº colab.Envase": "1,00 colab./turno",
+  "Nº colab.Linha": "4,00 colab./turno",
+  "Nº colab.Embalar": "2,00 colab./turno",
+  "Nº Qualidade": "2,00 colab./turno",
+  "Nº Abastecimento": "1,00 colab./turno",
+  "TOTAL de funcionários": "11,00 colab.",
+  "Salário do colaborador": "R$ 4.390,22 R$/mês",
+  "Salários da equipe": "R$ 48.292,42 R$/mês",
+  "Despesas administrativas": "R$ 48.292,42 R$/mês",
+  "Custo MO mensal": "R$ 96.584,83 R$/mês",
+  "Dias úteis/mês": "20 dia/mês",
+  "Custo MO diário": "R$ 4.829,24 R$/dia",
+  "Custo MO/unid. /acab.": "R$ 1,6768 R$/unid.",
+  "Acrescimo": "R$ - R$/unid.",
+  "Materia Prima": "R$ 0,6500 R$/unid.",
+  "Material de embalagem": "R$ 0,1000 R$/unid.",
+  "-": "R$ - R$/unid.",
+  "Frete": "R$ 0,6000 R$/unid.",
+  "Desvio de 10%": "R$ 0,0650 R$/unid.",
+  "CUSTO MATERIA PRIMA S/IMPOSTO (unid)": "R$ 0,8150 R$/unid.",
+  "CUSTO MATERIA PRIMA S/IMPOSTO (mil)": "R$ 815,0000 R$/mil.",
+  "Custo Matéria Prima c/imposto (unid)": "R$ 1,1206 R$/unid.",
+  "Custo Matéria Prima c/imposto (mil)": "R$ 1.120,6250 R$/mil.",
+  "Margem líquida": "30,04% R$ 1,3200 R$/unid.",
+  "CUSTO DIVERSOS": "R$ 1,6768 R$/unid.",
+  "CUSTO MÃO DE OBRA": "R$ 2,9968 R$/mil.",
+  "Preço final c/ impostos (unid)": "R$ 3,2740 R$/unid.",
+  "Preço final c/ impostos (mil)": "R$ 3.274,0259 R$/mil.",
+  "ao lado do preço final": "R$ 4,3947",
+  "TRIBUTOS ACABADO": {
+   "ICMS": "25,00%",
+   "PIS": "10,30%",
+   "COFINS": "2,20%",
+   "IPI": null,
+   "TOTAL": "37,50%"
+  },
+  "TRIBUTOS MÃO DE OBRA": {
+   "PIS": "1,65%",
+   "COFINS": "7,60%",
+   "TOTAL": "9,25%"
+  },
+  "IMPOSTO": "46,75%",
+  "Taxa de correção salarial por dissídio (previsão)": "6% nov-25",
+  "Total de Gastos Folha Mês": "R$ 39.282,26",
+  "Total de Provisões Folha": "R$ 9.010,16",
+  "Total Folha + Provisões": "R$ 48.292,42",
+  "2026": "R$ 4.390,22",
+  "FRETE": {
+   "Pedido (unid.)": "1.000 unid./carga",
+   "CUSTO TOTAL FRETE": "R$ 600,00 R$/carga",
+   "FRETE UNITÁRIO": "R$ 0,6000 R$/unid."
+  },
+  "Margem Real": {
+   "%": "30,04%",
+   "Margen": "R$ 1,3200",
+   "Custo": "R$ 4,3947"
+  },
+  "Nº": "46140",
+  "Nome": "Projeto Roll On",
+  "Estado": "SP",
+  "produtos": [
+   {
+    "produto": "Roll on Anti Transpirante 70ml - Sem embalagem",
+    "pct": "30,00%",
+    "margem": "R$ 1,88",
+    "custo": "R$ 6,26",
+    "manuscrito": null
+   },
+   {
+    "produto": "Roll on Anti Transpirante 50ml - Sem embalagem",
+    "pct": "30,00%",
+    "margem": "R$ 1,60",
+    "custo": "R$ 5,32",
+    "manuscrito": "ao lado: 4,95"
+   },
+   {
+    "produto": "Spray Antiperspirante 50ml (6694) - Sem Embalagem",
+    "pct": "30,00%",
+    "margem": "R$ 1,25",
+    "custo": "R$ 4,17",
+    "manuscrito": "ao lado: 4,67"
+   },
+   {
+    "produto": "Spray Antiperspirante 50ml (6695) - Sem Embalagem",
+    "pct": "30,00%",
+    "margem": "R$ 1,44",
+    "custo": "R$ 4,78",
+    "manuscrito": null
+   },
+   {
+    "produto": "Spray Antiperspirante 50ml (6697) - Sem Embalagem",
+    "pct": "30,00%",
+    "margem": "R$ 1,32",
+    "custo": "R$ 4,39",
+    "manuscrito": null
+   }
+  ]
+ },
+ "anotacoes_tabela": [
+  "Manuscrito '4,95' ao lado do Roll on 50ml (custo impresso R$ 5,32)",
+  "Manuscrito '4,67' ao lado do Spray 6694 (custo impresso R$ 4,17)"
+ ],
+ "legibilidade": "boa",
+ "observacoes": "Planilha de custo/mão de obra (não é fórmula), foto de cabeça para baixo (lida girando 180°). Sem tabela de ingredientes nem batelada."
+}

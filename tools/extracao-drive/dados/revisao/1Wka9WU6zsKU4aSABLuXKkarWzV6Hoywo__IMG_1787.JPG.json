@@ -1,0 +1,173 @@
+{
+ "arquivo": "1Wka9WU6zsKU4aSABLuXKkarWzV6Hoywo__IMG_1787.JPG",
+ "tipo": "outro",
+ "produto": null,
+ "data_folha": null,
+ "batelada_kg": null,
+ "linhas": [],
+ "total_pct": null,
+ "total_qtde_kg": null,
+ "continua_em_outra_foto": false,
+ "anotacoes_tabela": [
+  "Barras/tracinhos manuscritos (checks) ao lado de quase todos os números de item",
+  "Pequenos traços à caneta ao lado das volumetrias dos itens 1, 2, 3"
+ ],
+ "legibilidade": "boa",
+ "itens_lista_cliente": [
+  {
+   "n": "1",
+   "descricao": "GEL DE LIMPEZA SUAVE",
+   "forma_fisica": "Gel",
+   "volumetria": "200",
+   "um": "ML"
+  },
+  {
+   "n": "2",
+   "descricao": "GEL DE LIMPEZA OIL CONTROL",
+   "forma_fisica": "Gel",
+   "volumetria": "200",
+   "um": "ML"
+  },
+  {
+   "n": "3",
+   "descricao": "ESPUMA FACIAL LIMPEZA",
+   "forma_fisica": "Gel",
+   "volumetria": "150",
+   "um": "ML"
+  },
+  {
+   "n": "4",
+   "descricao": "CREME FACIAL PREVENÇAO  SLOW- AGING",
+   "forma_fisica": "Gel Creme",
+   "volumetria": "50",
+   "um": "G"
+  },
+  {
+   "n": "5",
+   "descricao": "GEL ÁREA DOS OLHOS",
+   "forma_fisica": "Gel",
+   "volumetria": "10",
+   "um": "G"
+  },
+  {
+   "n": "6",
+   "descricao": "CREME FACIAL CALMANTE",
+   "forma_fisica": "Gel Creme",
+   "volumetria": "50",
+   "um": "G"
+  },
+  {
+   "n": "9",
+   "descricao": "SERUM FACIAL PELE OLEOSA",
+   "forma_fisica": "Gel Serum",
+   "volumetria": "30",
+   "um": "ML"
+  },
+  {
+   "n": "10",
+   "descricao": "SERUM FACIAL",
+   "forma_fisica": "Gel Serum",
+   "volumetria": "30",
+   "um": "ML"
+  },
+  {
+   "n": "12",
+   "descricao": "HIDRATANTE BARREIRA GEL-CREME",
+   "forma_fisica": "Gel Creme",
+   "volumetria": "50",
+   "um": "G"
+  },
+  {
+   "n": "13",
+   "descricao": "HIDRATANTE OIL-FREE CONTROLE & POROS",
+   "forma_fisica": "Gel Creme",
+   "volumetria": "50",
+   "um": "G"
+  },
+  {
+   "n": "14",
+   "descricao": "SÉRUM ANTIOXIDANTE DEFESA DIÁRIA",
+   "forma_fisica": "Gel Serum",
+   "volumetria": "30",
+   "um": "ML"
+  },
+  {
+   "n": "15",
+   "descricao": "PROTETOR SOLAR FACIAL FPS 70 TOQUE SECO",
+   "forma_fisica": "Gel Creme",
+   "volumetria": "40",
+   "um": "G"
+  },
+  {
+   "n": "16",
+   "descricao": "PROTETOR SOLAR FACIAL COM COR FPS 70 - 1º COR (claro)",
+   "forma_fisica": "Gel Creme",
+   "volumetria": "40",
+   "um": "G"
+  },
+  {
+   "n": "17",
+   "descricao": "PROTETOR SOLAR FACIAL COM COR FPS 70 - 2º COR (médio)",
+   "forma_fisica": "Gel Creme",
+   "volumetria": "40",
+   "um": "G"
+  },
+  {
+   "n": "18",
+   "descricao": "PROTETOR SOLAR FACIAL COM COR FPS 70 - 3º COR (escuro)",
+   "forma_fisica": "Gel Creme",
+   "volumetria": "40",
+   "um": "G"
+  },
+  {
+   "n": "19",
+   "descricao": "BASTÃO SOLAR INVISÍVEL FPS 90  - 1º Cor (claro)",
+   "forma_fisica": "Bastão",
+   "volumetria": "14",
+   "um": "G"
+  },
+  {
+   "n": "19",
+   "descricao": "BASTÃO SOLAR INVISÍVEL FPS 90 - 2º Cor (médio)",
+   "forma_fisica": "Bastão",
+   "volumetria": "14",
+   "um": "G"
+  },
+  {
+   "n": "19",
+   "descricao": "BASTÃO SOLAR INVISÍVEL FPS 90 - 3º Cor (escuro)",
+   "forma_fisica": "Bastão",
+   "volumetria": "14",
+   "um": "G"
+  },
+  {
+   "n": "20",
+   "descricao": "ESPUMA DE LIMPEZA FACIAL SUAVE PRIMEIROS CUIDADOS",
+   "forma_fisica": "Gel",
+   "volumetria": "150",
+   "um": "ML"
+  },
+  {
+   "n": "21",
+   "descricao": "HIDRATANTE LEVE PRIMEIROS CUIDADOS",
+   "forma_fisica": "Gel Creme",
+   "volumetria": "30",
+   "um": "G"
+  },
+  {
+   "n": "22",
+   "descricao": "BASTÃO SOLAR FPS 90 UVA**",
+   "forma_fisica": "Bastão",
+   "volumetria": "14",
+   "um": "G"
+  },
+  {
+   "n": "23",
+   "descricao": "DESODORANTE ROLLON GEN ALPHA",
+   "forma_fisica": "Loção",
+   "volumetria": "50",
+   "um": "ML"
+  }
+ ],
+ "observacoes": "NÃO é folha de formulação: é lista/briefing de portfólio do cliente 'me.linda' (colunas: DESCRIÇÃO DO PRODUTO, FORMA FISICA, EMBALAGEM PRIMÁRIA, VOLUMETRIA, UM, EMBALAGEM SECUNDÁRIA, ROTULAGEM). Sem ingredientes, %, batelada ou custos. Lista dos itens em 'itens_lista_cliente' (numeração como impressa; 19 aparece 3 vezes, 7/8/11 ausentes)."
+}

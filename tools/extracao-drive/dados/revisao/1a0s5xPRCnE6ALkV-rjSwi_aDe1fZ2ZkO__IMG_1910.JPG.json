@@ -1,0 +1,30 @@
+{
+ "arquivo": "1a0s5xPRCnE6ALkV-rjSwi_aDe1fZ2ZkO__IMG_1910.JPG",
+ "tipo": "formula",
+ "produto": "Gel Redutor de Medidas",
+ "data_folha": null,
+ "batelada_kg": "0,250",
+ "linhas": [
+  {"codigo": null, "codigo_parcial": true, "descricao": "Agua Desmineralizada", "fase": "01", "qtde_kg": "0,20525", "pct": "82,1000%", "qtde_g": "205,2500", "custo": "R$ 0,051", "valor_kg": "R$ 0,25", "embal": "Private", "fornecedor": "Private", "manuscrito": null},
+  {"codigo": null, "codigo_parcial": true, "descricao": "Carbopol 996", "fase": "02", "qtde_kg": "0,01250", "pct": "5,0000%", "qtde_g": "12,5000", "custo": "R$ 1,000", "valor_kg": "R$ 80,00", "embal": "21kg", "fornecedor": "DPS quimica", "manuscrito": null},
+  {"codigo": "5", "codigo_parcial": true, "descricao": "Mipa 99% ( Isopropanolamine)", "fase": "03", "qtde_kg": "0,00625", "pct": "2,5000%", "qtde_g": "6,2500", "custo": "R$ 1,050", "valor_kg": "R$ 168,00", "embal": "1kg", "fornecedor": "Emfal/Dinaco", "manuscrito": null},
+  {"codigo": "446", "codigo_parcial": false, "descricao": "Bioex Anti-Lipêmico", "fase": "04", "qtde_kg": "0,02000", "pct": "8,0000%", "qtde_g": "20,0000", "custo": "R$ 1,232", "valor_kg": "R$ 61,60", "embal": "5kg", "fornecedor": "Aqia", "manuscrito": null},
+  {"codigo": "304", "codigo_parcial": false, "descricao": "Mentol", "fase": "05", "qtde_kg": "0,00125", "pct": "0,5000%", "qtde_g": "1,2500", "custo": "R$ 0,319", "valor_kg": "R$ 254,80", "embal": "500gr", "fornecedor": "Embacaps", "manuscrito": null},
+  {"codigo": "134", "codigo_parcial": false, "descricao": "Cafeline SS (3797)", "fase": "03", "qtde_kg": "0,00375", "pct": "1,5000%", "qtde_g": "3,7500", "custo": "R$ 5,257", "valor_kg": "R$ 1.401,96", "embal": "5kg", "fornecedor": "Aqia", "manuscrito": null},
+  {"codigo": "261", "codigo_parcial": false, "descricao": "Essencia", "fase": "04", "qtde_kg": "0,00063", "pct": "0,2500%", "qtde_g": "0,6250", "custo": "R$ 0,158", "valor_kg": "R$ 252,00", "embal": "-", "fornecedor": "Private", "manuscrito": null},
+  {"codigo": "52", "codigo_parcial": false, "descricao": "Meticloroisotiazolinona/Metilisotiazolinona", "fase": "05", "qtde_kg": "0,00023", "pct": "0,0900%", "qtde_g": "0,2250", "custo": "R$ 0,019", "valor_kg": "R$ 86,00", "embal": "-", "fornecedor": "Cosmotec", "manuscrito": null},
+  {"codigo": "51", "codigo_parcial": false, "descricao": "EDTA Dissodico", "fase": "04", "qtde_kg": "0,00013", "pct": "0,0500%", "qtde_g": "0,1250", "custo": "R$ 0,004", "valor_kg": "R$ 30,00", "embal": "20kg", "fornecedor": "Dipa Quimica/Engenharia Essencia", "manuscrito": null},
+  {"codigo": "143", "codigo_parcial": false, "descricao": "D´Pantenol", "fase": "05", "qtde_kg": "0,00003", "pct": "0,0100%", "qtde_g": "0,0250", "custo": "R$ 0,014", "valor_kg": "R$ 562,80", "embal": "10kg", "fornecedor": "Alpha Quimica/Mundi", "manuscrito": null}
+ ],
+ "total_pct": "100,000%",
+ "total_qtde_kg": "0,2500",
+ "total_qtde_g": "250,000",
+ "total_custo": "R$ 9,1038",
+ "continua_em_outra_foto": false,
+ "anotacoes_tabela": [
+  "Manuscrito à direita abaixo da tabela: 'Valor: 29,37' (último dígito com sobrescrito/retocado, possivelmente 29,38; sublinhado)",
+  "Contas de embalagem manuscritas abaixo da tabela: 'BISNAGA 250 mL (BEPACK) -> 4,63', 'TP 0,45', 'CX 0,10', soma 5,18"
+ ],
+ "legibilidade": "boa",
+ "observacoes": "Modelo B com coluna 'Embal.min/Fornecedor' dividida em embal e fornecedor. Canto superior esquerdo coberto por outra folha: data e cliente não visíveis (data_folha=null); códigos de Agua Desmineralizada e Carbopol 996 cobertos (codigo=null, parcial) e Mipa 99% mostra só o último dígito '5'. Linha abaixo da batelada mostra apenas '3' (provável 'Elab 3', parte coberta)."
+}

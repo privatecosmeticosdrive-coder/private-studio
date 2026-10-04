@@ -1,0 +1,11 @@
+# fotos originais (dados de cliente, ~570 MB) e imagens intermediárias: nunca versionar
+raw/
+raw_tmp_*
+dados/ocr/*.jpg
+dados/ocr/*.lock
+dados/ocr/*.err
+crops/
+out/
+ocr_STOP_WHEN_EMPTY
+*.log
+__pycache__/

@@ -1,0 +1,28 @@
+{
+  "arquivo": "18THKkV6rFFDlkSRyq0diWnxntRiTATzu__IMG_1868.JPG",
+  "tipo": "formula",
+  "produto": "Spray Fixador de Perfume",
+  "data_folha": null,
+  "batelada_kg": "0,030",
+  "linhas": [
+    {"codigo": null, "codigo_parcial": true, "descricao": "Agua Desmineralizada", "fase": "03", "qtde_kg": "0,02445", "pct": "81,5000%", "qtde_g": "24,4500", "custo": "R$ 0,006", "valor_kg": "R$ 0,250", "fornecedor": "Private", "embal": "Private", "manuscrito": null},
+    {"codigo": "7", "codigo_parcial": true, "descricao": "Glicerina vegetal", "fase": "04", "qtde_kg": "0,00120", "pct": "4,0000%", "qtde_g": "1,2000", "custo": "R$ 0,016", "valor_kg": "R$ 13,520", "fornecedor": "MundQuimica", "embal": "50kg", "manuscrito": null},
+    {"codigo": "434", "codigo_parcial": false, "descricao": "Propanediol ( Glicol Zemea)", "fase": "01", "qtde_kg": "0,00090", "pct": "3,0000%", "qtde_g": "0,9000", "custo": "R$ 0,042", "valor_kg": "R$ 46,800", "fornecedor": "Focus", "embal": "1Kg", "manuscrito": null},
+    {"codigo": "1563", "codigo_parcial": false, "descricao": "BioEcolia", "fase": "02", "qtde_kg": "0,00030", "pct": "1,0000%", "qtde_g": "0,3000", "custo": "R$ 0,141", "valor_kg": "R$ 470,000", "fornecedor": "Caldic", "embal": "1kg", "manuscrito": null},
+    {"codigo": "51", "codigo_parcial": false, "descricao": "EDTA Dissodico", "fase": "05", "qtde_kg": "0,00003", "pct": "0,1000%", "qtde_g": "0,0300", "custo": "R$ 0,001", "valor_kg": "R$ 30,000", "fornecedor": "ipa Quimica/Engenharia Essenci", "embal": "20kg", "manuscrito": null},
+    {"codigo": "1562", "codigo_parcial": false, "descricao": "Sepinov EMT 10/Simulgel NS", "fase": "06", "qtde_kg": "0,00018", "pct": "0,6000%", "qtde_g": "0,1800", "custo": "R$ 0,254", "valor_kg": "R$ 1.410,000", "fornecedor": "Irial Mag", "embal": "1kg", "manuscrito": "caneta: virgula/traco entre 'Sepinov' e 'EMT', 'EMT' sublinhado, tracos apos 'Simulgel NS'; 'R$' de 1.410,000 sublinhado e marca apos o valor; dois tracos/check na celula 'Irial Mag'"},
+    {"codigo": "963", "codigo_parcial": false, "descricao": "Esqualeno Oliva (Phytosqualan)", "fase": "07", "qtde_kg": "0,00090", "pct": "3,0000%", "qtde_g": "0,9000", "custo": "R$ 0,374", "valor_kg": "R$ 415,000", "fornecedor": "Focus", "embal": "4kg", "manuscrito": null},
+    {"codigo": "237", "codigo_parcial": false, "descricao": "Palmitato de Octila", "fase": "08", "qtde_kg": "0,00090", "pct": "3,0000%", "qtde_g": "0,9000", "custo": "R$ 0,035", "valor_kg": "R$ 39,000", "fornecedor": "Chemax", "embal": "35kg", "manuscrito": null},
+    {"codigo": "972", "codigo_parcial": false, "descricao": "Coco Caprylate/Caprate", "fase": "09", "qtde_kg": "0,00060", "pct": "2,0000%", "qtde_g": "0,6000", "custo": "R$ 0,209", "valor_kg": "R$ 348,000", "fornecedor": "Engenharia das essencias", "embal": "1kg", "manuscrito": null},
+    {"codigo": "143", "codigo_parcial": false, "descricao": "D´Pantenol", "fase": "10", "qtde_kg": "0,00015", "pct": "0,5000%", "qtde_g": "0,1500", "custo": "R$ 0,078", "valor_kg": "R$ 522,600", "fornecedor": "Alpha Quimica/Mundi", "embal": "10kg", "manuscrito": null},
+    {"codigo": "1494", "codigo_parcial": false, "descricao": "Ceramidas Complex CLR PE-F", "fase": "11", "qtde_kg": "0,00002", "pct": "0,0500%", "qtde_g": "0,0150", "custo": "R$ 0,011", "valor_kg": "R$ 728,000", "fornecedor": "0", "embal": "5kg", "manuscrito": "caneta azul sublinhando 0,00002 e R$ 0,011; traco ao lado de R$ 728,000"},
+    {"codigo": "1561", "codigo_parcial": false, "descricao": "Arginina em Pó", "fase": "12", "qtde_kg": "0,00005", "pct": "0,1500%", "qtde_g": "0,0450", "custo": "R$ 0,008", "valor_kg": "R$ 180,000", "fornecedor": "Quatro Estrelas", "embal": "1kg", "manuscrito": null},
+    {"codigo": "11", "codigo_parcial": false, "descricao": "Acido Citrico", "fase": "13", "qtde_kg": "0,00003", "pct": "0,1000%", "qtde_g": "0,0300", "custo": "R$ 0,001", "valor_kg": "R$ 21,800", "fornecedor": "Mundiquimica", "embal": "25kg", "manuscrito": null},
+    {"codigo": "778", "codigo_parcial": false, "descricao": "Fenoxietanol/Etilhexil glicerina", "fase": "14", "qtde_kg": "0,00030", "pct": "1,0000%", "qtde_g": "0,3000", "custo": "R$ 0,048", "valor_kg": "R$ 160,000", "fornecedor": "Engenharia das essencias", "embal": "1KG", "manuscrito": null}
+  ],
+  "total_pct": "100,000%", "total_qtde_kg": "0,0300",
+  "continua_em_outra_foto": false,
+  "anotacoes_tabela": ["Check/traco a caneta ao lado da BATELADA 0,030", "Total custo 1a linha: R$ 1,2236; total qtde g 30,000", "2a linha de total: 0,0500 | 100,000% | 50,000 | R$ 2,0394"],
+  "legibilidade": "boa",
+  "observacoes": "Modelo B. Topo: 'Cotação 01'. Codigo da linha 1 (Agua) totalmente coberto por folha sobreposta; linha 2 so mostra o ultimo digito '7'. Fornecedor da linha EDTA cortado a esquerda na celula (visivel 'ipa Quimica/Engenharia Essenci', primeira letra parcialmente cortada, aparenta 'D')."
+}

@@ -1,0 +1,23 @@
+{
+ "arquivo": "1k30aMPx3p5Agj02Y0hVwW8nMzHSPdI7Z__IMG_1843.JPG",
+ "tipo": "formula",
+ "produto": "Deo Colonia Flash Back - Memoire",
+ "data_folha": null,
+ "batelada_kg": "105,000",
+ "linhas": [
+  {"codigo": null, "codigo_parcial": true, "descricao": "Agua Desmineralizada", "fase": "01", "qtde_kg": "8,40000", "pct": "8,0000%", "qtde_g": "8400,0000", "custo": "R$ 2,100", "valor_kg": "R$ 0,25", "embal": "Private", "fornecedor": "Private", "manuscrito": null},
+  {"codigo": "137", "codigo_parcial": false, "descricao": "Propilenoglicol", "fase": "02", "qtde_kg": "3,15000", "pct": "3,0000%", "qtde_g": "3150,0000", "custo": "R$ 63,000", "valor_kg": "R$ 20,00", "embal": "20kg", "fornecedor": "Quimesp/Saber", "manuscrito": null},
+  {"codigo": "30", "codigo_parcial": false, "descricao": "Triclosan ( Irgasan )", "fase": "04", "qtde_kg": "0,73500", "pct": "0,7000%", "qtde_g": "735,0000", "custo": "R$ 329,280", "valor_kg": "R$ 448,00", "embal": "1kg", "fornecedor": "Pharmaspecial", "manuscrito": null},
+  {"codigo": "1249", "codigo_parcial": false, "descricao": "Flashback (Flashbanck 2 Sândalo RW - 016149-25", "fase": "05", "qtde_kg": "31,50000", "pct": "30,0000%", "qtde_g": "31500,0000", "custo": "R$ 28.444,500", "valor_kg": "R$ 903,00", "embal": "2kg", "fornecedor": "Summut Cosmetics(Giuvaldan)", "manuscrito": null},
+  {"codigo": "23", "codigo_parcial": false, "descricao": "Butil Hidróxido Tolueno (BHT)", "fase": "06", "qtde_kg": "0,10500", "pct": "0,1000%", "qtde_g": "105,0000", "custo": "R$ 7,056", "valor_kg": "R$ 67,20", "embal": "1Kg", "fornecedor": "Volp/Engenh./Emfal", "manuscrito": null},
+  {"codigo": "962", "codigo_parcial": false, "descricao": "Alcool Etilico Refinado", "fase": "07", "qtde_kg": "61,11000", "pct": "58,2000%", "qtde_g": "61110,0000", "custo": "R$ 598,878", "valor_kg": "R$ 9,80", "embal": "50kg", "fornecedor": "D.A Brasil", "manuscrito": null}
+ ],
+ "total_pct": "100,000%",
+ "total_qtde_kg": "105,0000",
+ "total_qtde_g": "105000,000",
+ "total_custo": "R$ 29.444,8140",
+ "continua_em_outra_foto": false,
+ "anotacoes_tabela": [],
+ "legibilidade": "boa",
+ "observacoes": "Modelo B com coluna 'Embal.min/Fornecedor' dividida em embal e fornecedor. Canto superior esquerdo coberto por outra folha: data visível só '..3/26' (data_folha=null), cliente '..colas' (Nicolás, pela pasta). Código da Agua Desmineralizada coberto (só um traço curvo visível, não legível como dígito). Descrição 'Flashbanck' assim impressa. Fase pula de 02 para 04. Sem manuscritos."
+}

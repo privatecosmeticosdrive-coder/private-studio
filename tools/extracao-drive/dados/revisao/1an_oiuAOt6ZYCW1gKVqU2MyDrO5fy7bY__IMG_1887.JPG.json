@@ -1,0 +1,33 @@
+{
+  "arquivo": "1an_oiuAOt6ZYCW1gKVqU2MyDrO5fy7bY__IMG_1887.JPG",
+  "tipo": "formula",
+  "produto": "PREV. ESTRIAS",
+  "data_folha": null,
+  "batelada_kg": "0,200",
+  "linhas": [
+    {"codigo": "1141", "codigo_parcial": false, "descricao": "Vitamina A Oleosa", "fase": "03", "qtde_kg": "0,00020", "pct": "0,1000%", "qtde_g": "0,2000", "custo": "R$ 0,070", "valor_kg": "R$ 350,000", "fornecedor": "Cosmotec", "embal": "1kg", "manuscrito": null},
+    {"codigo": "137", "codigo_parcial": false, "descricao": "Propilenoglicol", "fase": "04", "qtde_kg": "0,00400", "pct": "2,0000%", "qtde_g": "4,0000", "custo": "R$ 0,080", "valor_kg": "R$ 20,000", "fornecedor": "Quimesp/Saber", "embal": "20kg", "manuscrito": null},
+    {"codigo": "203", "codigo_parcial": false, "descricao": "Alcool Ceto Etoxilado", "fase": "01", "qtde_kg": "0,00200", "pct": "1,0000%", "qtde_g": "2,0000", "custo": "R$ 0,044", "valor_kg": "R$ 22,000", "fornecedor": "Mundiquimica", "embal": "25kg", "manuscrito": null},
+    {"codigo": "181", "codigo_parcial": false, "descricao": "Alcool Cetilico", "fase": "02", "qtde_kg": "0,00600", "pct": "3,0000%", "qtde_g": "6,0000", "custo": "R$ 0,162", "valor_kg": "R$ 27,000", "fornecedor": "Mundiquimica", "embal": "20kg", "manuscrito": null},
+    {"codigo": "233", "codigo_parcial": false, "descricao": "Polawax", "fase": "05", "qtde_kg": "0,01200", "pct": "6,0000%", "qtde_g": "12,0000", "custo": "R$ 1,140", "valor_kg": "R$ 95,000", "fornecedor": "Engenharia das essencias", "embal": "1Kg", "manuscrito": null},
+    {"codigo": "86", "codigo_parcial": false, "descricao": "Metilparabeno ( Nipagim)", "fase": "06", "qtde_kg": "0,00030", "pct": "0,1500%", "qtde_g": "0,3000", "custo": "R$ 0,049", "valor_kg": "R$ 163,000", "fornecedor": "Quimilsul", "embal": "5kg", "manuscrito": null},
+    {"codigo": "514", "codigo_parcial": false, "descricao": "Nipazol  ( Propil Parabeno)", "fase": "07", "qtde_kg": "0,00010", "pct": "0,0500%", "qtde_g": "0,1000", "custo": "R$ 0,012", "valor_kg": "R$ 120,000", "fornecedor": "Eng. das essencias", "embal": "1Kg", "manuscrito": null},
+    {"codigo": "23", "codigo_parcial": false, "descricao": "Butil Hidróxido Tolueno (BHT)", "fase": "08", "qtde_kg": "0,00020", "pct": "0,1000%", "qtde_g": "0,2000", "custo": "R$ 0,012", "valor_kg": "R$ 62,400", "fornecedor": "Volp/Engenh./Emfal", "embal": "1Kg", "manuscrito": null},
+    {"codigo": "51", "codigo_parcial": false, "descricao": "EDTA Dissodico", "fase": "09", "qtde_kg": "0,00020", "pct": "0,1000%", "qtde_g": "0,2000", "custo": "R$ 0,006", "valor_kg": "R$ 30,000", "fornecedor": "ipa Quimica/Engenharia Essenci", "embal": "20kg", "manuscrito": null},
+    {"codigo": "1525", "codigo_parcial": false, "descricao": "Germall 115", "fase": "10", "qtde_kg": "0,00060", "pct": "0,3000%", "qtde_g": "0,6000", "custo": "R$ 0,270", "valor_kg": "R$ 450,000", "fornecedor": "Rainha das essencias", "embal": "1kg", "manuscrito": null},
+    {"codigo": "1066", "codigo_parcial": false, "descricao": "Peg -12 Dimethicone", "fase": "11", "qtde_kg": "0,00800", "pct": "4,0000%", "qtde_g": "8,0000", "custo": "R$ 0,480", "valor_kg": "R$ 60,000", "fornecedor": "Rinen", "embal": "5kg", "manuscrito": null},
+    {"codigo": "0", "codigo_parcial": false, "descricao": "Agua Desmineralizada", "fase": "12", "qtde_kg": "0,13200", "pct": "66,0000%", "qtde_g": "132,0000", "custo": "R$ 0,033", "valor_kg": "R$ 0,250", "fornecedor": "Private", "embal": "Private", "manuscrito": null},
+    {"codigo": "220", "codigo_parcial": false, "descricao": "Hidroxido de Sódio escama", "fase": "13", "qtde_kg": "0,00020", "pct": "0,1000%", "qtde_g": "0,2000", "custo": "R$ 0,001", "valor_kg": "R$ 4,970", "fornecedor": "Sarfam", "embal": "20kg", "manuscrito": null},
+    {"codigo": "94", "codigo_parcial": false, "descricao": "Óleo de Amendoas Doce", "fase": "13", "qtde_kg": "0,02000", "pct": "10,0000%", "qtde_g": "20,0000", "custo": "R$ 1,600", "valor_kg": "R$ 80,000", "fornecedor": "Destilaria Bauru", "embal": "1kg", "manuscrito": null},
+    {"codigo": "154", "codigo_parcial": false, "descricao": "Extrato Glicolico Camomila", "fase": "13", "qtde_kg": "0,00400", "pct": "2,0000%", "qtde_g": "4,0000", "custo": "R$ 0,160", "valor_kg": "R$ 40,000", "fornecedor": "Destilaria Bauru", "embal": "5kg", "manuscrito": null},
+    {"codigo": "1101", "codigo_parcial": false, "descricao": "Óleo vegetal semente de Uva", "fase": "14", "qtde_kg": "0,00400", "pct": "2,0000%", "qtde_g": "4,0000", "custo": "R$ 0,308", "valor_kg": "R$ 76,900", "fornecedor": "Destilaria Bauru", "embal": "1kg", "manuscrito": null},
+    {"codigo": "644", "codigo_parcial": false, "descricao": "Extrato Glicolico de Aveia", "fase": "15", "qtde_kg": "0,00400", "pct": "2,0000%", "qtde_g": "4,0000", "custo": "R$ 0,160", "valor_kg": "R$ 40,000", "fornecedor": "IBPM", "embal": "1Kg", "manuscrito": null},
+    {"codigo": "1527", "codigo_parcial": false, "descricao": "Nano UP Lift", "fase": "16", "qtde_kg": "0,00120", "pct": "0,6000%", "qtde_g": "1,2000", "custo": "R$ 0,612", "valor_kg": "R$ 510,000", "fornecedor": "Nanovetores", "embal": "1kg", "manuscrito": null},
+    {"codigo": "261", "codigo_parcial": false, "descricao": "Essencia", "fase": "17", "qtde_kg": "0,00100", "pct": "0,5000%", "qtde_g": "1,0000", "custo": "R$ 0,234", "valor_kg": "R$ 234,000", "fornecedor": "Private", "embal": "-", "manuscrito": null}
+  ],
+  "total_pct": "100,000%", "total_qtde_kg": "0,2000",
+  "continua_em_outra_foto": false,
+  "anotacoes_tabela": ["Total qtde g 200,000; total custo R$ 5,4330", "Abaixo da tabela (manuscrito): 'Valor: 16,12' com linha sublinhando"],
+  "legibilidade": "boa",
+  "observacoes": "Modelo B. Topo: 'Cotação 01'; Produto: 'Daily Prev Estrias Michelle Marques'. ATENCAO ALINHAMENTO: as colunas CÓDIGO/DESCRIÇÃO estao impressas desalinhadas das colunas numericas (linhas da esquerda mais altas; no fim a ultima descricao 'Essencia' fica na altura da linha TOTAL). Ha 19 descricoes e 19 linhas numericas; o pareamento acima e por posicao (i-esima descricao com i-esima linha numerica), o que bate com Agua=66%/Private/R$0,250, Nano UP Lift=Nanovetores, Essencia=Private/R$234. Fornecedor do EDTA cortado a esquerda (visivel 'ipa Quimica/Engenharia Essenci', 1a letra parcial)."
+}

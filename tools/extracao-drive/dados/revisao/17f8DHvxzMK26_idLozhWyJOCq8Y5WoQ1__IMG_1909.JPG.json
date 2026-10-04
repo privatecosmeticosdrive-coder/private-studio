@@ -1,0 +1,31 @@
+{
+ "arquivo": "17f8DHvxzMK26_idLozhWyJOCq8Y5WoQ1__IMG_1909.JPG",
+ "tipo": "formula",
+ "produto": "Óleo Clareador Intimo",
+ "data_folha": null,
+ "batelada_kg": "0,100",
+ "linhas": [
+  {"codigo": "147", "codigo_parcial": false, "descricao": "Triglicérdes Cáprico Caprílico", "qtde_kg": "0,04750", "pct": "47,5000%", "qtde_g": "47,5000", "custo": "R$ 5,320", "valor_kg": "R$ 112,000", "fornecedor": "Focus", "embal": "20kg", "manuscrito": "ao lado: '- VASELINA Liq. 98'"},
+  {"codigo": "311", "codigo_parcial": false, "descricao": "Óleo de Jojoba", "qtde_kg": "0,01500", "pct": "15,0000%", "qtde_g": "15,0000", "custo": "R$ 8,988", "valor_kg": "R$ 599,200", "fornecedor": "Destilaria Bauru", "embal": "1kg", "manuscrito": null},
+  {"codigo": "1078", "codigo_parcial": false, "descricao": "Óleo Vegetal de Rosa Mosqueta", "qtde_kg": "0,01000", "pct": "10,0000%", "qtde_g": "10,0000", "custo": "R$ 2,860", "valor_kg": "R$ 286,000", "fornecedor": "Destilaria Bauru", "embal": "1kg", "manuscrito": null},
+  {"codigo": "1101", "codigo_parcial": false, "descricao": "Óleo vegetal semente de Uva", "qtde_kg": "0,00800", "pct": "8,0000%", "qtde_g": "8,0000", "custo": "R$ 0,615", "valor_kg": "R$ 76,900", "fornecedor": "Destilaria Bauru", "embal": "1kg", "manuscrito": "ao lado: 'VASELINA Liq.'"},
+  {"codigo": "963", "codigo_parcial": false, "descricao": "Esqualeno Oliva (Phytosqualan)", "qtde_kg": "0,00500", "pct": "5,0000%", "qtde_g": "5,0000", "custo": "R$ 2,075", "valor_kg": "R$ 415,000", "fornecedor": "Focus", "embal": "4kg", "manuscrito": null},
+  {"codigo": "904", "codigo_parcial": false, "descricao": "Alfa Bisabolol", "qtde_kg": "0,00200", "pct": "2,0000%", "qtde_g": "2,0000", "custo": "R$ 4,600", "valor_kg": "R$ 2.300,000", "fornecedor": "ngenharia das essencia", "embal": "1kg", "manuscrito": null},
+  {"codigo": "1193", "codigo_parcial": true, "descricao": "Extrato Oleoso de Alcaçuz Importado", "qtde_kg": "0,00400", "pct": "4,0000%", "qtde_g": "4,0000", "custo": "R$ 1,600", "valor_kg": "R$ 400,000", "fornecedor": "Mundo do òleos", "embal": "1kg", "manuscrito": null},
+  {"codigo": "081", "codigo_parcial": true, "descricao": "Extrato Oleoso de Camomila", "qtde_kg": "0,00300", "pct": "3,0000%", "qtde_g": "3,0000", "custo": "R$ 0,180", "valor_kg": "R$ 60,000", "fornecedor": "Destilaria Bauru", "embal": "1kg", "manuscrito": null},
+  {"codigo": "251", "codigo_parcial": true, "descricao": "Óleo De Pracaxi 100%", "qtde_kg": "0,00400", "pct": "4,0000%", "qtde_g": "4,0000", "custo": "R$ 1,040", "valor_kg": "R$ 260,000", "fornecedor": "Mercado Livre", "embal": "1kg", "manuscrito": null},
+  {"codigo": "148", "codigo_parcial": false, "descricao": "Acetato de Tocoferol( Vitamina E)", "qtde_kg": "0,00100", "pct": "1,0000%", "qtde_g": "1,0000", "custo": "R$ 0,320", "valor_kg": "R$ 320,000", "fornecedor": "Focus/Hall Star", "embal": "1kg", "manuscrito": null},
+  {"codigo": "261", "codigo_parcial": true, "descricao": "Essencia", "qtde_kg": "0,00050", "pct": "0,5000%", "qtde_g": "0,5000", "custo": "R$ 0,126", "valor_kg": "R$ 252,000", "fornecedor": "Private", "embal": "-", "manuscrito": null}
+ ],
+ "total_pct": "100,000%",
+ "total_qtde_kg": "0,1000",
+ "total_qtde_g": "100,000",
+ "total_custo": "R$ 27,72",
+ "continua_em_outra_foto": false,
+ "anotacoes_tabela": [
+  "Manuscrito à direita do total: 'Valor: 69,75' (sublinhado)",
+  "Abaixo da tabela, contas de embalagem manuscritas: 'PET 100mL -> 6,30 - PLASTFARMA Embalagens', 'Valvula dosadora', '...T - 2,00', '...aixa - 0,10', soma 8,40"
+ ],
+ "legibilidade": "boa",
+ "observacoes": "Modelo B (Valor (un) em custo; EMBL.MINIMA = fornecedor + embalagem). Folha inclinada: os valores numéricos ficam um pouco acima da linha de código/descrição; pareado linha a linha (11 ingredientes, 11 linhas numéricas). Coluna CÓDIGO cortada na borda esquerda da foto (cabeçalho só mostra 'IGO'); 1193, 081, 251 e 261 têm resto de dígito cortado à esquerda, por isso marcados como parciais (os demais parecem completos, mas a coluna está cortada). Data cortada: só aparece '...3/26' (data_folha=null). Linha do cliente: '...enefer / Elab3'; campo ao lado da data: 'Elab 3'. Fornecedor do Alfa Bisabolol cortado no início: 'ngenharia das essencia'."
+}

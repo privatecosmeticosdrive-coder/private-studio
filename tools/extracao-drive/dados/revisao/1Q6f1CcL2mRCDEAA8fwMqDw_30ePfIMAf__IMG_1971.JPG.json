@@ -1,0 +1,33 @@
+{
+  "arquivo": "1Q6f1CcL2mRCDEAA8fwMqDw_30ePfIMAf__IMG_1971.JPG",
+  "tipo": "formula",
+  "produto": "Hidratante p/Corpo",
+  "data_folha": "31/03/26",
+  "batelada_kg": "0,300",
+  "linhas": [
+    {"codigo": "0", "codigo_parcial": false, "descricao": "Agua Desmineralizada", "fase": "01", "qtde_kg": "0,26148", "pct": "87,1600%", "qtde_g": "261,4800", "custo": "R$ 0,065", "valor_kg": "R$ 0,25", "fornecedor": "Private", "embal": "Private", "manuscrito": null},
+    {"codigo": "77", "codigo_parcial": false, "descricao": "Glicerina vegetal", "fase": "02", "qtde_kg": "0,00300", "pct": "1,0000%", "qtde_g": "3,0000", "custo": "R$ 0,035", "valor_kg": "R$ 11,76", "fornecedor": "MundQuimica", "embal": "50kg", "manuscrito": null},
+    {"codigo": "145", "codigo_parcial": false, "descricao": "Mipa 99% ( Isopropanolamine)", "fase": "03", "qtde_kg": "0,00030", "pct": "0,1000%", "qtde_g": "0,3000", "custo": "R$ 0,050", "valor_kg": "R$ 168,00", "fornecedor": "Emfal/Dinaco", "embal": "1kg", "manuscrito": null},
+    {"codigo": "51", "codigo_parcial": false, "descricao": "EDTA Dissodico", "fase": "04", "qtde_kg": "0,00030", "pct": "0,1000%", "qtde_g": "0,3000", "custo": "R$ 0,009", "valor_kg": "R$ 30,00", "fornecedor": "pa Quimica/Engenharia Essen", "embal": "20kg", "manuscrito": null},
+    {"codigo": "13", "codigo_parcial": false, "descricao": "Alcool Cetoestearilico 30/70", "fase": "05", "qtde_kg": "0,01200", "pct": "4,0000%", "qtde_g": "12,0000", "custo": "R$ 0,286", "valor_kg": "R$ 23,80", "fornecedor": "Mundiquimica/Garden", "embal": "25kg", "manuscrito": null},
+    {"codigo": "81", "codigo_parcial": false, "descricao": "Manteiga de Karite", "fase": "07", "qtde_kg": "0,00030", "pct": "0,1000%", "qtde_g": "0,3000", "custo": "R$ 0,020", "valor_kg": "R$ 67,20", "fornecedor": "Mundiquimica/Bauru", "embal": "10kg", "manuscrito": null},
+    {"codigo": "23", "codigo_parcial": false, "descricao": "Butil Hidróxido Tolueno (BHT)", "fase": "08", "qtde_kg": "0,00015", "pct": "0,0500%", "qtde_g": "0,1500", "custo": "R$ 0,010", "valor_kg": "R$ 67,20", "fornecedor": "Volp/Engenh./Emfal", "embal": "1Kg", "manuscrito": null},
+    {"codigo": "125", "codigo_parcial": false, "descricao": "Carbopol Aqua SF -1", "fase": "09", "qtde_kg": "0,00090", "pct": "0,3000%", "qtde_g": "0,9000", "custo": "R$ 0,066", "valor_kg": "R$ 72,80", "fornecedor": "Dinaco", "embal": "20kg", "manuscrito": null},
+    {"codigo": "29", "codigo_parcial": false, "descricao": "Ceteareth 20", "fase": "10", "qtde_kg": "0,00300", "pct": "1,0000%", "qtde_g": "3,0000", "custo": "R$ 0,078", "valor_kg": "R$ 26,15", "fornecedor": "Volp", "embal": "10", "manuscrito": null},
+    {"codigo": "93", "codigo_parcial": false, "descricao": "Óleo de Girassol", "fase": "11", "qtde_kg": "0,00270", "pct": "0,9000%", "qtde_g": "2,7000", "custo": "R$ 0,108", "valor_kg": "R$ 40,00", "fornecedor": "MundQuimica", "embal": "5kg", "manuscrito": null},
+    {"codigo": "171", "codigo_parcial": false, "descricao": "Cyclopentasiloxane (BRB CM 50- SF 1202)", "fase": "12", "qtde_kg": "0,00120", "pct": "0,4000%", "qtde_g": "1,2000", "custo": "R$ 0,222", "valor_kg": "R$ 184,80", "fornecedor": "Focus", "embal": "1kg", "manuscrito": null},
+    {"codigo": "33", "codigo_parcial": false, "descricao": "Phenoxyethanol (and) Caprylyl Glycol( Kem Diol 10)/Microcare PHG", "fase": "13", "qtde_kg": "0,00300", "pct": "1,0000%", "qtde_g": "3,0000", "custo": "R$ 0,420", "valor_kg": "R$ 140,00", "fornecedor": "Focus", "embal": "20kg", "manuscrito": null},
+    {"codigo": "261", "codigo_parcial": false, "descricao": "Essencia", "fase": "16", "qtde_kg": "0,00210", "pct": "0,7000%", "qtde_g": "2,1000", "custo": "R$ 0,529", "valor_kg": "R$ 252,00", "fornecedor": "Private", "embal": "-", "manuscrito": null},
+    {"codigo": "56", "codigo_parcial": false, "descricao": "Vitamina E Oleosa", "fase": "17", "qtde_kg": "0,00015", "pct": "0,0500%", "qtde_g": "0,1500", "custo": "R$ 0,101", "valor_kg": "R$ 672,00", "fornecedor": "Biovital/Engenharia", "embal": "1kg", "manuscrito": null},
+    {"codigo": "314", "codigo_parcial": false, "descricao": "Extrato Glicolico de Aloe Vera", "fase": "17", "qtde_kg": "0,00006", "pct": "0,0200%", "qtde_g": "0,0600", "custo": "R$ 0,006", "valor_kg": "R$ 97,80", "fornecedor": "Destilaria Bauru", "embal": "5kg", "manuscrito": null},
+    {"codigo": "94", "codigo_parcial": false, "descricao": "Óleo de Amendoas Doce", "fase": "18", "qtde_kg": "0,00003", "pct": "0,0100%", "qtde_g": "0,0300", "custo": "R$ 0,002", "valor_kg": "R$ 80,00", "fornecedor": "Destilaria Bauru", "embal": "1kg", "manuscrito": null},
+    {"codigo": "242", "codigo_parcial": false, "descricao": "Óleo de silicone", "fase": "19", "qtde_kg": "0,00003", "pct": "0,0100%", "qtde_g": "0,0300", "custo": "R$ 0,008", "valor_kg": "R$ 250,00", "fornecedor": "IBPM/Mundo do Óleo", "embal": "5kg", "manuscrito": null},
+    {"codigo": "86", "codigo_parcial": false, "descricao": "Metilparabeno ( Nipagim)", "fase": "20", "qtde_kg": "0,00030", "pct": "0,1000%", "qtde_g": "0,3000", "custo": "R$ 0,037", "valor_kg": "R$ 122,00", "fornecedor": "Mapric", "embal": "5kg", "manuscrito": null},
+    {"codigo": "1316", "codigo_parcial": false, "descricao": "Hydra360", "fase": "20", "qtde_kg": "0,00900", "pct": "3,0000%", "qtde_g": "9,0000", "custo": "R$ 3,510", "valor_kg": "R$ 390,00", "fornecedor": "Provital", "embal": "5kg", "manuscrito": "marca-texto verde-limao aplicado a mao sobre descricao 'Hydra360', 0,00900 e 3,0000%"}
+  ],
+  "total_pct": "100,000%", "total_qtde_kg": "0,3000",
+  "continua_em_outra_foto": false,
+  "anotacoes_tabela": ["'5' manuscrito circulado no topo (entre logo e nome do produto)", "Total qtde g 300,000; total custo R$ 5,5620", "Abaixo da tabela (manuscrito, fora da formula): 'Frasco Pump Marbella 300mL - 3,17'; 'Valor: 33,53' sublinhado"],
+  "legibilidade": "boa",
+  "observacoes": "Modelo B. Cotação 31/03/26; 'Liquidos cremes difusores'; Produto/cliente: Camila/Julya Freitas. Coluna de fornecedor chamada 'Embal.min/Fornecedor'. Fornecedor do EDTA cortado a esquerda na celula (visivel 'pa Quimica/Engenharia Essen'). Descricao do codigo 33 em duas linhas, parcialmente cortada no topo mas legivel."
+}

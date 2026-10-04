@@ -1,0 +1,103 @@
+{
+ "arquivo": "1VtlUXMb3K2PykMi4dewMXOSdnbmyRGNl__IMG_1884.JPG",
+ "tipo": "formula",
+ "produto": "Óleo de Banho",
+ "data_folha": "23/07/26",
+ "batelada_kg": "0,120",
+ "linhas": [
+  {
+   "codigo": "1121",
+   "codigo_parcial": false,
+   "descricao": "Plantapon AF",
+   "fase": "01",
+   "qtde_kg": "0,042",
+   "pct": "35,000%",
+   "qtde_g": "42,0000",
+   "custo": "R$ 2,940",
+   "valor_kg": "R$ 70,00",
+   "fornecedor": "Basf S.A",
+   "embal": "5kg",
+   "manuscrito": null
+  },
+  {
+   "codigo": "1122",
+   "codigo_parcial": false,
+   "descricao": "Dehymuls PGPH",
+   "fase": "02",
+   "qtde_kg": "0,001",
+   "pct": "1,200%",
+   "qtde_g": "1,4400",
+   "custo": "R$ 0,202",
+   "valor_kg": "R$ 140,00",
+   "fornecedor": "Basf S.A",
+   "embal": "25kg",
+   "manuscrito": null
+  },
+  {
+   "codigo": "934",
+   "codigo_parcial": false,
+   "descricao": "Tinogard TT (Pentaerithrityl Tetra-di-t-Butyl Hidroxyhydrocinnamate)",
+   "fase": "03",
+   "qtde_kg": "0,000",
+   "pct": "0,100%",
+   "qtde_g": "0.1200",
+   "custo": "R$ 0,026",
+   "valor_kg": "R$ 215,00",
+   "fornecedor": "Basf S.A",
+   "embal": "5kg",
+   "manuscrito": null
+  },
+  {
+   "codigo": "1123",
+   "codigo_parcial": false,
+   "descricao": "Cetiol SoftFeel",
+   "fase": "04",
+   "qtde_kg": "0,004",
+   "pct": "3,000%",
+   "qtde_g": "3,6000",
+   "custo": "R$ 0,702",
+   "valor_kg": "R$ 195,00",
+   "fornecedor": "Basf S.A",
+   "embal": "1kg",
+   "manuscrito": null
+  },
+  {
+   "codigo": "1124",
+   "codigo_parcial": false,
+   "descricao": "Eumulgin  CO 40",
+   "fase": "05",
+   "qtde_kg": "0,002",
+   "pct": "2,000%",
+   "qtde_g": "2,4000",
+   "custo": "R$ 0,149",
+   "valor_kg": "R$ 62,00",
+   "fornecedor": "Basf S.A",
+   "embal": "5kg",
+   "manuscrito": null
+  },
+  {
+   "codigo": "93",
+   "codigo_parcial": false,
+   "descricao": "Óleo de Girassol",
+   "fase": "06",
+   "qtde_kg": "0,070",
+   "pct": "58,700%",
+   "qtde_g": "70,4400",
+   "custo": "R$ 2,818",
+   "valor_kg": "R$ 40,00",
+   "fornecedor": "MundQuimica",
+   "embal": "5kg",
+   "manuscrito": null
+  }
+ ],
+ "total_pct": "100,00%",
+ "total_qtde_kg": "0,120",
+ "continua_em_outra_foto": false,
+ "anotacoes_tabela": [
+  "Topo: manuscrito 'Sabão em' antes do nome impresso 'Óleo de Banho' (lido como 'Sabão em Óleo de Banho')",
+  "Linha Produto: impresso 'Private' + manuscrito 'liquidos - creme - difusores'",
+  "Abaixo da tabela (fora da fórmula): 'Valor: 19,14'; 'FR: 120 mL - [riscado] - Solution - 120 mL - 2,80 Berlack'; 'DOSADOR - 3,31 - Berlack'; 'ROT - 2,10'; 'CX - 0,05'; soma '8,26'"
+ ],
+ "legibilidade": "parcial",
+ "observacoes": "Modelo B com FASE; coluna 'Embalagem' com fornecedor + tamanho. Texto impresso pequeno e um pouco desfocado, mas números legíveis em recorte. QTDE (kg) com 3 casas como impresso (Tinogard '0,000'). QTDE (g) do Tinogard parece impresso com ponto: '0.1200' (copiado assim; pode ser vírgula borrada). Linha TOTAL: 0,120 | 100,00% | 120,000 | R$ 6,8358 (custo total realçado em amarelo, levemente desfocado)."
+}

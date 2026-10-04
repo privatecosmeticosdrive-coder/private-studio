@@ -1,0 +1,101 @@
+{
+ "arquivo": "1cEqrPpxnJG8iqDomkbBkq8R--fV_jZ7O__IMG_1842.JPG",
+ "tipo": "formula",
+ "produto": "Deo Colonia ( Nicolas)",
+ "data_folha": null,
+ "batelada_kg": "0,005",
+ "linhas": [
+  {
+   "codigo": null,
+   "codigo_parcial": true,
+   "descricao": "Agua Desmineralizada",
+   "fase": "01",
+   "qtde_kg": "0,00040",
+   "pct": "8,0000%",
+   "qtde_g": "0,4000",
+   "custo": "R$ 0,000",
+   "valor_kg": "R$ 0,25",
+   "embal": "Private",
+   "fornecedor": "Private",
+   "manuscrito": null
+  },
+  {
+   "codigo": "137",
+   "codigo_parcial": false,
+   "descricao": "Propilenoglicol",
+   "fase": "02",
+   "qtde_kg": "0,00015",
+   "pct": "3,0000%",
+   "qtde_g": "0,1500",
+   "custo": "R$ 0,003",
+   "valor_kg": "R$ 20,00",
+   "embal": "20kg",
+   "fornecedor": "Quimesp/Saber",
+   "manuscrito": null
+  },
+  {
+   "codigo": "30",
+   "codigo_parcial": false,
+   "descricao": "Triclosan ( Irgasan )",
+   "fase": "04",
+   "qtde_kg": "0,00004",
+   "pct": "0,7000%",
+   "qtde_g": "0,0350",
+   "custo": "R$ 0,016",
+   "valor_kg": "R$ 448,00",
+   "embal": "1kg",
+   "fornecedor": "Pharmaspecial",
+   "manuscrito": null
+  },
+  {
+   "codigo": "1247",
+   "codigo_parcial": false,
+   "descricao": "Timeless( Under Couro & Vetiver - 015934-25",
+   "fase": "05",
+   "qtde_kg": "0,00150",
+   "pct": "30,0000%",
+   "qtde_g": "1,5000",
+   "custo": "R$ 1,355",
+   "valor_kg": "R$ 903,00",
+   "embal": "2kg",
+   "fornecedor": "Summut Cosmetics(Giuvaldan)",
+   "manuscrito": null
+  },
+  {
+   "codigo": "23",
+   "codigo_parcial": false,
+   "descricao": "Butil Hidróxido Tolueno (BHT)",
+   "fase": "06",
+   "qtde_kg": "0,00001",
+   "pct": "0,1000%",
+   "qtde_g": "0,0050",
+   "custo": "R$ 0,000",
+   "valor_kg": "R$ 67,20",
+   "embal": "1Kg",
+   "fornecedor": "Volp/Engenh./Emfal",
+   "manuscrito": null
+  },
+  {
+   "codigo": "962",
+   "codigo_parcial": false,
+   "descricao": "Alcool Etilico Refinado",
+   "fase": "07",
+   "qtde_kg": "0,00291",
+   "pct": "58,2000%",
+   "qtde_g": "2,9100",
+   "custo": "R$ 0,029",
+   "valor_kg": "R$ 9,80",
+   "embal": "50kg",
+   "fornecedor": "D.A Brasil",
+   "manuscrito": null
+  }
+ ],
+ "total_pct": "100,000%",
+ "total_qtde_kg": "0,0050",
+ "continua_em_outra_foto": false,
+ "anotacoes_tabela": [
+  "Abaixo da tabela (fora da fórmula): lista impressa 'Provador 5ml 0,45 / Valvula Spray Pra[...] 2,20 / Rótulo 1,00 / 3,65' + manuscrito '3,30' somado e '6,95'; ao lado, a lápis: '1247-', '1248', '1249'"
+ ],
+ "legibilidade": "parcial",
+ "observacoes": "Modelo B com FASE; 'Embal.min/Fornecedor' com embalagem à esquerda e fornecedor à direita. Página dobrada cobre o canto superior esquerdo: logo, data (só '..2/26' visível — data_folha null), início do cliente ('...colas', provável Nicolas), cabeçalho CÓDIGO e o código da 1ª linha (Agua Desmineralizada). Demais códigos visíveis inteiros. Linha TOTAL: 0,0050 | 100,000% | 5,000 | R$ 1,4021. Mesma fórmula da IMG_1839 em batelada 0,005."
+}

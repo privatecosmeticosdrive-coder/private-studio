@@ -1,0 +1,103 @@
+{
+ "arquivo": "1Mid1jMEyEBx17kBZRZDF0vKUAtTXyog4__IMG_1839.JPG",
+ "tipo": "formula",
+ "produto": "Deo Colonia ( Nicolas)",
+ "data_folha": "28/01/26",
+ "batelada_kg": "0,100",
+ "linhas": [
+  {
+   "codigo": null,
+   "codigo_parcial": true,
+   "descricao": "Agua Desmineralizada",
+   "fase": "01",
+   "qtde_kg": "0,00800",
+   "pct": "8,0000%",
+   "qtde_g": "8,0000",
+   "custo": "R$ 0,002",
+   "valor_kg": "R$ 0,25",
+   "embal": "Private",
+   "fornecedor": "Private",
+   "manuscrito": null
+  },
+  {
+   "codigo": "37",
+   "codigo_parcial": true,
+   "descricao": "Propilenoglicol",
+   "fase": "02",
+   "qtde_kg": "0,00300",
+   "pct": "3,0000%",
+   "qtde_g": "3,0000",
+   "custo": "R$ 0,060",
+   "valor_kg": "R$ 20,00",
+   "embal": "20kg",
+   "fornecedor": "Quimesp/Saber",
+   "manuscrito": null
+  },
+  {
+   "codigo": "30",
+   "codigo_parcial": false,
+   "descricao": "Triclosan ( Irgasan )",
+   "fase": "04",
+   "qtde_kg": "0,00070",
+   "pct": "0,7000%",
+   "qtde_g": "0,7000",
+   "custo": "R$ 0,314",
+   "valor_kg": "R$ 448,00",
+   "embal": "1kg",
+   "fornecedor": "Pharmaspecial",
+   "manuscrito": null
+  },
+  {
+   "codigo": "1247",
+   "codigo_parcial": false,
+   "descricao": "Timeless( Under Couro & Vetiver - 015934-25",
+   "fase": "05",
+   "qtde_kg": "0,03000",
+   "pct": "30,0000%",
+   "qtde_g": "30,0000",
+   "custo": "R$ 27,090",
+   "valor_kg": "R$ 903,00",
+   "embal": "2kg",
+   "fornecedor": "Summut Cosmetics(Giuvaldan)",
+   "manuscrito": "visto/tique de caneta ao lado de 0,03000"
+  },
+  {
+   "codigo": "23",
+   "codigo_parcial": false,
+   "descricao": "Butil Hidróxido Tolueno (BHT)",
+   "fase": "06",
+   "qtde_kg": "0,00010",
+   "pct": "0,1000%",
+   "qtde_g": "0,1000",
+   "custo": "R$ 0,007",
+   "valor_kg": "R$ 67,20",
+   "embal": "1Kg",
+   "fornecedor": "Volp/Engenh./Emfal",
+   "manuscrito": null
+  },
+  {
+   "codigo": "962",
+   "codigo_parcial": false,
+   "descricao": "Alcool Etilico Refinado",
+   "fase": "07",
+   "qtde_kg": "0,05820",
+   "pct": "58,2000%",
+   "qtde_g": "58,2000",
+   "custo": "R$ 0,570",
+   "valor_kg": "R$ 9,80",
+   "embal": "50kg",
+   "fornecedor": "D.A Brasil",
+   "manuscrito": "círculo desenhado logo abaixo da linha (sob 'Refinado'), sem texto"
+  }
+ ],
+ "total_pct": "100,000%",
+ "total_qtde_kg": "0,1000",
+ "continua_em_outra_foto": false,
+ "anotacoes_tabela": [
+  "Visto/tique de caneta ao lado de 0,03000 (linha 1247 Timeless)",
+  "Círculo desenhado a lápis/caneta logo abaixo da linha 962 (sob 'Refinado'), sem texto",
+  "Abaixo da tabela: lista impressa de embalagem (Frasco Vidro 100ml Wheaton R$ 11,12; Válvula Spray 15mm R$ 1,13; Sobre Tampa R$ 5,41; Rótulo R$ 3,00; Caixa Luxo R$ 49,37 circulado; Taxa de Embarque R$ 1,40; total R$ 71,42) com manuscritos 'c/ taxa/Frete' (x2), 'PAGE ONE - 10,99' -> '71,29', 'FLASH BREK 9,98' -> '70,28', rabiscos no rodapé — fora da fórmula"
+ ],
+ "legibilidade": "parcial",
+ "observacoes": "Modelo B com FASE; coluna 'Embal.min/Fornecedor' com embalagem à esquerda e fornecedor à direita. Página dobrada cobre o canto superior esquerdo: logo, cabeçalho CÓDIGO, código da 1ª linha (Agua Desmineralizada — totalmente coberto) e 1º dígito do código da 2ª linha ('37'). Código '30' (Triclosan) parece completo mas está perto da dobra. Data: primeiro dígito parcialmente coberto, lido como '28/01/26'. Linha abaixo da data: 'Nicolas' (cliente, início possivelmente coberto). Linha TOTAL: 0,1000 | 100,000% | 100,000 | R$ 28,0427. Valores da tabela todos legíveis."
+}

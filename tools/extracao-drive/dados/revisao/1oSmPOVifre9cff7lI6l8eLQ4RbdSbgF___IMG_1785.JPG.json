@@ -1,0 +1,32 @@
+{
+  "arquivo": "1oSmPOVifre9cff7lI6l8eLQ4RbdSbgF___IMG_1785.JPG",
+  "tipo": "formula",
+  "produto": "Creme para area dos olhos",
+  "data_folha": null,
+  "batelada_kg": "0,010",
+  "linhas": [
+    {"codigo": "0", "codigo_parcial": false, "descricao": "Agua Desmineralizada", "fase": "01", "qtde_kg": "0,008", "pct": "75,300%", "qtde_g": "7,5300", "custo": "R$ 0,002", "valor_kg": "R$ 0,25", "fornecedor": "Private", "embal": "Private", "manuscrito": null},
+    {"codigo": "13", "codigo_parcial": false, "descricao": "Alcool Cetoestearilico 30/70", "fase": "02", "qtde_kg": "0,001", "pct": "8,000%", "qtde_g": "0,8000", "custo": "R$ 0,019", "valor_kg": "R$ 23,40", "fornecedor": "Mundiquimica/Garden", "embal": "25kg", "manuscrito": null},
+    {"codigo": "23", "codigo_parcial": false, "descricao": "Butil Hidróxido Tolueno (BHT)", "fase": "03", "qtde_kg": "0,000", "pct": "0,050%", "qtde_g": "0,0050", "custo": "R$ 0,000", "valor_kg": "R$ 62,40", "fornecedor": "Volp/Engenh./Emfal", "embal": "1Kg", "manuscrito": null},
+    {"codigo": "29", "codigo_parcial": false, "descricao": "Ceteareth 20", "fase": "04", "qtde_kg": "0,000", "pct": "2,000%", "qtde_g": "0,2000", "custo": "R$ 0,005", "valor_kg": "R$ 24,28", "fornecedor": "Volp", "embal": "10", "manuscrito": null},
+    {"codigo": "79", "codigo_parcial": false, "descricao": "Cyclopentasiloxane BRB CM 50 - SF 102", "fase": "05", "qtde_kg": "0,000", "pct": "2,800%", "qtde_g": "0,2800", "custo": "R$ 0,010", "valor_kg": "R$ 36,40", "fornecedor": "Focus/DPS", "embal": "20kg", "manuscrito": null},
+    {"codigo": "51", "codigo_parcial": false, "descricao": "EDTA Dissodico", "fase": "06", "qtde_kg": "0,000", "pct": "0,050%", "qtde_g": "0,0050", "custo": "R$ 0,000", "valor_kg": "R$ 30,00", "fornecedor": "Dipa Quimica/Engenharia Essencia", "embal": "20kg", "manuscrito": null},
+    {"codigo": "27", "codigo_parcial": false, "descricao": "Goma de Xantana", "fase": "07", "qtde_kg": "0,000", "pct": "0,100%", "qtde_g": "0,0100", "custo": "R$ 0,000", "valor_kg": "R$ 25,00", "fornecedor": "Embacaps", "embal": "25kg", "manuscrito": null},
+    {"codigo": "81", "codigo_parcial": false, "descricao": "Manteiga de Karite", "fase": "02", "qtde_kg": "0,000", "pct": "0,100%", "qtde_g": "0,0100", "custo": "R$ 0,001", "valor_kg": "R$ 62,40", "fornecedor": "Mundiquimica/Bauru", "embal": "10kg", "manuscrito": null},
+    {"codigo": "98", "codigo_parcial": false, "descricao": "Óleo Mineral/Vaselina Liquida", "fase": "03", "qtde_kg": "0,000", "pct": "2,000%", "qtde_g": "0,2000", "custo": "R$ 0,003", "valor_kg": "R$ 13,52", "fornecedor": "MundiQuimica", "embal": "100kg", "manuscrito": null},
+    {"codigo": "33", "codigo_parcial": false, "descricao": "Phenoxyethanol (and) Caprylyl Glycol( Kem Diol 10)/Microcare PHG", "fase": "04", "qtde_kg": "0,000", "pct": "0,800%", "qtde_g": "0,0800", "custo": "R$ 0,007", "valor_kg": "R$ 90,00", "fornecedor": "Focus", "embal": "20kg", "manuscrito": null},
+    {"codigo": "135", "codigo_parcial": false, "descricao": "Polyquartenium 7", "fase": "05", "qtde_kg": "0,000", "pct": "1,000%", "qtde_g": "0,1000", "custo": "R$ 0,001", "valor_kg": "R$ 8,00", "fornecedor": "Mundiquimica", "embal": "20kg", "manuscrito": null},
+    {"codigo": "30", "codigo_parcial": false, "descricao": "Triclosan ( Irgasan )", "fase": "06", "qtde_kg": "0,000", "pct": "0,100%", "qtde_g": "0,0100", "custo": "R$ 0,004", "valor_kg": "R$ 416,00", "fornecedor": "Pharmaspecial", "embal": "1kg", "manuscrito": null},
+    {"codigo": "28", "codigo_parcial": false, "descricao": "Vaselina Solida", "fase": "03", "qtde_kg": "0,000", "pct": "2,000%", "qtde_g": "0,2000", "custo": "R$ 0,004", "valor_kg": "R$ 22,26", "fornecedor": "Embacaps", "embal": "18KG", "manuscrito": null},
+    {"codigo": "77", "codigo_parcial": false, "descricao": "Glicerina vegetal", "fase": "04", "qtde_kg": "0,000", "pct": "4,000%", "qtde_g": "0,4000", "custo": "R$ 0,005", "valor_kg": "R$ 13,52", "fornecedor": "MundQuimica", "embal": "50kg", "manuscrito": null},
+    {"codigo": "749", "codigo_parcial": false, "descricao": "Ácido Hialuronico - Baixo peso Molecular", "fase": "05", "qtde_kg": "0,000", "pct": "0,100%", "qtde_g": "0,0100", "custo": "R$ 0,085", "valor_kg": "R$ 8.491,60", "fornecedor": "Focus", "embal": "1kg", "manuscrito": null},
+    {"codigo": "688", "codigo_parcial": false, "descricao": "Niacinamide (Nicotinamide)", "fase": "06", "qtde_kg": "0,000", "pct": "1,000%", "qtde_g": "0,1000", "custo": "R$ 0,017", "valor_kg": "R$ 171,60", "fornecedor": "Focus", "embal": "5kg", "manuscrito": null},
+    {"codigo": "261", "codigo_parcial": false, "descricao": "Essencia", "fase": "06", "qtde_kg": "0,000", "pct": "0,500%", "qtde_g": "0,0500", "custo": "R$ 0,012", "valor_kg": "R$ 234,00", "fornecedor": "Private", "embal": "-", "manuscrito": null},
+    {"codigo": "1493", "codigo_parcial": false, "descricao": "Pó de Extrato de Tremella", "fase": "06", "qtde_kg": "0,000", "pct": "0,100%", "qtde_g": "0,0100", "custo": "R$ 0,006", "valor_kg": "R$ 552,00", "fornecedor": "Ali Express( Ayone)", "embal": "1kg", "manuscrito": null}
+  ],
+  "total_pct": "100,00%", "total_qtde_kg": "0,010",
+  "continua_em_outra_foto": false,
+  "anotacoes_tabela": ["Topo: 'Tremell' manuscrito ao lado de 'Private' na linha Produto", "Total qtde g 10,000; total custo R$ 0,1810", "Abaixo da tabela (manuscrito, fora da formula): 'FR: 10mL - 3,49 (oleum vitta?)', 'ROT - 1,00', 'CX - 0,05', soma '4,54'"],
+  "legibilidade": "boa",
+  "observacoes": "Modelo B; coluna de fornecedor chamada 'Embalagem'. Topo: 'Preço Liquidos cremes-difusores'; Produto: Private. Linhas 749 e 1493 com fundo amarelo impresso (realce do proprio arquivo). QTDE.(Kg) impressa com 3 casas (maioria '0,000')."
+}

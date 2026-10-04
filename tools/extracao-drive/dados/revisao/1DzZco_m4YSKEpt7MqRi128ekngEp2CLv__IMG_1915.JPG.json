@@ -1,0 +1,31 @@
+{
+  "arquivo": "1DzZco_m4YSKEpt7MqRi128ekngEp2CLv__IMG_1915.JPG",
+  "tipo": "formula",
+  "produto": "Fresh & Ready",
+  "data_folha": "13/05/26",
+  "batelada_kg": "0,035",
+  "linhas": [
+    {"codigo": "0", "codigo_parcial": false, "descricao": "Agua Desmineralizada", "qtde_kg": "0,03224", "pct": "92,1253%", "qtde_g": "32,2438", "custo": "R$ 0,008", "valor_kg": "R$ 0,250", "fornecedor": "Private", "embal": "Private", "manuscrito": null},
+    {"codigo": "1356", "codigo_parcial": false, "descricao": "Extrato de fermento de Lactobacillus", "qtde_kg": "0,00088", "pct": "2,5000%", "qtde_g": "0,8750", "custo": "R$ 2,625", "valor_kg": "R$ 3.000,000", "fornecedor": "Engenharia das essencias", "embal": "1kg", "manuscrito": null},
+    {"codigo": "492", "codigo_parcial": false, "descricao": "Aloe Vera - Aloe Barbadensis Folha de Suco", "qtde_kg": "0,00070", "pct": "2,0000%", "qtde_g": "0,7000", "custo": "R$ 0,457", "valor_kg": "R$ 652,600", "fornecedor": "PIC", "embal": "20kg", "manuscrito": null},
+    {"codigo": "261", "codigo_parcial": false, "descricao": "Essencia", "qtde_kg": "0,00028", "pct": "0,8000%", "qtde_g": "0,2800", "custo": "R$ 0,066", "valor_kg": "R$ 234,000", "fornecedor": "Private", "embal": "-", "manuscrito": null},
+    {"codigo": "1357", "codigo_parcial": false, "descricao": "Xilitol", "qtde_kg": "0,00018", "pct": "0,5000%", "qtde_g": "0,1750", "custo": "R$ 0,187", "valor_kg": "R$ 1.066,000", "fornecedor": "Santa Cruz", "embal": "1kg", "manuscrito": null},
+    {"codigo": "1358", "codigo_parcial": false, "descricao": "D-Manose", "qtde_kg": "0,00018", "pct": "0,5000%", "qtde_g": "0,1750", "custo": "R$ 0,586", "valor_kg": "R$ 3.348,800", "fornecedor": "Santa Cruz", "embal": "1kg", "manuscrito": null},
+    {"codigo": "35", "codigo_parcial": false, "descricao": "Euxyl PE9010 -  Phenoxyethanol", "qtde_kg": "0,00014", "pct": "0,4000%", "qtde_g": "0,1400", "custo": "R$ 0,041", "valor_kg": "R$ 289,796", "fornecedor": "Emfal", "embal": "-", "manuscrito": null},
+    {"codigo": "717", "codigo_parcial": false, "descricao": "Etilhexilglicerina", "qtde_kg": "0,00014", "pct": "0,4000%", "qtde_g": "0,1400", "custo": "R$ 0,058", "valor_kg": "R$ 416,000", "fornecedor": "Jovii", "embal": "25", "manuscrito": null},
+    {"codigo": "1073", "codigo_parcial": false, "descricao": "Óleo de Rícino Hidrogenado Peg 40", "qtde_kg": "0,00011", "pct": "0,3000%", "qtde_g": "0,1050", "custo": "R$ 0,010", "valor_kg": "R$ 96,510", "fornecedor": "Barentz/Focus", "embal": "1kg", "manuscrito": null},
+    {"codigo": "19", "codigo_parcial": false, "descricao": "Alantoina", "qtde_kg": "0,00007", "pct": "0,2000%", "qtde_g": "0,0700", "custo": "R$ 0,008", "valor_kg": "R$ 108,379", "fornecedor": "Embacaps", "embal": "1kg", "manuscrito": null},
+    {"codigo": "1359", "codigo_parcial": false, "descricao": "DTPA pentassódico ( Cas Number 140-01-2) Indagoo ( Cymit Química)", "qtde_kg": "0,00005", "pct": "0,1500%", "qtde_g": "0,0525", "custo": "R$ 0,042", "valor_kg": "R$ 793,000", "fornecedor": "Indagoo ( Cymit Química)", "embal": "1kg", "manuscrito": null},
+    {"codigo": "304", "codigo_parcial": false, "descricao": "Mentol", "qtde_kg": "0,00002", "pct": "0,0500%", "qtde_g": "0,0175", "custo": "R$ 0,004", "valor_kg": "R$ 254,800", "fornecedor": "Embacaps", "embal": "500gr", "manuscrito": null},
+    {"codigo": "1360", "codigo_parcial": false, "descricao": "Óxido de prata(I)", "qtde_kg": "0,00002", "pct": "0,0450%", "qtde_g": "0,0158", "custo": "R$ 0,467", "valor_kg": "R$ 29.640,000", "fornecedor": "Santa Cruz", "embal": "1kg", "manuscrito": null},
+    {"codigo": "202", "codigo_parcial": false, "descricao": "Acido Latico", "qtde_kg": "0,00001", "pct": "0,0150%", "qtde_g": "0,0053", "custo": "R$ 0,000", "valor_kg": "R$ 16,000", "fornecedor": "Mundiquimica", "embal": "25kg", "manuscrito": null},
+    {"codigo": "1361", "codigo_parcial": false, "descricao": "Ácido fítico", "qtde_kg": "0,00000", "pct": "0,0088%", "qtde_g": "0,0031", "custo": "R$ 0,010", "valor_kg": "R$ 3.380,000", "fornecedor": "Indagoo ( Cymit Química)", "embal": "1kg", "manuscrito": null},
+    {"codigo": "137", "codigo_parcial": false, "descricao": "Propilenoglicol", "qtde_kg": "0,00000", "pct": "0,0050%", "qtde_g": "0,0018", "custo": "R$ 0,000", "valor_kg": "R$ 20,000", "fornecedor": "Quimesp/Saber", "embal": "20kg", "manuscrito": null},
+    {"codigo": "1047", "codigo_parcial": false, "descricao": "Extrato de Ginkgo Biloba", "qtde_kg": "0,00000", "pct": "0,0010%", "qtde_g": "0,0004", "custo": "R$ 0,000", "valor_kg": "R$ 90,000", "fornecedor": "S.E Engenharia", "embal": "1kg", "manuscrito": null}
+  ],
+  "total_pct": "100,000%", "total_qtde_kg": "0,0350",
+  "continua_em_outra_foto": false,
+  "anotacoes_tabela": ["Total qtde g 35,000; total custo R$ 4,57", "Abaixo da tabela (manuscrito, nao faz parte da formula): 'FR BRANCO 35 mL - 4,35 - VEPAKUM (ONIX)', 'VALVULA SPRAY -', 'ROT - 2,40', 'CX - 0,10', '6,85' (soma, com traco diagonal), 'Valor: 28,58' sublinhado; carimbo/marca d'agua circular apagado"],
+  "legibilidade": "boa",
+  "observacoes": "Modelo B sem coluna FASE. Cliente: Biolube. Status: 'Formulação Cliente/ Não Validado'. Total de custo impresso com 2 casas (R$ 4,57)."
+}
