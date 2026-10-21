@@ -453,6 +453,54 @@ export interface CalculoResultado {
   preco_cipi: number;
 }
 
+// ---- MOTOR 2 10/26 (shape 4.0) — espelha custo-engine-motor2.ts ----
+export const MOTOR_2_ID = 'Motor 2 10/26';
+
+/** Material do Motor 2: bruto → líquido de créditos de entrada. */
+export interface CalculoMaterialM2 {
+  mp_bruta: number;
+  perda_pct: number;
+  perda: number;
+  credito_mp_pct: number;
+  credito_mp: number;
+  mp_liquida: number;
+  frete: number;
+  embalagem_informada: number;
+  embalagem_bruta: number;
+  credito_emb_pct: number;
+  credito_emb: number;
+  embalagem_liquida: number;
+  custo_material_un: number;
+}
+
+/** Parcela do Motor 2: além dos tributos, o markup aplicado (margem ou taxa de gestão). */
+export interface CalculoParcelaM2 extends CalculoParcela {
+  markup_pct: number;
+}
+
+export interface CalculoMargemM2 {
+  aplicada_pct: number;
+  origem: 'escada' | 'manual';
+  escada_pct: number;
+  faixa: 'pequeno' | 'medio' | 'grande';
+  faixa_descricao: string;
+}
+
+export interface VigenciaParametro {
+  chave: string;
+  valor: number;
+  vigencia_inicio: string;
+  fonte: string;
+}
+
+/** Alertas adicionais (Motor 2 + pente fino). Todos opcionais: snapshots antigos não os têm. */
+export interface CalculoAlertasM2 extends CalculoAlertas {
+  lote_minimo?: { nivel: 'bloqueante'; quantidade: number; lote_minimo_un: number; mensagem: string } | null;
+  embalagem_ignorada?: { embalagem_un: number; modo: string; mensagem: string } | null;
+  un_min_padrao?: { un_min: number; mensagem: string } | null;
+  composicao_normalizada?: { soma_pct: number; fator: number; custo_mp_kg_bruto: number; mensagem: string } | null;
+}
+
 /** Snapshot do cálculo determinístico travado no orçamento (Fase 1, Doc 2d). */
 export interface CalculoJson {
   _mode: string;
@@ -460,6 +508,8 @@ export interface CalculoJson {
   _gerado_em: string;
   _preliminar?: boolean;
   _aviso?: string;
+  /** 'Motor 2 10/26' | 'Motor 1'. Ausente em snapshots anteriores a 10/26. */
+  motor?: string;
   inputs: CalculoInputs;
   modo_operacao: 'full_service' | 'hibrido' | 'industrializacao';
   ncm: CalculoNcm;
@@ -474,7 +524,7 @@ export interface CalculoJson {
   material: CalculoMaterial;
   mao_de_obra: CalculoMaoDeObra;
   /** opcional: snapshots anteriores ao red team não têm o bloco */
-  alertas?: CalculoAlertas;
+  alertas?: CalculoAlertasM2;
   parcelas: { material: CalculoParcela | null; mo: CalculoParcela | null };
   resultado: CalculoResultado;
   fundamentos: string[];
@@ -547,9 +597,42 @@ export interface CalculoJsonLegacy {
   embalagem?: { nome?: string } | null;
 }
 
+/**
+ * Snapshot do MOTOR 2 10/26 (shape 4.0). Mesmo contexto fiscal do v3, mas o
+ * material é líquido de créditos, as parcelas são produto/embalagem/mo e a
+ * margem vem da escada (ou override manual registrado).
+ */
+export interface CalculoJsonMotor2
+  extends Omit<CalculoJson, 'material' | 'parcelas' | 'alertas' | 'resultado'> {
+  motor: typeof MOTOR_2_ID;
+  vigencias_parametros: VigenciaParametro[];
+  material: CalculoMaterialM2;
+  margem: CalculoMargemM2;
+  embalagem_precificacao: { precificada: boolean; taxa_gestao_pct: number };
+  alertas: CalculoAlertasM2;
+  parcelas: {
+    produto: CalculoParcelaM2 | null;
+    embalagem: CalculoParcelaM2 | null;
+    mo: CalculoParcelaM2 | null;
+  };
+  resultado: CalculoResultado & { preco_produto_sipi: number; preco_embalagem_sipi: number };
+  premissas: string[];
+}
+
+export type CalculoQualquer = CalculoJson | CalculoJsonLegacy | CalculoJsonMotor2;
+
 /** Discrimina v3 (fiscal granular, tem `material`+`ncm`) de v1 legado. */
-export function isCalculoV3(c: CalculoJson | CalculoJsonLegacy): c is CalculoJson {
+export function isCalculoV3(c: CalculoQualquer): c is CalculoJson | CalculoJsonMotor2 {
   return (c as CalculoJson).material !== undefined && (c as CalculoJson).ncm !== undefined;
+}
+
+/** Discrimina o Motor 2 10/26 — por PRESENÇA do campo `motor` + forma do material. */
+export function isCalculoMotor2(c: CalculoQualquer): c is CalculoJsonMotor2 {
+  return (
+    (c as CalculoJsonMotor2).motor === MOTOR_2_ID &&
+    (c as CalculoJsonMotor2).material !== undefined &&
+    (c as CalculoJsonMotor2).material.mp_liquida !== undefined
+  );
 }
 
 /** Detalhe do orçamento (GET /orcamentos/:id). */
@@ -577,7 +660,7 @@ export interface OrcamentoDetalhe {
   embalagem_id: number | null;
   embalagem_snapshot: CalculoJson['embalagem'] | null;
   sem_embalagem: boolean;
-  calculo: CalculoJson | CalculoJsonLegacy | null;
+  calculo: CalculoQualquer | null;
   formula_versao_codigo: string | null;
   formula_status_momento: string | null;
   requer_amostra: boolean;
@@ -802,9 +885,33 @@ export interface MatrizCustoView {
     pis_cofins_servico_pct: number | null;
   };
   fiscais_provisorios: boolean;
+  /** LEGADO (system_config): não alimenta o preço. Ver producao_vigente. */
   derivados: {
     minutos_produtivos: number | null;
     custo_minuto: number | null;
+  };
+  /**
+   * PONTO ÚNICO DE VERDADE da fábrica: parametro_producao vigente + derivados
+   * calculados pela MESMA função do engine (calcularCustoProducao). `erro`
+   * preenchido quando falta vigência (falha visível, nunca número falso).
+   */
+  producao_vigente: {
+    parametros: {
+      custo_fixo_producao_mensal: number;
+      linhas_paralelas: number;
+      eficiencia_producao: number;
+      setup_minutos: number;
+      dias_uteis_mes: number;
+      horas_dia: number;
+      moq_economico_valor?: number;
+    } | null;
+    derivados: {
+      capacidade_normal_min_mes: number;
+      taxa_minuto: number;
+      custo_setup_ordem: number;
+      minutos_produtivos_dia_linha: number;
+    } | null;
+    erro: string | null;
   };
 }
 
@@ -853,6 +960,24 @@ export interface ParametroFiscal {
   vigencia_fim: string | null;
   fundamento_legal: string;
   vigente: boolean;
+}
+
+/** Parâmetro de produção versionado (modelo MO 3 componentes + Motor 2 10/26). */
+export interface ParametroProducao {
+  id: number;
+  chave: string;
+  valor: number;
+  vigencia_inicio: string;
+  vigencia_fim: string | null;
+  fonte: string;
+  vigente: boolean;
+}
+
+export interface CreateParametroProducaoPayload {
+  chave: string;
+  valor: number;
+  vigencia_inicio: string;
+  fonte: string;
 }
 
 export interface CreateParametroFiscalPayload {

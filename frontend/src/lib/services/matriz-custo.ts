@@ -6,6 +6,8 @@ import type {
   Ncm,
   ParametroFiscal,
   CreateParametroFiscalPayload,
+  ParametroProducao,
+  CreateParametroProducaoPayload,
 } from '@/lib/types';
 
 /**
@@ -39,6 +41,21 @@ export const parametroFiscalApi = {
   },
   criar: async (payload: CreateParametroFiscalPayload) => {
     const { data } = await api.post<ParametroFiscal>('/matriz-custo/parametros-fiscais', payload);
+    return data;
+  },
+};
+
+/**
+ * Parâmetros de PRODUÇÃO versionados (modelo de MO + política do Motor 2 10/26).
+ * Leitura para quem tem acesso a custos; POST (nova vigência) é só admin.
+ */
+export const parametroProducaoApi = {
+  listar: async () => {
+    const { data } = await api.get<ParametroProducao[]>('/matriz-custo/parametros-producao');
+    return data;
+  },
+  criar: async (payload: CreateParametroProducaoPayload) => {
+    const { data } = await api.post<ParametroProducao>('/matriz-custo/parametros-producao', payload);
     return data;
   },
 };

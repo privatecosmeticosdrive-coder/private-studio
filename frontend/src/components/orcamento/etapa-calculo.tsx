@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { useCan } from '@/auth/use-can';
 import { cn } from '@/lib/utils';
-import type { OrcamentoDetalhe } from '@/lib/types';
+import { isCalculoMotor2, type OrcamentoDetalhe } from '@/lib/types';
 import { orcamentosApi } from '@/lib/services/orcamentos';
 import { EditarNcmOrcamentoModal } from '@/components/data/editar-ncm-orcamento';
 import { ResultadoCalculo } from './resultado-calculo';
@@ -44,7 +44,8 @@ export function EtapaCalculo({ form, patch, onVoltar, orcIdInicial }: EtapaCalcu
   const unMin = num(form.un_min);
   const margem = num(form.margem_pct);
   const unMinValido = unMin != null && unMin >= 0.1 && unMin <= 60;
-  const margemValida = margem != null && margem >= 0 && margem <= 99;
+  // Motor 2 10/26: margem VAZIA = escada automática por lote (45/40/35). Número = override manual (registrado).
+  const margemValida = margem == null || (margem >= 0 && margem <= 99);
   // sem fórmula, o custo de MP só vem do budget — exige base > 0 para evitar preço sem base.
   const budget = num(form.budget_mp);
   const baseMpOk = !form.sem_formula || (budget != null && budget > 0);
@@ -69,6 +70,7 @@ export function EtapaCalculo({ form, patch, onVoltar, orcIdInicial }: EtapaCalcu
       }
       const calculado = await orcamentosApi.calcular(orc.id, {
         un_min: unMin,
+        // undefined => o backend aplica a escada de margem (Motor 2) e registra a origem.
         margem_pct: margem,
       });
       return calculado;
@@ -78,7 +80,13 @@ export function EtapaCalculo({ form, patch, onVoltar, orcIdInicial }: EtapaCalcu
       setResultado(orc);
       setBloqueioNcm(false);
       queryClient.invalidateQueries({ queryKey: ['orcamentos'] });
-      toast.success(`Orçamento #${orc.numero} calculado.`);
+      // Lote abaixo do mínimo: o engine não bloqueia, mas a UI avisa já no toast.
+      const loteMin = orc.calculo && isCalculoMotor2(orc.calculo) ? orc.calculo.alertas.lote_minimo : null;
+      if (loteMin) {
+        toast.error(`Orçamento #${orc.numero} calculado ABAIXO DO LOTE MÍNIMO (${loteMin.lote_minimo_un} un).`);
+      } else {
+        toast.success(`Orçamento #${orc.numero} calculado.`);
+      }
     },
     onError: (err: AxiosError<{ message?: string | string[] }>) => {
       const m = err.response?.data?.message;
@@ -124,7 +132,9 @@ export function EtapaCalculo({ form, patch, onVoltar, orcIdInicial }: EtapaCalcu
       <div>
         <h2 className="font-display text-h3 text-ink">Cálculo</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Ajuste produtividade e margem. Impostos, IPI e frete vêm do sistema (somente leitura).
+          Ajuste a produtividade. A margem vem da escada por lote (Motor 2 10/26: &lt;1.000 un → 45%,
+          1.000–4.999 → 40%, ≥5.000 → 35%) — preencha só para forçar um valor manual (fica registrado).
+          Impostos, créditos de entrada, IPI e frete vêm do sistema (somente leitura).
         </p>
       </div>
 
@@ -161,7 +171,7 @@ export function EtapaCalculo({ form, patch, onVoltar, orcIdInicial }: EtapaCalcu
           )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="margem_pct">Margem (%) *</Label>
+          <Label htmlFor="margem_pct">Margem (%) — vazio = escada automática</Label>
           <Input
             id="margem_pct"
             type="number"
@@ -170,10 +180,15 @@ export function EtapaCalculo({ form, patch, onVoltar, orcIdInicial }: EtapaCalcu
             max="99"
             value={form.margem_pct}
             onChange={(e) => patch({ margem_pct: e.target.value })}
+            placeholder="automática pela escada de lote"
           />
-          {form.margem_pct.trim() !== '' && !margemValida && (
+          {form.margem_pct.trim() !== '' && !margemValida ? (
             <p className="text-caption text-error">Informe um valor entre 0 e 99.</p>
-          )}
+          ) : form.margem_pct.trim() !== '' ? (
+            <p className="text-caption text-warning">
+              Override manual: será registrado no cálculo junto com o que a escada daria.
+            </p>
+          ) : null}
         </div>
       </div>
 

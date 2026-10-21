@@ -27,7 +27,16 @@ function podeAvancar(etapa: number, form: OrcamentoForm): boolean {
   switch (etapa) {
     case 1: {
       const qtd = parseInt(form.quantidade, 10);
-      return form.produto.trim().length >= 2 && Number.isInteger(qtd) && qtd >= 1;
+      // volume é OBRIGATÓRIO (pente fino 10/26): o backend não assume mais 100 mL.
+      const vol = Number(form.volume_un);
+      return (
+        form.produto.trim().length >= 2 &&
+        Number.isInteger(qtd) &&
+        qtd >= 1 &&
+        form.volume_un.trim() !== '' &&
+        Number.isFinite(vol) &&
+        vol > 0
+      );
     }
     case 2:
       return form.sem_formula || form.formula_id != null;

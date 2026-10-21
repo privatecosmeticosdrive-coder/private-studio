@@ -71,6 +71,9 @@ interface CalcParametrosV1 {
 interface CalcResultadoV3 {
   margem_pct: number;
   preco_sipi: number;
+  /** Motor 2: preço do produto sem a parcela de embalagem */
+  preco_produto_sipi?: number;
+  preco_embalagem_sipi?: number;
   ipi_pct: number;
   base_ipi: 'total' | 'material' | 'nao_aplica';
   ipi_un: number;
@@ -138,9 +141,48 @@ interface CalcFormulaUsada {
   status: string | null;
   origem: string | null;
 }
+// ---- MOTOR 2 10/26 (shape 4.0). Discriminado por PRESENÇA de `motor`. ----
+interface CalcMaterialM2 {
+  mp_bruta: number;
+  perda_pct: number;
+  perda: number;
+  credito_mp_pct: number;
+  credito_mp: number;
+  mp_liquida: number;
+  frete: number;
+  embalagem_informada: number;
+  embalagem_bruta: number;
+  credito_emb_pct: number;
+  credito_emb: number;
+  embalagem_liquida: number;
+  custo_material_un: number;
+}
+interface CalcParcelaM2 extends CalcParcelaV3 {
+  markup_pct: number;
+}
+interface CalcMargemM2 {
+  aplicada_pct: number;
+  origem: 'escada' | 'manual';
+  escada_pct: number;
+  faixa: string;
+  faixa_descricao: string;
+}
+interface VigenciaUsadaPdf {
+  chave: string;
+  valor: number;
+  vigencia_inicio: string;
+  fonte: string;
+}
+
 interface CalculoJson {
   _mode?: string;
   _modelo_versao?: string;
+  /** 'Motor 2 10/26' nos cálculos do Motor 2; 'Motor 1' nos novos do Motor 1; ausente em snapshots antigos. */
+  motor?: string;
+  vigencias_parametros?: VigenciaUsadaPdf[];
+  margem?: CalcMargemM2;
+  embalagem_precificacao?: { precificada: boolean; taxa_gestao_pct: number };
+  premissas?: string[];
   _gerado_em?: string;
   _preliminar?: boolean;
   _aviso?: string;
@@ -168,10 +210,32 @@ interface CalculoJson {
       quantidade_minima: number;
     } | null;
     mp_sem_preco: { quantidade: number; nomes: string[] } | null;
+    // Motor 2 10/26 + pente fino (opcionais)
+    lote_minimo?: { nivel: string; quantidade: number; lote_minimo_un: number; mensagem: string } | null;
+    embalagem_ignorada?: { embalagem_un: number; modo: string; mensagem: string } | null;
+    un_min_padrao?: { un_min: number; mensagem: string } | null;
+    composicao_normalizada?: { soma_pct: number; fator: number; mensagem: string } | null;
   };
-  parcelas?: { material: CalcParcelaV3 | null; mo: CalcParcelaV3 | null };
+  parcelas?: {
+    material?: CalcParcelaV3 | null;
+    mo?: CalcParcelaV3 | CalcParcelaM2 | null;
+    // Motor 2
+    produto?: CalcParcelaM2 | null;
+    embalagem?: CalcParcelaM2 | null;
+  };
   parametros_operacionais?: CalcOperV3;
   fundamentos?: string[];
+}
+
+const MOTOR_2_ID = 'Motor 2 10/26';
+
+/** Discrimina o Motor 2 10/26 (shape 4.0) — por presença do campo `motor` + forma do material. */
+function isCalculoMotor2(c: CalculoJson): boolean {
+  return (
+    c.motor === MOTOR_2_ID &&
+    c.material !== undefined &&
+    (c.material as unknown as CalcMaterialM2).mp_liquida !== undefined
+  );
 }
 
 /** Discrimina v3 (fiscal granular) de v1 legado — mesmo criterio da tela. */
@@ -297,13 +361,22 @@ export class PdfService {
     };
 
     // PAGINA 1 — resumo da cotacao (formato conforme a versao do calculo)
+    const m2 = isCalculoMotor2(c);
     const content: Content[] = [this.cabecalho(orc, c)];
     if (c._preliminar) content.push(this.bannerPreliminar(c._aviso));
     if (!v3) content.push(this.bannerHistorico(c._modelo_versao));
+    // Motor 2: alerta BLOQUEANTE de lote mínimo vem ANTES do preço (regra 7).
+    if (c.alertas?.lote_minimo) content.push(this.bannerBloqueante(c.alertas.lote_minimo.mensagem));
     content.push(this.secaoBriefing(orc));
     content.push(this.cardsPreco(c));
 
-    if (v3) {
+    if (m2) {
+      content.push(this.linhaMotor2(c));
+      content.push(this.secaoEnquadramentoV3(c));
+      content.push(this.blocosMotor2(c));
+      content.push(this.secaoAvisosMotor2(c));
+      content.push(this.secaoFundamentosV3(c.fundamentos ?? []));
+    } else if (v3) {
       content.push(this.secaoEnquadramentoV3(c));
       // material e MO em UMA coluna cada: custo fisico + origem da MO (folha/
       // dias uteis) + parcela precificada — sem bloco separado de parametros.
@@ -343,6 +416,7 @@ export class PdfService {
               c._gerado_em
                 ? `Cálculo gerado em ${this.dataHora(c._gerado_em)}. `
                 : '',
+              c.motor ? `${c.motor} · ` : '',
               c._modelo_versao ? `Modelo ${c._modelo_versao}` : '',
               c._mode ? ` (${c._mode})` : '',
             ].join(''),
@@ -732,6 +806,207 @@ export class PdfService {
       columnGap: 12,
       margin: [0, 8, 0, 0],
     };
+  }
+
+  // ================= pagina 1 — renderer MOTOR 2 10/26 =================
+
+  /** Banner vermelho para alerta de nível BLOQUEANTE (lote abaixo do mínimo). */
+  private bannerBloqueante(msg: string): Content {
+    return {
+      table: {
+        widths: ['*'],
+        body: [
+          [
+            {
+              text: `BLOQUEANTE  ${msg}`,
+              fontSize: 8.5,
+              bold: true,
+              color: '#FFFFFF',
+              fillColor: '#B42318',
+              margin: [8, 6, 8, 6],
+            },
+          ],
+        ],
+      },
+      layout: 'noBorders',
+      margin: [0, 12, 0, 0],
+    };
+  }
+
+  /** Linha de contexto do Motor 2: margem aplicada (escada/manual) + embalagem. */
+  private linhaMotor2(c: CalculoJson): Content {
+    const m = c.margem;
+    const emb = c.embalagem_precificacao;
+    const partes: string[] = [MOTOR_2_ID];
+    if (m) {
+      partes.push(
+        m.origem === 'escada'
+          ? `margem ${this.num(m.aplicada_pct)}% pela escada de lote (${m.faixa_descricao})`
+          : `margem ${this.num(m.aplicada_pct)}% MANUAL (escada daria ${this.num(m.escada_pct)}% — ${m.faixa_descricao})`,
+      );
+    }
+    if (emb) {
+      partes.push(
+        emb.precificada
+          ? `embalagem com taxa de gestão ${this.num(emb.taxa_gestao_pct)}% (sem margem do produto)`
+          : 'sem embalagem precificada',
+      );
+    }
+    if (c.resultado.preco_produto_sipi != null) {
+      partes.push(`preço s/ embalagem ${this.brl(c.resultado.preco_produto_sipi)}`);
+    }
+    return { text: partes.join('  ·  '), fontSize: 8, color: COR.warm600, margin: [0, 6, 0, 0] };
+  }
+
+  /** Material (bruto → líquido de créditos) e fábrica, com as parcelas precificadas. */
+  private blocosMotor2(c: CalculoJson): Content {
+    const mat = c.material as unknown as CalcMaterialM2;
+    const mo = c.mao_de_obra;
+    const p = c.parcelas ?? {};
+
+    const bodyMat: TableCell[][] = [
+      [{ text: 'Material (líquido de créditos de entrada)', style: 'th', colSpan: 2 }, {}],
+      this.linhaRV('MP última compra/un (bruta)', this.brl(mat.mp_bruta)),
+      this.linhaRV(`Perda (${this.num(mat.perda_pct)}%)`, this.brl(mat.perda)),
+      this.linhaRV(`(−) Crédito MP (${this.num(mat.credito_mp_pct)}%)`, `− ${this.brl(mat.credito_mp)}`),
+      this.linhaRV('MP líquida/un', this.brl(mat.mp_liquida), true),
+      this.linhaRV('Frete/un', this.brl(mat.frete)),
+    ];
+    if (mat.embalagem_bruta > 0) {
+      bodyMat.push(
+        this.linhaRV('Embalagem/un (bruta)', this.brl(mat.embalagem_bruta)),
+        this.linhaRV(`(−) Crédito embalagem (${this.num(mat.credito_emb_pct)}%)`, `− ${this.brl(mat.credito_emb)}`),
+        this.linhaRV('Embalagem líquida/un', this.brl(mat.embalagem_liquida), true),
+      );
+    } else {
+      bodyMat.push(this.linhaRV('Embalagem/un', mat.embalagem_informada > 0 ? 'fornecida pelo cliente' : '—'));
+    }
+    bodyMat.push(this.linhaRV('Custo de material/un', this.brl(mat.custo_material_un), true));
+    const semPreco = c.alertas?.mp_sem_preco;
+    if (semPreco) {
+      bodyMat.push([
+        {
+          text:
+            `ATENCAO: ${semPreco.quantidade} materia-prima(s) SEM PRECO ` +
+            `(${semPreco.nomes.join(', ')}) entraram valendo R$ 0,00. ` +
+            `O custo de material acima esta SUBESTIMADO.`,
+          colSpan: 2,
+          style: 'aviso',
+        },
+        {},
+      ]);
+    }
+
+    const bodyMo: TableCell[][] = [
+      [{ text: 'Fábrica (setup diluído + corrida)', style: 'th', colSpan: 2 }, {}],
+      this.linhaRV('Taxa por minuto produtivo', this.brl(mo.taxa_minuto)),
+      this.linhaRV('Setup por ordem', this.brl(mo.custo_setup_ordem)),
+      this.linhaRV('Setup/un (ordem diluída no lote)', this.brl(mo.setup_un)),
+      this.linhaRV('Corrida/un (tempo real)', this.brl(mo.corrida_un)),
+      this.linhaRV('Produção diária/linha', `${this.num(mo.producao_diaria)} un`),
+      this.linhaRV('Fábrica/un', this.brl(mo.mo_un), true),
+    ];
+    const moq = c.alertas?.moq;
+    if (moq) {
+      bodyMo.push([
+        {
+          text:
+            `ABAIXO DO MOQ ECONOMICO: setup = ${moq.peso_setup_pct}% do lote ` +
+            `(${this.brl(moq.custo_lote)}). A partir de ${moq.quantidade_minima} un ` +
+            `(lote de ${this.brl(moq.lote_minimo_valor)}) o setup cai para 10% ou menos.`,
+          colSpan: 2,
+          style: 'aviso',
+        },
+        {},
+      ]);
+    }
+
+    // parcelas precificadas (produto / embalagem / MO conforme o modo)
+    const bodyParc: TableCell[][] = [
+      [{ text: 'Parcelas precificadas (tributos por dentro)', style: 'th', colSpan: 4 }, {}, {}, {}],
+      [
+        { text: 'Parcela', style: 'rotulo' },
+        { text: 'Custo/un', style: 'rotulo', alignment: 'right' },
+        { text: 'Tributos + markup', style: 'rotulo', alignment: 'right' },
+        { text: 'Preço/un s/ IPI', style: 'rotulo', alignment: 'right' },
+      ],
+    ];
+    const linhaParc = (nome: string, x: CalcParcelaM2 | null | undefined, markupRotulo: string) => {
+      if (!x) return;
+      bodyParc.push([
+        { text: nome, fontSize: 8, color: COR.warm600 },
+        { text: this.brl(x.custo_un), fontSize: 8.5, alignment: 'right' },
+        {
+          text: `${this.num(x.taxa_pct)}% + ${markupRotulo} ${this.num(x.markup_pct)}%`,
+          fontSize: 8,
+          alignment: 'right',
+          color: COR.warm600,
+        },
+        { text: this.brl(x.preco_un), fontSize: 8.5, bold: true, alignment: 'right' },
+      ]);
+    };
+    linhaParc(
+      c.modo_operacao === 'hibrido' ? 'Material próprio' : 'Produto (MP + frete + fábrica)',
+      p.produto,
+      'margem',
+    );
+    linhaParc('Embalagem (repasse)', p.embalagem, 'taxa de gestão');
+    linhaParc('Mão de obra / execução', p.mo as CalcParcelaM2 | null | undefined, 'margem');
+
+    return {
+      stack: [
+        {
+          columns: [
+            { table: { widths: ['*', 'auto'], body: bodyMat }, layout: this.layoutSuave() },
+            { table: { widths: ['*', 'auto'], body: bodyMo }, layout: this.layoutSuave() },
+          ],
+          columnGap: 12,
+          margin: [0, 8, 0, 0],
+        },
+        {
+          table: { widths: ['*', 'auto', 'auto', 'auto'], body: bodyParc },
+          layout: this.layoutSuave(),
+          margin: [0, 8, 0, 0],
+        },
+      ],
+    };
+  }
+
+  /** Avisos não bloqueantes do Motor 2 + premissas + vigências dos parâmetros. */
+  private secaoAvisosMotor2(c: CalculoJson): Content {
+    const a = c.alertas;
+    const avisos: string[] = [];
+    if (a?.embalagem_ignorada) avisos.push(a.embalagem_ignorada.mensagem);
+    if (a?.un_min_padrao) avisos.push(a.un_min_padrao.mensagem);
+    if (a?.composicao_normalizada) avisos.push(a.composicao_normalizada.mensagem);
+    const vig = c.vigencias_parametros ?? [];
+    const stack: Content[] = [];
+    if (avisos.length) {
+      stack.push({
+        table: { widths: ['*'], body: avisos.map((t) => [{ text: `⚠  ${t}`, style: 'aviso' }]) },
+        layout: 'noBorders',
+        margin: [0, 6, 0, 0],
+      });
+    }
+    if (c.premissas?.length) {
+      stack.push({
+        text: `Premissas: ${c.premissas.join(' ')}`,
+        fontSize: 7,
+        color: COR.warm500,
+        margin: [0, 6, 0, 0],
+      });
+    }
+    if (vig.length) {
+      stack.push({
+        text:
+          'Vigências dos parâmetros: ' +
+          vig.map((v) => `${v.chave}=${this.num(v.valor)} (${v.vigencia_inicio})`).join('; '),
+        fontSize: 7,
+        color: COR.warm500,
+        margin: [0, 3, 0, 0],
+      });
+    }
+    return stack.length ? { stack } : { text: '' };
   }
 
   private secaoFundamentosV3(fundamentos: string[]): Content {

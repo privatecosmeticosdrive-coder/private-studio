@@ -65,8 +65,11 @@ export type AtualizarOrcamentoPayload = Partial<CriarOrcamentoPayload>;
 /** Inputs editáveis da Fase 1 (espelha CalcularDto). */
 export interface CalcularPayload {
   un_min?: number;
+  /** ausente = escada automática por lote (Motor 2); presente = override manual registrado */
   margem_pct?: number;
   cmp_base_mp_kg?: number;
+  /** 1 = fiscal granular 3.1; 2 = Motor 2 10/26. Ausente = padrão do sistema. */
+  motor?: 1 | 2;
 }
 
 /** Briefing mínimo do match híbrido (espelha MatchFormulasDto). */

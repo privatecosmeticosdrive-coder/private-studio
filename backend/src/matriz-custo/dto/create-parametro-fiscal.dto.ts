@@ -9,6 +9,9 @@ export const CHAVES_PARAMETRO_FISCAL = [
   'icms_carga_art34_pct',
   'icms_nominal_padrao_pct',
   'industrializacao_caracterizada', // flag juridica 0/1 (A3) — opt-in documentado
+  // Motor 2 10/26 — creditos recuperaveis MEDIDOS nas NFs de entrada (params-motor2.util)
+  'credito_mp_pct',
+  'credito_emb_pct',
 ] as const;
 
 export class CreateParametroFiscalDto {

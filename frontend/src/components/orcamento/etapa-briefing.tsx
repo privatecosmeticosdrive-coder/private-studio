@@ -93,7 +93,7 @@ export function EtapaBriefing({ form, patch }: EtapaProps) {
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="volume_un">Volume por unidade (mL/g)</Label>
+          <Label htmlFor="volume_un">Volume por unidade (mL/g) *</Label>
           <Input
             id="volume_un"
             type="number"
@@ -103,7 +103,13 @@ export function EtapaBriefing({ form, patch }: EtapaProps) {
             onChange={(e) => patch({ volume_un: e.target.value })}
             placeholder="ex.: 30"
           />
-          <p className="text-caption text-warm-500">Em branco assume 100 mL/g no cálculo.</p>
+          {form.volume_un.trim() !== '' && !(Number(form.volume_un) > 0) ? (
+            <p className="text-caption text-error">Informe um volume maior que zero.</p>
+          ) : (
+            <p className="text-caption text-warm-500">
+              Obrigatório: converte o custo de MP (R$/kg) em custo por unidade. Densidade 1,0.
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="quantidade">Quantidade do lote *</Label>

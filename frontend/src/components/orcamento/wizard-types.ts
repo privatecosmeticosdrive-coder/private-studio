@@ -12,7 +12,7 @@ export interface OrcamentoForm {
   cliente_id: string;
   categoria: string;
   nivel: NivelOrcamento | '';
-  volume_un: string;
+  volume_un: string; // OBRIGATÓRIO desde 10/26 (sem default silencioso de 100 mL)
   quantidade: string; // default '1000' (impacta MO — Doc 2d)
   produto_referencia: string;
   requer_amostra: boolean;
@@ -33,7 +33,7 @@ export interface OrcamentoForm {
 
   // Etapa 4 — Cálculo (únicos editáveis: un_min + margem_pct)
   un_min: string;
-  margem_pct: string; // default '30'
+  margem_pct: string; // '' = escada automática por lote (Motor 2); número = override manual
 }
 
 /** Valores iniciais do formulário. */
@@ -56,7 +56,7 @@ export const FORM_INICIAL: OrcamentoForm = {
   embalagem_nome: '',
   sem_embalagem: false,
   un_min: '',
-  margem_pct: '30',
+  margem_pct: '', // Motor 2 10/26: vazio = escada automática (45/40/35 por lote)
 };
 
 /** Props compartilhadas pelas etapas do wizard. */

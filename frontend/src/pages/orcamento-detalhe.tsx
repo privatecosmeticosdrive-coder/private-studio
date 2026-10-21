@@ -26,6 +26,7 @@ import {
   MOTIVOS_RECUSA,
   MOTIVO_RECUSA_LABEL,
   NIVEL_ORCAMENTO_LABEL,
+  isCalculoMotor2,
   type MotivoRecusa,
   type OrcamentoDetalhe,
   type UrgenciaLab,
@@ -113,7 +114,16 @@ function ResumoBriefing({
           rotulo="Produtividade"
           valor={orc.un_min != null ? `${String(orc.un_min)} un/min` : '—'}
         />
-        <Campo rotulo="Margem" valor={orc.margem_pct != null ? `${String(orc.margem_pct)}%` : '—'} />
+        <Campo
+          rotulo="Margem"
+          valor={
+            orc.calculo && isCalculoMotor2(orc.calculo)
+              ? `${orc.calculo.margem.aplicada_pct}% (${orc.calculo.margem.origem === 'escada' ? 'escada por lote' : 'manual'})`
+              : orc.margem_pct != null
+                ? `${String(orc.margem_pct)}%`
+                : '—'
+          }
+        />
         <Campo rotulo="Produto de referência" valor={orc.produto_referencia} />
         <Campo rotulo="Requer amostra" valor={orc.requer_amostra ? 'Sim' : 'Não'} />
         <Campo

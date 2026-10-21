@@ -7,6 +7,9 @@ import { UpdateFiscalDto } from './dto/update-fiscal.dto';
 import { CreateNcmDto } from './dto/create-ncm.dto';
 import { UpdateNcmDto } from './dto/update-ncm.dto';
 import { CreateParametroFiscalDto } from './dto/create-parametro-fiscal.dto';
+import { CreateParametroProducaoDto } from './dto/create-parametro-producao.dto';
+import { lerParametrosProducaoVigentes } from '../orcamentos/params-producao.util';
+import { calcularCustoProducao } from '../orcamentos/custo-producao.util';
 
 const CAMPOS_OPERACIONAL = [
   'custo_fixo_mensal', 'mo_dias_uteis', 'horas_dia', 'eficiencia_linha',
@@ -46,7 +49,34 @@ export class MatrizCustoService {
   // ---------------- leitura ----------------
   async get() {
     const c = await this.ensureConfig();
-    return this.montarView(c);
+    return { ...this.montarView(c), producao_vigente: await this.producaoVigente() };
+  }
+
+  /**
+   * PONTO ÚNICO DE VERDADE da fábrica (pente fino 10/26): os derivados que o
+   * PREÇO realmente usa (taxa/minuto, setup/ordem, capacidade) saem de
+   * parametro_producao via a MESMA função do engine (calcularCustoProducao).
+   * Os "derivados" da system_config (custo_fixo_mensal 120.240 / eficiencia 0,75)
+   * ficam rotulados como LEGADO na tela — não alimentam cálculo nenhum.
+   * Sem vigência completa: null + motivo (falha visível, nunca número falso).
+   */
+  private async producaoVigente() {
+    try {
+      const p = await lerParametrosProducaoVigentes(this.prisma);
+      const d = calcularCustoProducao(p, 1, 1); // un_min/quantidade irrelevantes para os derivados
+      return {
+        parametros: p,
+        derivados: {
+          capacidade_normal_min_mes: d.capacidade_normal_min_mes,
+          taxa_minuto: d.taxa_minuto,
+          custo_setup_ordem: d.custo_setup_ordem,
+          minutos_produtivos_dia_linha: d.minutos_produtivos_dia_linha,
+        },
+        erro: null as string | null,
+      };
+    } catch (e) {
+      return { parametros: null, derivados: null, erro: (e as Error).message };
+    }
   }
 
   /** Garante a linha unica id=1 (mesmo padrao do SystemConfigService). */
@@ -90,7 +120,8 @@ export class MatrizCustoService {
         pis_cofins_servico_pct: toNum(c.pis_cofins_servico_pct),
       },
       fiscais_provisorios: c.fiscais_provisorios,
-      // READ-ONLY (nunca editavel; ver divida controlada acima)
+      // READ-ONLY LEGADO (system_config). NAO alimenta o preco: o engine usa
+      // parametro_producao (ver producao_vigente em get()).
       derivados: { minutos_produtivos, custo_minuto },
     };
   }
@@ -120,7 +151,9 @@ export class MatrizCustoService {
   ) {
     const atual = await this.ensureConfig();
     const { data, mudancas } = this.montarDiff(atual, dto, campos);
-    if (mudancas.length === 0) return this.montarView(atual); // idempotente
+    if (mudancas.length === 0) {
+      return { ...this.montarView(atual), producao_vigente: await this.producaoVigente() }; // idempotente
+    }
 
     const atualizado = await this.prisma.$transaction(async (tx) => {
       const u = await tx.systemConfig.update({ where: { id: 1 }, data });
@@ -138,7 +171,7 @@ export class MatrizCustoService {
       );
       return u;
     });
-    return this.montarView(atualizado);
+    return { ...this.montarView(atualizado), producao_vigente: await this.producaoVigente() };
   }
 
   /** diff idempotente: so campos enviados E diferentes do atual. */
@@ -278,6 +311,66 @@ export class MatrizCustoService {
           campo: dto.chave,
           valorAntes: aberta ? fmt(aberta.valor) : null,
           valorDepois: `${dto.valor} (vigencia ${dto.vigencia_inicio}; ${dto.fundamento_legal})`,
+        }],
+        tx,
+      );
+      return { ...novo, valor: toNum(novo.valor) };
+    });
+  }
+
+  // ---------------- parametros de PRODUCAO versionados ----------------
+  // Mesma disciplina do fiscal: nova vigencia = nova linha; a aberta anterior e
+  // encerrada no dia anterior. Historico completo por chave. Fonte obrigatoria.
+  async listParametrosProducao() {
+    const rows = await this.prisma.parametroProducao.findMany({
+      orderBy: [{ chave: 'asc' }, { vigencia_inicio: 'desc' }],
+    });
+    const hoje = new Date();
+    return rows.map((r) => ({
+      ...r,
+      valor: toNum(r.valor),
+      vigente:
+        r.vigencia_inicio <= hoje && (r.vigencia_fim === null || r.vigencia_fim >= hoje),
+    }));
+  }
+
+  async createParametroProducao(dto: CreateParametroProducaoDto, userId: string, role: string) {
+    if (role !== Role.admin) {
+      throw new ForbiddenException('Apenas administradores alteram parâmetros de produção');
+    }
+    const inicio = new Date(dto.vigencia_inicio);
+
+    return this.prisma.$transaction(async (tx) => {
+      const aberta = await tx.parametroProducao.findFirst({
+        where: { chave: dto.chave, vigencia_fim: null },
+        orderBy: { vigencia_inicio: 'desc' },
+      });
+      if (aberta) {
+        if (aberta.vigencia_inicio >= inicio) {
+          throw new ForbiddenException(
+            'vigencia_inicio deve ser posterior ao início da vigência aberta atual',
+          );
+        }
+        const fim = new Date(inicio);
+        fim.setUTCDate(fim.getUTCDate() - 1);
+        await tx.parametroProducao.update({ where: { id: aberta.id }, data: { vigencia_fim: fim } });
+      }
+
+      const novo = await tx.parametroProducao.create({
+        data: {
+          chave: dto.chave,
+          valor: dto.valor,
+          vigencia_inicio: inicio,
+          fonte: dto.fonte,
+          criado_por: userId,
+        },
+      });
+      await this.historico.registrar(
+        [{
+          userId, bloco: 'operacional', entidade: 'parametro_producao', entidadeId: novo.id,
+          campo: dto.chave,
+          valorAntes: aberta ? fmt(aberta.valor) : null,
+          valorDepois: `${dto.valor} (vigencia ${dto.vigencia_inicio}; ${dto.fonte})`,
         }],
         tx,
       );

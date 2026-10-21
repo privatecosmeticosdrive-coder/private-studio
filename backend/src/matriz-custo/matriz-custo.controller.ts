@@ -16,6 +16,7 @@ import { UpdateFiscalDto } from './dto/update-fiscal.dto';
 import { CreateNcmDto } from './dto/create-ncm.dto';
 import { UpdateNcmDto } from './dto/update-ncm.dto';
 import { CreateParametroFiscalDto } from './dto/create-parametro-fiscal.dto';
+import { CreateParametroProducaoDto } from './dto/create-parametro-producao.dto';
 import { AcessoCustoGuard } from '../auth/guards/acesso-custo.guard';
 import { RequerAcessoCusto } from '../auth/decorators/requer-acesso-custo.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -65,6 +66,21 @@ export class MatrizCustoController {
     @AcessoCusto('role') role: string,
   ) {
     return this.matriz.createParametroFiscal(dto, userId, role);
+  }
+
+  // ---- parametros de PRODUCAO versionados (modelo MO 3 componentes + Motor 2 10/26) ----
+  @Get('parametros-producao')
+  listParametrosProducao() {
+    return this.matriz.listParametrosProducao();
+  }
+
+  @Post('parametros-producao')
+  createParametroProducao(
+    @Body() dto: CreateParametroProducaoDto,
+    @CurrentUser('sub') userId: string,
+    @AcessoCusto('role') role: string,
+  ) {
+    return this.matriz.createParametroProducao(dto, userId, role);
   }
 
   @Get('ncm')

@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { useAuth } from '@/auth/auth-context';
-import { matrizCustoApi, parametroFiscalApi } from '@/lib/services/matriz-custo';
+import { matrizCustoApi, parametroFiscalApi, parametroProducaoApi } from '@/lib/services/matriz-custo';
 import type {
   MatrizCustoView,
   UpdateOperacionalPayload,
@@ -217,6 +217,9 @@ const CHAVES_PF: { chave: string; rotulo: string }[] = [
   { chave: 'icms_carga_art34_pct', rotulo: 'ICMS carga art.34 (%)' },
   { chave: 'icms_nominal_padrao_pct', rotulo: 'ICMS nominal padrão (%)' },
   { chave: 'industrializacao_caracterizada', rotulo: 'Industrialização caracterizada (0/1)' },
+  // Motor 2 10/26 — créditos recuperáveis medidos nas NFs de entrada
+  { chave: 'credito_mp_pct', rotulo: 'Crédito de entrada — MP (%)' },
+  { chave: 'credito_emb_pct', rotulo: 'Crédito de entrada — embalagem (%)' },
 ];
 const rotuloPF = (chave: string) => CHAVES_PF.find((c) => c.chave === chave)?.rotulo ?? chave;
 
@@ -384,19 +387,278 @@ function SecaoParametrosFiscais({ isAdmin }: { isAdmin: boolean }) {
   );
 }
 
+// ============ PARÂMETROS DE PRODUÇÃO VERSIONADOS (MO 3 componentes + Motor 2 10/26) ============
+
+const CHAVES_PP: { chave: string; rotulo: string; unidade: string }[] = [
+  { chave: 'custo_fixo_producao_mensal', rotulo: 'Custo fixo de produção/mês', unidade: 'R$' },
+  { chave: 'linhas_paralelas', rotulo: 'Linhas paralelas', unidade: 'linhas' },
+  { chave: 'eficiencia_producao', rotulo: 'Eficiência de produção (fração)', unidade: '' },
+  { chave: 'setup_minutos', rotulo: 'Setup por ordem', unidade: 'min' },
+  { chave: 'dias_uteis_mes', rotulo: 'Dias úteis/mês', unidade: 'dias' },
+  { chave: 'horas_dia', rotulo: 'Horas/dia', unidade: 'h' },
+  { chave: 'moq_economico_valor', rotulo: 'MOQ econômico (custo do lote)', unidade: 'R$' },
+  { chave: 'motor_precificacao', rotulo: 'Motor de precificação (1 ou 2)', unidade: '' },
+  { chave: 'taxa_gestao_embalagem_pct', rotulo: 'Taxa de gestão da embalagem', unidade: '%' },
+  { chave: 'margem_lote_pequeno_pct', rotulo: 'Margem — lote pequeno', unidade: '%' },
+  { chave: 'margem_lote_medio_pct', rotulo: 'Margem — lote médio', unidade: '%' },
+  { chave: 'margem_lote_grande_pct', rotulo: 'Margem — lote grande', unidade: '%' },
+  { chave: 'lote_medio_min_un', rotulo: 'Início da faixa média (un)', unidade: 'un' },
+  { chave: 'lote_grande_min_un', rotulo: 'Início da faixa grande (un)', unidade: 'un' },
+  { chave: 'lote_minimo_un', rotulo: 'Lote mínimo aceito', unidade: 'un' },
+  { chave: 'un_min_padrao', rotulo: 'Velocidade padrão (un/min)', unidade: 'un/min' },
+];
+const infoPP = (chave: string) => CHAVES_PP.find((c) => c.chave === chave);
+
+const schemaPP = z.object({
+  chave: z.string().min(1, 'Escolha o parâmetro'),
+  valor: num.min(0, 'Não pode ser negativo'),
+  vigencia_inicio: z.string().min(10, 'Informe a data'),
+  fonte: z.string().min(10, 'Fonte obrigatória (mín. 10 caracteres): de onde veio o número'),
+});
+type PPValues = z.infer<typeof schemaPP>;
+
+function SecaoParametrosProducao({ isAdmin }: { isAdmin: boolean }) {
+  const queryClient = useQueryClient();
+  const [mostrarHistorico, setMostrarHistorico] = useState(false);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['parametros-producao'],
+    queryFn: () => parametroProducaoApi.listar(),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<PPValues>({
+    resolver: zodResolver(schemaPP),
+    defaultValues: { chave: '', valor: 0, vigencia_inicio: '', fonte: '' },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (p: PPValues) => parametroProducaoApi.criar(p),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['parametros-producao'] });
+      queryClient.invalidateQueries({ queryKey: ['matriz-custo'] }); // derivados da fábrica mudam
+      reset();
+      toast.success('Nova vigência de produção registrada');
+    },
+    onError: (err: AxiosError<{ message?: string | string[] }>) => {
+      toast.error(msgErro(err, 'Falha ao registrar a nova vigência.'));
+    },
+  });
+
+  const visiveis = (data ?? []).filter((p) => mostrarHistorico || p.vigente);
+
+  return (
+    <div className="space-y-4 rounded-lg border border-border bg-surface p-5">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-medium text-ink">Parâmetros de produção e política comercial (versionados)</h3>
+          <p className="text-caption text-warm-500">
+            Fábrica (modelo de 3 componentes) e Motor 2 10/26: escada de margem, lote mínimo, taxa de
+            gestão da embalagem, velocidade padrão. Nova vigência cria uma linha nova — o histórico nunca é
+            sobrescrito. Créditos de entrada (MP/embalagem) ficam nos parâmetros fiscais.
+          </p>
+        </div>
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-warm-700">
+          <input
+            type="checkbox"
+            className="size-4 accent-gold-500"
+            checked={mostrarHistorico}
+            onChange={(e) => setMostrarHistorico(e.target.checked)}
+          />
+          Mostrar histórico
+        </label>
+      </div>
+
+      {isLoading && (
+        <div className="flex items-center gap-2 py-4 text-muted-foreground">
+          <Spinner /> <span className="text-sm">Carregando parâmetros de produção…</span>
+        </div>
+      )}
+      {isError && <p className="py-4 text-sm text-error">Não foi possível carregar os parâmetros de produção.</p>}
+      {!isLoading && !isError && visiveis.length === 0 && (
+        <p className="py-4 text-sm text-muted-foreground">Sem parâmetros cadastrados.</p>
+      )}
+
+      {visiveis.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border text-left text-caption text-warm-500">
+                <th className="py-2 pr-4">Parâmetro</th>
+                <th className="py-2 pr-4">Valor</th>
+                <th className="py-2 pr-4">Vigência</th>
+                <th className="py-2 pr-4">Fonte</th>
+                <th className="py-2">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {visiveis.map((p) => {
+                const info = infoPP(p.chave);
+                return (
+                  <tr key={p.id} className="border-b border-border/50">
+                    <td className="py-2 pr-4 font-medium text-ink">{info?.rotulo ?? p.chave}</td>
+                    <td className="py-2 pr-4 tnum">
+                      {p.valor.toLocaleString('pt-BR', { maximumFractionDigits: 4 })}
+                      {info?.unidade ? ` ${info.unidade}` : ''}
+                    </td>
+                    <td className="py-2 pr-4 whitespace-nowrap">
+                      {new Date(p.vigencia_inicio).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
+                      {' → '}
+                      {p.vigencia_fim
+                        ? new Date(p.vigencia_fim).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                        : 'aberta'}
+                    </td>
+                    <td className="max-w-md py-2 pr-4 text-warm-700">{p.fonte}</td>
+                    <td className="py-2">
+                      {p.vigente ? (
+                        <span className="rounded bg-success-soft px-2 py-0.5 text-caption text-success">vigente</span>
+                      ) : (
+                        <span className="rounded bg-warm-100 px-2 py-0.5 text-caption text-warm-500">encerrada</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {isAdmin && (
+        <form
+          onSubmit={handleSubmit((d) => mutation.mutate(d))}
+          className="space-y-4 rounded-md border border-border/60 bg-warm-50/50 p-4"
+          noValidate
+        >
+          <h4 className="text-sm font-medium text-ink">Nova vigência (admin)</h4>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="space-y-2">
+              <Label htmlFor="pp_chave">Parâmetro</Label>
+              <select
+                id="pp_chave"
+                className="h-9 w-full rounded-md border border-border bg-surface px-3 text-sm"
+                {...register('chave')}
+              >
+                <option value="">Selecione…</option>
+                {CHAVES_PP.map((c) => (
+                  <option key={c.chave} value={c.chave}>{c.rotulo}</option>
+                ))}
+              </select>
+              {errors.chave && <p className="text-caption text-error">{errors.chave.message}</p>}
+            </div>
+            <Campo register={register} errors={errors} name="valor" label="Valor" step="0.0001" />
+            <div className="space-y-2">
+              <Label htmlFor="pp_vigencia_inicio">Início da vigência</Label>
+              <Input id="pp_vigencia_inicio" type="date" {...register('vigencia_inicio')} />
+              {errors.vigencia_inicio && (
+                <p className="text-caption text-error">{errors.vigencia_inicio.message}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="pp_fonte">Fonte</Label>
+              <Input
+                id="pp_fonte"
+                placeholder="Levantamento/extrato/medição/política + status (medido/provisório)"
+                {...register('fonte')}
+              />
+              {errors.fonte && <p className="text-caption text-error">{errors.fonte.message}</p>}
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button type="submit" disabled={mutation.isPending}>
+              {mutation.isPending && <Spinner className="text-sand" />}
+              Registrar vigência
+            </Button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
+
+// ===================== FÁBRICA VIGENTE (ponto único de verdade) =====================
+
+/**
+ * O que o PREÇO realmente usa: parametro_producao vigente + derivados calculados
+ * pelo backend com a MESMA função do engine (calcularCustoProducao). Substitui
+ * a dívida F3/F4 (tela lia system_config 120.240/0,75 enquanto o engine lia
+ * parametro_producao). Sem vigência: mostra o erro — nunca número falso.
+ */
+function CardFabricaVigente({ pv }: { pv: MatrizCustoView['producao_vigente'] }) {
+  const brl2 = (n: number) => `R$ ${n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return (
+    <div className="rounded-lg border border-gold-500/60 bg-gold-500/5 p-5">
+      <h3 className="font-medium text-ink">Fábrica vigente — o que alimenta o preço</h3>
+      <p className="mb-4 text-caption text-warm-500">
+        Derivados de <code>parametro_producao</code>, recalculados pela mesma função do engine.
+      </p>
+      {pv.erro || !pv.parametros || !pv.derivados ? (
+        <p className="text-sm text-error">{pv.erro ?? 'Sem vigência completa de parâmetros de produção.'}</p>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="space-y-1">
+            <span className="text-caption text-warm-500">Custo fixo/mês</span>
+            <p className="text-sm font-medium text-ink tnum">{brl2(pv.parametros.custo_fixo_producao_mensal)}</p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-caption text-warm-500">Capacidade normal/mês</span>
+            <p className="text-sm font-medium text-ink tnum">
+              {pv.derivados.capacidade_normal_min_mes.toLocaleString('pt-BR', { maximumFractionDigits: 0 })} min
+            </p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-caption text-warm-500">Taxa por minuto produtivo</span>
+            <p className="text-sm font-medium text-ink tnum">{brl2(pv.derivados.taxa_minuto)}/min</p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-caption text-warm-500">Setup por ordem</span>
+            <p className="text-sm font-medium text-ink tnum">{brl2(pv.derivados.custo_setup_ordem)}</p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-caption text-warm-500">Linhas × dias × horas × eficiência</span>
+            <p className="text-sm font-medium text-ink tnum">
+              {pv.parametros.linhas_paralelas} × {pv.parametros.dias_uteis_mes} × {pv.parametros.horas_dia}h ×{' '}
+              {pv.parametros.eficiencia_producao}
+            </p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-caption text-warm-500">Minutos produtivos/dia/linha</span>
+            <p className="text-sm font-medium text-ink tnum">{pv.derivados.minutos_produtivos_dia_linha}</p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-caption text-warm-500">Setup (min)</span>
+            <p className="text-sm font-medium text-ink tnum">{pv.parametros.setup_minutos}</p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-caption text-warm-500">MOQ econômico</span>
+            <p className="text-sm font-medium text-ink tnum">
+              {pv.parametros.moq_economico_valor != null ? brl2(pv.parametros.moq_economico_valor) : '—'}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ============================ DERIVADOS (RO) ============================
 
 /**
- * Cartão read-only. minutos_produtivos e custo_minuto são recalculados pelo
- * backend a cada save (DÍVIDA CONTROLADA F3/F4 — ponto único de verdade vem na F4).
+ * Cartão read-only LEGADO: derivados da system_config (custo_fixo_mensal /
+ * eficiencia_linha). NÃO alimentam o preço — o engine usa parametro_producao
+ * (ver CardFabricaVigente). Mantido só para comparação até a F6 remover os campos.
  */
 function CardDerivados({ derivados }: { derivados: MatrizCustoView['derivados'] }) {
   const { minutos_produtivos, custo_minuto } = derivados;
   return (
-    <div className="rounded-lg border border-border bg-surface p-5">
-      <h3 className="font-medium text-ink">Derivados</h3>
-      <p className="mb-4 text-caption text-warm-500">
-        Recalculados pelo sistema a cada salvamento — não editáveis.
+    <div className="rounded-lg border border-dashed border-border bg-sand/40 p-5">
+      <h3 className="font-medium text-ink">Derivados do bloco Operacional (legado)</h3>
+      <p className="mb-4 text-caption text-warning">
+        Não alimentam o preço. O cálculo usa a fábrica vigente (parametro_producao) acima.
       </p>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-1">
@@ -475,9 +737,11 @@ export default function MatrizCusto() {
         title="Matriz de Custo"
         description="Parâmetros operacionais e fiscais que alimentam o cálculo de custo."
       />
+      <CardFabricaVigente pv={data.producao_vigente} />
+      <SecaoParametrosProducao isAdmin={user?.role === 'admin'} />
+      <SecaoParametrosFiscais isAdmin={user?.role === 'admin'} />
       <FormOperacional op={data.operacional} />
       <FormFiscal fiscal={data.fiscal} />
-      <SecaoParametrosFiscais isAdmin={user?.role === 'admin'} />
       <CardDerivados derivados={data.derivados} />
     </div>
   );
