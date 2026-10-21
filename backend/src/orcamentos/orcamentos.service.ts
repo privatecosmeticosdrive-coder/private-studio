@@ -198,6 +198,10 @@ export class OrcamentosService {
       entidadeId: id,
       detalhes: {
         modo: (r.calculo as any)._mode,
+        // Motor 2 10/26: qual motor gerou o preço e se a margem veio da escada
+        // automática ou de override manual (override é LOGADO, não só gravado).
+        motor: (r.calculo as any).motor ?? null,
+        margem: (r.calculo as any).margem ?? null,
         preco_sipi: r.preco_sipi,
         preco_cipi: r.preco_cipi,
         score: r.score_global,

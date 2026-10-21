@@ -113,8 +113,8 @@ model MateriaPrima {
   id                     Int       @id @default(autoincrement())
   codigo                 Int       @unique
   nome                   String
-  preco_kg_brl           Decimal?  @db.Decimal(10, 2)
-  preco_anterior         Decimal?  @db.Decimal(10, 2)
+  preco_kg_brl           Decimal?  @db.Decimal(12, 4) // 10/26: 4 casas (ultima compra vem com 4 decimais; 2 casas perdiam precisao)
+  preco_anterior         Decimal?  @db.Decimal(12, 4)
   aumento_pct            Decimal?  @db.Decimal(6, 2)
   fornecedor             String?
   embalagem_minima       String?
@@ -144,7 +144,7 @@ model MpFornecedorAlt {
   id            Int       @id @default(autoincrement())
   mp_id         Int
   fornecedor    String
-  preco_kg_brl  Decimal?  @db.Decimal(10, 2)
+  preco_kg_brl  Decimal?  @db.Decimal(12, 4)
   prazo_entrega String?
   observacoes   String?
   data_cotacao  DateTime? @db.Date
@@ -557,8 +557,8 @@ model MatrizCustoHistorico {
 model MpHistoricoPreco {
   id                Int      @id @default(autoincrement())
   mp_id             Int
-  preco_kg_brl      Decimal  @db.Decimal(10, 2)
-  preco_anterior_kg Decimal? @db.Decimal(10, 2)
+  preco_kg_brl      Decimal  @db.Decimal(12, 4)
+  preco_anterior_kg Decimal? @db.Decimal(12, 4)
   variacao_pct      Decimal? @db.Decimal(6, 2)
   fornecedor        String
   data_cotacao      DateTime @db.Date

@@ -1,0 +1,129 @@
+{
+  "_fonte": "Finalizador sem embalagem, lote 500 (escada 45%) → R$ 20,55 sem IPI — Motor 2 10/26 (auditoria 19–20/10/2026)",
+  "motor": 2,
+  "modo_operacao": "full_service",
+  "inputs": {
+    "cmp_base_mp_kg": 111.388,
+    "volume_un": 50,
+    "quantidade": 500,
+    "un_min": 6,
+    "embalagem_un": 0,
+    "mp_sem_preco": []
+  },
+  "oper": {
+    "producao": {
+      "custo_fixo_producao_mensal": 101305,
+      "linhas_paralelas": 2.5,
+      "eficiencia_producao": 0.82,
+      "setup_minutos": 60,
+      "dias_uteis_mes": 22,
+      "horas_dia": 8,
+      "moq_economico_valor": 2400
+    },
+    "perda_mp_pct": 10,
+    "frete_un_brl": 0.1,
+    "credito_mp_pct": 21.21,
+    "credito_emb_pct": 13.82,
+    "taxa_gestao_embalagem_pct": 15,
+    "escada": {
+      "lote_pequeno_pct": 45,
+      "lote_medio_pct": 40,
+      "lote_grande_pct": 35,
+      "lote_medio_min_un": 1000,
+      "lote_grande_min_un": 5000
+    },
+    "lote_minimo_un": 500
+  },
+  "perfil": {
+    "regime_fiscal": "lucro_real_presumido",
+    "finalidade": "revenda",
+    "uf": "SP",
+    "contribuinte_icms": true
+  },
+  "ncm": {
+    "ncm": "3305.90.00",
+    "ex_tipi": "",
+    "ipi_pct": 0,
+    "monofasico": true,
+    "tratamento": "aliquota_zero",
+    "icms_nominal_pct": null
+  },
+  "params": {
+    "pis_monofasico_pct": 2.2,
+    "cofins_monofasico_pct": 10.3,
+    "pis_comum_pct": 1.65,
+    "cofins_comum_pct": 7.6,
+    "icms_carga_art34_pct": 12,
+    "icms_nominal_padrao_pct": 18
+  },
+  "caracterizacao": {
+    "industrializacao_caracterizada": false
+  },
+  "esperado": {
+    "motor": "Motor 2 10/26",
+    "material": {
+      "mp_bruta": 5.5694,
+      "perda_pct": 10,
+      "perda": 0.5569,
+      "credito_mp_pct": 21.21,
+      "credito_mp": 1.2994,
+      "mp_liquida": 4.8269,
+      "frete": 0.1,
+      "embalagem_informada": 0,
+      "embalagem_bruta": 0,
+      "credito_emb_pct": 13.82,
+      "credito_emb": 0,
+      "embalagem_liquida": 0,
+      "custo_material_un": 4.9269
+    },
+    "mao_de_obra": {
+      "taxa_minuto": 4.6796,
+      "custo_setup_ordem": 280.78,
+      "minutos_produtivos_dia_linha": 393.6,
+      "producao_diaria": 2361.6,
+      "setup_un": 0.5616,
+      "corrida_un": 0.7799,
+      "mo_un": 1.3415
+    },
+    "margem": {
+      "aplicada_pct": 45,
+      "origem": "escada",
+      "escada_pct": 45,
+      "faixa": "pequeno",
+      "faixa_descricao": "< 1000 un"
+    },
+    "alertas": {
+      "moq": null,
+      "mp_sem_preco": null,
+      "lote_minimo": null,
+      "embalagem_ignorada": null
+    },
+    "parcelas": {
+      "produto": {
+        "custo_un": 6.2684,
+        "taxa_pct": 24.5,
+        "markup_pct": 45,
+        "preco_un": 20.5523
+      },
+      "embalagem": null,
+      "mo": null
+    },
+    "resultado": {
+      "margem_pct": 45,
+      "preco_produto_sipi": 20.55,
+      "preco_embalagem_sipi": 0,
+      "preco_sipi": 20.55,
+      "ipi_pct": 0,
+      "base_ipi": "nao_aplica",
+      "ipi_un": 0,
+      "icms_sobre_ipi": 0,
+      "preco_cipi": 20.55
+    },
+    "fundamentos": [
+      "ICMS do material: carga efetiva 12% (art. 34, Anexo II, RICMS/SP — cliente RPA, finalidade revenda).",
+      "PIS/COFINS do material: monofásico 2.2%+10.3% (Lei 10.147/2000 — NCM 3305.90.00 abrangido).",
+      "IPI: aliquota_zero (tratamento do NCM 3305.90.00 na TIPI).",
+      "Full service: tributação integral da venda do produto (parcela única)."
+    ]
+  }
+}
