@@ -15,12 +15,11 @@ import { systemConfigApi } from '@/lib/services/system-config';
 
 const num = z.number({ message: 'Valor inválido' });
 
+// 10/26 — só os campos que o PREÇO ainda lê (perda de MP e frete/un). Folha,
+// dias úteis, "imposto MP" (37,5%), "imposto MO" (9,25%) e IPI global eram
+// campos MORTOS: não alimentam o cálculo desde o corte F3/F4. MO vem de
+// parametro_producao; tributos da matriz fiscal; IPI do NCM.
 const schema = z.object({
-  mo_folha_mensal: num.min(0, 'Não pode ser negativo'),
-  mo_dias_uteis: z.number({ message: 'Valor inválido' }).int('Use um inteiro').min(1, 'Mínimo 1'),
-  imposto_mp_pct: num.min(0, 'Não pode ser negativo'),
-  imposto_mo_pct: num.min(0, 'Não pode ser negativo'),
-  ipi_pct: num.min(0, 'Não pode ser negativo'),
   desvio_mp_pct: num.min(0, 'Não pode ser negativo'),
   frete_un_brl: num.min(0, 'Não pode ser negativo'),
   alerta_aumento_mp_pct: num.min(0, 'Não pode ser negativo'),
@@ -71,11 +70,6 @@ function ConfigForm({ config }: { config: SystemConfig }) {
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      mo_folha_mensal: Number(config.mo_folha_mensal),
-      mo_dias_uteis: config.mo_dias_uteis,
-      imposto_mp_pct: Number(config.imposto_mp_pct),
-      imposto_mo_pct: Number(config.imposto_mo_pct),
-      ipi_pct: Number(config.ipi_pct),
       desvio_mp_pct: Number(config.desvio_mp_pct),
       frete_un_brl: Number(config.frete_un_brl),
       alerta_aumento_mp_pct: Number(config.alerta_aumento_mp_pct),
@@ -104,15 +98,14 @@ function ConfigForm({ config }: { config: SystemConfig }) {
 
       {/* Parâmetros de custo */}
       <div className="rounded-lg border border-border bg-surface p-5">
-        <h3 className="mb-4 font-medium text-ink">Parâmetros de custo</h3>
+        <h3 className="mb-1 font-medium text-ink">Parâmetros de custo</h3>
+        <p className="mb-4 text-caption text-warm-500">
+          Só o que o preço ainda lê. Fábrica (taxa/minuto, setup), créditos de entrada,
+          escada de margem e tributos ficam em Matriz de Custo (parâmetros versionados).
+        </p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Campo register={register} errors={errors} name="mo_folha_mensal" label="Folha mensal (MO)" sufixo="R$" step="0.01" />
-          <Campo register={register} errors={errors} name="mo_dias_uteis" label="Dias úteis/mês" step="1" />
+          <Campo register={register} errors={errors} name="desvio_mp_pct" label="Perda de MP" sufixo="%" step="0.001" />
           <Campo register={register} errors={errors} name="frete_un_brl" label="Frete por unidade" sufixo="R$" step="0.0001" />
-          <Campo register={register} errors={errors} name="imposto_mp_pct" label="Imposto MP" sufixo="%" step="0.001" />
-          <Campo register={register} errors={errors} name="imposto_mo_pct" label="Imposto MO" sufixo="%" step="0.001" />
-          <Campo register={register} errors={errors} name="ipi_pct" label="IPI" sufixo="%" step="0.001" />
-          <Campo register={register} errors={errors} name="desvio_mp_pct" label="Desvio MP" sufixo="%" step="0.001" />
         </div>
       </div>
 

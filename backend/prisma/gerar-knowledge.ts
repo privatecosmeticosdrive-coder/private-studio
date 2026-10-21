@@ -106,28 +106,58 @@ async function gerarMps(): Promise<number> {
 
 async function gerarRegras(nMaes: number, nMps: number) {
   const c = await prisma.systemConfig.findUnique({ where: { id: 1 } });
-  const moDia = c ? Number(c.mo_folha_mensal) / c.mo_dias_uteis : 3750;
+  // MOTOR 2 10/26 — o texto do knowledge le as MESMAS tabelas versionadas que o
+  // engine (parametro_producao / parametro_fiscal). Os 3 flats antigos (37,5% MP,
+  // 9,25% MO, IPI 4,55%) NAO existem mais no calculo e nao sao mais ensinados.
+  const hoje = new Date();
+  const vigentes = async (rows: { chave: string; valor: unknown; vigencia_inicio: Date }[]) => {
+    const m = new Map<string, number>();
+    for (const r of rows) if (!m.has(r.chave)) m.set(r.chave, Number(r.valor));
+    return m;
+  };
+  const prod = await vigentes(
+    await prisma.parametroProducao.findMany({
+      where: { vigencia_inicio: { lte: hoje }, OR: [{ vigencia_fim: null }, { vigencia_fim: { gte: hoje } }] },
+      orderBy: { vigencia_inicio: 'desc' },
+    }),
+  );
+  const fisc = await vigentes(
+    await prisma.parametroFiscal.findMany({
+      where: { vigencia_inicio: { lte: hoje }, OR: [{ vigencia_fim: null }, { vigencia_fim: { gte: hoje } }] },
+      orderBy: { vigencia_inicio: 'desc' },
+    }),
+  );
+  const v = (m: Map<string, number>, k: string) => (m.has(k) ? String(m.get(k)) : 'NAO CADASTRADO (falha visivel)');
+  const motor = prod.get('motor_precificacao') === 2 ? 'Motor 2 10/26' : 'Motor 1 (fiscal granular 3.1)';
   const texto = `# Regras de cálculo e operação — Private Cosméticos
 
 Base: ${nMaes} fórmulas-mãe + ${nMps} matérias-primas validadas.
 
-## Modelo de custo (determinístico, Doc 1 §6 + Doc 2d §A)
-- Folha mensal (MO): R$ ${c ? Number(c.mo_folha_mensal).toFixed(2) : '75000.00'} / ${c?.mo_dias_uteis ?? 20} dias úteis = R$ ${moDia.toFixed(2)}/dia.
-- Imposto sobre MP: ${c ? Number(c.imposto_mp_pct) : 37.5}%.
-- Imposto sobre MO: ${c ? Number(c.imposto_mo_pct) : 9.25}%.
-- IPI: ${c ? Number(c.ipi_pct) : 4.55}%.
-- Desvio de MP: ${c ? Number(c.desvio_mp_pct) : 10}%.
-- Frete por unidade: R$ ${c ? Number(c.frete_un_brl).toFixed(2) : '0.10'}.
+## Motor de precificação vigente: ${motor}
+Documento completo: docs/precificacao/MOTOR-2-10-26.md. Todos os parâmetros abaixo são
+VERSIONADOS (vigência + fonte) nas tabelas parametro_producao e parametro_fiscal — nunca
+literais no código. Não existe mais "imposto sobre MP de 37,5%" nem "imposto sobre MO de 9,25%".
 
-Fórmula do custo por unidade:
-- volume_kg = volume_un / 1000 (densidade ~1).
-- CMP s/ imposto = (MP_base + fragrância + desvio + embalagem + frete).
-- CMP c/ imposto = CMP s/ imposto × (1 + imposto_mp).
-- MO: produção_diária = un_min × 480 (un/min × 60 × 8h).
-  dias = ceil(quantidade / produção_diária); MO_lote = dias × R$/dia; MO_un = MO_lote / quantidade.
-  CMO c/ imposto = MO_un × (1 + imposto_mo).
-- Custo total = CMP_cimp + CMO_cimp.
-- Preço s/ IPI = custo_total / (1 - margem). IPI_un = preço_sipi × ipi. Preço c/ IPI = preço_sipi + IPI_un.
+### Material (por unidade)
+- MP líquida = preço da ÚLTIMA COMPRA (R$/kg × kg/un) × (1 + perda ${c ? Number(c.desvio_mp_pct) : 10}%) × (1 − crédito MP ${v(fisc, 'credito_mp_pct')}%).
+- Embalagem líquida = preço da embalagem × (1 − crédito embalagem ${v(fisc, 'credito_emb_pct')}%).
+- Frete por unidade: R$ ${c ? Number(c.frete_un_brl).toFixed(2) : '0.10'} (sempre somado).
+- Densidade 1,0 g/mL (volume_un em mL tratado como g).
+- MP sem preço entra valendo R$ 0 e gera ALERTA (custo subestimado); composição ≠ 100% é normalizada COM alerta.
+
+### Fábrica (modelo de 3 componentes)
+- custo_fixo_producao_mensal = R$ ${v(prod, 'custo_fixo_producao_mensal')} (pagamentos reais; sem encargos simulados, ociosidade ou SG&A).
+- capacidade_normal_min_mes = linhas ${v(prod, 'linhas_paralelas')} × dias ${v(prod, 'dias_uteis_mes')} × horas ${v(prod, 'horas_dia')} × 60 × eficiência ${v(prod, 'eficiencia_producao')}.
+- taxa_minuto = custo_fixo ÷ capacidade; setup/ordem = taxa_minuto × ${v(prod, 'setup_minutos')} min.
+- fábrica/un = setup/ordem ÷ quantidade + taxa_minuto ÷ un_min. un_min padrão (quando não informado, COM alerta): ${v(prod, 'un_min_padrao')}.
+
+### Preço (tributos "por dentro" pela matriz fiscal: modo × perfil do cliente × NCM)
+- preço_produto = (MP líquida + frete + fábrica) ÷ (1 − tributos − margem).
+- preço_embalagem = embalagem líquida ÷ (1 − tributos − taxa de gestão ${v(prod, 'taxa_gestao_embalagem_pct')}%). A embalagem NÃO leva a margem do produto.
+- preço sem IPI = produto + embalagem; IPI por fora, pelo NCM.
+- Escada de margem (automática; override manual é registrado): lote < ${v(prod, 'lote_medio_min_un')} → ${v(prod, 'margem_lote_pequeno_pct')}%; até ${v(prod, 'lote_grande_min_un')} → ${v(prod, 'margem_lote_medio_pct')}%; acima → ${v(prod, 'margem_lote_grande_pct')}%.
+- Lote mínimo aceito: ${v(prod, 'lote_minimo_un')} un (abaixo: alerta bloqueante).
+- Tributos por dentro: ICMS ${v(fisc, 'icms_carga_art34_pct')}% (art. 34, RPA revenda SP) ou ${v(fisc, 'icms_nominal_padrao_pct')}% (Simples/consumidor final); PIS/COFINS monofásico ${v(fisc, 'pis_monofasico_pct')}+${v(fisc, 'cofins_monofasico_pct')}%, comum ${v(fisc, 'pis_comum_pct')}+${v(fisc, 'cofins_comum_pct')}%.
 
 ## Produtividade (un/min direto — Doc 2d §A)
 Presets: 8 (envase simples) · 6 (+rótulo) · 4 (pump/cartucho) · 2 (stick FPS/gloss) · 1 (manual/premium). Ou valor livre.

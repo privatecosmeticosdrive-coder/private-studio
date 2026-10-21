@@ -1,13 +1,13 @@
 import { api } from '@/lib/api';
 import type { SystemConfig } from '@/lib/types';
 
-/** Campos editáveis pelo admin (espelha UpdateSystemConfigDto). */
+/**
+ * Campos editáveis pelo admin (subconjunto VIVO do UpdateSystemConfigDto).
+ * mo_folha_mensal / mo_dias_uteis / imposto_mp_pct / imposto_mo_pct / ipi_pct
+ * saíram da tela em 10/26: não alimentam o preço desde o corte F3/F4 (MO vem de
+ * parametro_producao, tributos da matriz fiscal, IPI do NCM).
+ */
 export interface AtualizarConfigPayload {
-  mo_folha_mensal?: number;
-  mo_dias_uteis?: number;
-  imposto_mp_pct?: number;
-  imposto_mo_pct?: number;
-  ipi_pct?: number;
   desvio_mp_pct?: number;
   frete_un_brl?: number;
   alerta_aumento_mp_pct?: number;

@@ -1,7 +1,21 @@
 # Estado Atual — Private Studio v9
 
-**Data:** 2026-07-05 (F4 Fase A CORTADA)
+**Data:** 2026-07-05 (F4 Fase A CORTADA) · **adendo 2026-10-20:** Motor 2 10/26 na branch `motor-2-10-26`
 **Nota:** Este documento reflete o **código real** (não o plano). Atualizar a cada marco.
+
+---
+
+## 0. Motor 2 10/26 — branch `motor-2-10-26` (2026-10-20, NÃO mergeado, NÃO aplicado em produção)
+
+Regras completas em **`docs/precificacao/MOTOR-2-10-26.md`** (substitui a lógica do PDF de regras).
+Resumo do que a branch entrega:
+
+- **Engine novo** `custo-engine-motor2.ts` (puro) ao lado do Motor 1 (`custo-engine-fiscal.ts`, intocado — snapshots antigos e os 17 goldens originais seguem reproduzidos). Seleção: `CalcularDto.motor` > `parametro_producao.motor_precificacao` vigente > 1. **Até a seed rodar, produção continua no Motor 1.**
+- MP pela **última compra × (1+perda 10%) × (1 − crédito 21,21%)**; embalagem × (1 − 13,82%) com **taxa de gestão 15%** no lugar da margem (fecha a "decisão comercial em aberto" A×D do radar); **escada de margem** 45/40/35 por lote com override manual registrado; **lote mínimo 500** (alerta bloqueante, não lança); fábrica na vigência 2026-10 (`custo_fixo_producao_mensal` 101.305 → taxa R$ 4,68/min, setup R$ 280,78).
+- Snapshot carrega `motor`, `vigencias_parametros[]`, `margem{}`, `premissas[]`; tela e PDF mostram motor, escada, créditos, taxa de gestão e o banner bloqueante.
+- **Pente fino aplicado:** volume/quantidade sem default silencioso (400); composição ≠ 100% normalizada **com alerta**; `preco_kg_brl` → `Decimal(12,4)` (migration `20261020120000_motor2_preco_kg_4_casas`, **não aplicada** — o `start` do Railway a aplica no próximo deploy de `main`); Matriz de Custo ganhou o cartão **"Fábrica vigente"** (parametro_producao, mesma função do engine) e a seção de **parâmetros de produção versionados** (`GET/POST /matriz-custo/parametros-producao`); derivados da system_config rotulados como legado; Admin → Parâmetros só edita perda e frete (campos mortos 37,5%/9,25%/IPI/folha saíram da tela); `mo-matriz.util.ts` (9,25%) removido; `gerar-knowledge.ts` reescrito para as tabelas versionadas.
+- **Para ativar em produção (ordem):** (1) merge + deploy da branch; (2) `node prisma/seed-motor2-2026-10.cjs` (dry-run) → `--commit` com OK do Gabriel; (3) conferir "Fábrica vigente" na Matriz; (4) recalcular um orçamento de referência e comparar com `docs/precificacao/MOTOR-2-10-26.md` §4. Rollback: `prisma/rollback-motor2-2026-10.sql` (untracked) ou nova vigência `motor_precificacao = 1`.
+- **Pendências do pente fino (não resolvidas na branch):** densidade por fórmula (campo inexistente; premissa 1,0 declarada no snapshot); `docs/01_sistema_atual.md:147` e `docs/02d` ainda descrevem o 37,5%; campos legados da `system_config` seguem no schema (F6); `custo-engine.ts` (tipos v1) permanece só como tipo.
 
 ---
 

@@ -17,7 +17,10 @@ export class UpdateSystemConfigDto {
   @IsOptional() @IsBoolean()
   alertas_ativos?: boolean;
 
-  // parametros do modelo de custo
+  // ---- LEGADO (NAO alimentam o preco desde o corte F3/F4 e o Motor 2 10/26) ----
+  // mo_folha_mensal/mo_dias_uteis/mo_colaboradores/imposto_mp_pct/imposto_mo_pct/
+  // ipi_pct ficam aceitos so por compatibilidade de API; a tela Admin nao os
+  // edita mais. MO vem de parametro_producao; tributos da matriz fiscal; IPI do NCM.
   @IsOptional() @IsNumber() @Min(0)
   mo_folha_mensal?: number;
 
@@ -36,6 +39,7 @@ export class UpdateSystemConfigDto {
   @IsOptional() @IsNumber() @Min(0)
   ipi_pct?: number;
 
+  // ---- VIVOS: perda de MP e frete/un (lidos pelo Motor 1 e pelo Motor 2) ----
   @IsOptional() @IsNumber() @Min(0)
   desvio_mp_pct?: number;
 
