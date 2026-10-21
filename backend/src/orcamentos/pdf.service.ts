@@ -211,10 +211,23 @@ interface CalculoJson {
     } | null;
     mp_sem_preco: { quantidade: number; nomes: string[] } | null;
     // Motor 2 10/26 + pente fino (opcionais)
-    lote_minimo?: { nivel: string; quantidade: number; lote_minimo_un: number; mensagem: string } | null;
-    embalagem_ignorada?: { embalagem_un: number; modo: string; mensagem: string } | null;
+    lote_minimo?: {
+      nivel: string;
+      quantidade: number;
+      lote_minimo_un: number;
+      mensagem: string;
+    } | null;
+    embalagem_ignorada?: {
+      embalagem_un: number;
+      modo: string;
+      mensagem: string;
+    } | null;
     un_min_padrao?: { un_min: number; mensagem: string } | null;
-    composicao_normalizada?: { soma_pct: number; fator: number; mensagem: string } | null;
+    composicao_normalizada?: {
+      soma_pct: number;
+      fator: number;
+      mensagem: string;
+    } | null;
   };
   parcelas?: {
     material?: CalcParcelaV3 | null;
@@ -366,16 +379,18 @@ export class PdfService {
     if (c._preliminar) content.push(this.bannerPreliminar(c._aviso));
     if (!v3) content.push(this.bannerHistorico(c._modelo_versao));
     // Motor 2: alerta BLOQUEANTE de lote mínimo vem ANTES do preço (regra 7).
-    if (c.alertas?.lote_minimo) content.push(this.bannerBloqueante(c.alertas.lote_minimo.mensagem));
-    content.push(this.secaoBriefing(orc));
+    if (c.alertas?.lote_minimo)
+      content.push(this.bannerBloqueante(c.alertas.lote_minimo.mensagem));
+    content.push(this.secaoBriefing(orc, c));
     content.push(this.cardsPreco(c));
 
     if (m2) {
       content.push(this.linhaMotor2(c));
-      content.push(this.secaoEnquadramentoV3(c));
+      content.push(this.secaoEnquadramentoV3(c, true));
       content.push(this.blocosMotor2(c));
       content.push(this.secaoAvisosMotor2(c));
-      content.push(this.secaoFundamentosV3(c.fundamentos ?? []));
+      // fundamentos + premissas + vigências vão para a página 2 (auditoria) —
+      // mantém a estrutura de 2 páginas com o detalhe maior do Motor 2.
     } else if (v3) {
       content.push(this.secaoEnquadramentoV3(c));
       // material e MO em UMA coluna cada: custo fisico + origem da MO (folha/
@@ -383,14 +398,15 @@ export class PdfService {
       content.push(this.blocosMaterialMoV3(c));
       content.push(this.secaoFundamentosV3(c.fundamentos ?? []));
     } else {
-      if (c.custo_mp) content.push(this.blocosCustoV1(c.custo_mp, c.mao_de_obra));
+      if (c.custo_mp)
+        content.push(this.blocosCustoV1(c.custo_mp, c.mao_de_obra));
       if (c.parametros) content.push(this.secaoParametrosV1(c.parametros));
     }
 
     // PAGINA 2 — SEMPRE e SO: formulacao + embalagem (pageBreak forcado).
     // Nunca sai vazia: sem ingredientes rende o texto honesto; embalagem
     // sempre tem um estado (snapshot / a granel / sem registro).
-    content.push(this.pagina2(orc, c));
+    content.push(this.pagina2(orc, c, m2));
 
     return {
       pageSize: 'A4',
@@ -536,7 +552,7 @@ export class PdfService {
     };
   }
 
-  private secaoBriefing(orc: OrcamentoPdf): Content {
+  private secaoBriefing(orc: OrcamentoPdf, c?: CalculoJson): Content {
     const f = orc.formula
       ? `${orc.formula.nome_produto}${orc.formula.versao_codigo ? ` ${orc.formula.versao_codigo}` : ''}`
       : 'Sem fórmula';
@@ -563,7 +579,14 @@ export class PdfService {
         'Produtividade',
         orc.un_min != null ? `${this.num(orc.un_min)} un/min` : '—',
       ],
-      ['Margem', orc.margem_pct != null ? `${this.num(orc.margem_pct)}%` : '—'],
+      [
+        'Margem',
+        c?.margem
+          ? `${this.num(c.margem.aplicada_pct)}% (${c.margem.origem === 'escada' ? 'escada por lote' : 'manual'})`
+          : orc.margem_pct != null
+            ? `${this.num(orc.margem_pct)}%`
+            : '—',
+      ],
       ['Produto de referência', orc.produto_referencia ?? '—'],
       ['Requer amostra', orc.requer_amostra ? 'Sim' : 'Não'],
     ];
@@ -648,17 +671,28 @@ export class PdfService {
     };
   }
 
-  // linha rotulo -> valor (tabelas de 2 colunas)
-  private linhaRV(r: string, v: string, destaque?: boolean): TableCell[] {
+  // linha rotulo -> valor (tabelas de 2 colunas); `justa` = margem menor (Motor 2)
+  private linhaRV(
+    r: string,
+    v: string,
+    destaque?: boolean,
+    justa = false,
+  ): TableCell[] {
+    const m = justa ? 0.5 : 1.5;
     return [
-      { text: r, fontSize: 8, color: COR.warm600, margin: [0, 1.5, 0, 1.5] },
+      {
+        text: r,
+        fontSize: justa ? 7.5 : 8,
+        color: COR.warm600,
+        margin: [0, m, 0, m],
+      },
       {
         text: v,
-        fontSize: 8.5,
+        fontSize: justa ? 8 : 8.5,
         bold: !!destaque,
         color: COR.ink,
         alignment: 'right',
-        margin: [0, 1.5, 0, 1.5],
+        margin: [0, m, 0, m],
       },
     ];
   }
@@ -676,27 +710,57 @@ export class PdfService {
 
   // ================= pagina 1 — renderer v3 (fiscal granular) =================
 
-  private secaoEnquadramentoV3(c: CalculoJson): Content {
+  private secaoEnquadramentoV3(c: CalculoJson, compacto = false): Content {
     const ncm = c.ncm!;
     const res = c.resultado;
     const ncmLabel = `${ncm.codigo}${ncm.ex_tipi ? ` ${ncm.ex_tipi}` : ''}`;
-    const body: TableCell[][] = [
-      [
-        this.itemRV('Modo de operação', MODO_LABEL[c.modo_operacao ?? ''] ?? c.modo_operacao ?? '—'),
-        this.itemRV('NCM', ncmLabel),
-        this.itemRV('Produto monofásico', ncm.monofasico ? 'Sim' : 'Não'),
-        this.itemRV('Tratamento IPI', ncm.tratamento),
-      ],
-      [
-        this.itemRV('IPI', `${this.num(res.ipi_pct)}% (${this.brl(res.ipi_un)}/un)`),
-        this.itemRV('Base do IPI', BASE_IPI_LABEL[res.base_ipi] ?? res.base_ipi),
-        this.itemRV(
-          'ICMS sobre o IPI',
-          res.icms_sobre_ipi > 0 ? this.brl(res.icms_sobre_ipi) : '—',
-        ),
-        { text: '' },
-      ],
-    ];
+    const body: TableCell[][] = compacto
+      ? [
+          [
+            this.itemRV(
+              'Modo',
+              MODO_LABEL[c.modo_operacao ?? ''] ?? c.modo_operacao ?? '—',
+            ),
+            this.itemRV(
+              'NCM',
+              `${ncmLabel} · ${ncm.monofasico ? 'monofásico' : 'não monofásico'}`,
+            ),
+            this.itemRV(
+              'IPI',
+              `${ncm.tratamento} · ${this.num(res.ipi_pct)}% (${this.brl(res.ipi_un)}/un)`,
+            ),
+            this.itemRV(
+              'Base do IPI',
+              `${BASE_IPI_LABEL[res.base_ipi] ?? res.base_ipi}${res.icms_sobre_ipi > 0 ? ` · ICMS s/ IPI ${this.brl(res.icms_sobre_ipi)}` : ''}`,
+            ),
+          ],
+        ]
+      : [
+          [
+            this.itemRV(
+              'Modo de operação',
+              MODO_LABEL[c.modo_operacao ?? ''] ?? c.modo_operacao ?? '—',
+            ),
+            this.itemRV('NCM', ncmLabel),
+            this.itemRV('Produto monofásico', ncm.monofasico ? 'Sim' : 'Não'),
+            this.itemRV('Tratamento IPI', ncm.tratamento),
+          ],
+          [
+            this.itemRV(
+              'IPI',
+              `${this.num(res.ipi_pct)}% (${this.brl(res.ipi_un)}/un)`,
+            ),
+            this.itemRV(
+              'Base do IPI',
+              BASE_IPI_LABEL[res.base_ipi] ?? res.base_ipi,
+            ),
+            this.itemRV(
+              'ICMS sobre o IPI',
+              res.icms_sobre_ipi > 0 ? this.brl(res.icms_sobre_ipi) : '—',
+            ),
+            { text: '' },
+          ],
+        ];
     return {
       stack: [
         { text: 'Enquadramento fiscal', style: 'secao' },
@@ -719,12 +783,23 @@ export class PdfService {
     const oper = c.parametros_operacionais;
 
     const bodyMat: TableCell[][] = [
-      [{ text: 'Material (custo sem colchão de imposto)', style: 'th', colSpan: 2 }, {}],
+      [
+        {
+          text: 'Material (custo sem colchão de imposto)',
+          style: 'th',
+          colSpan: 2,
+        },
+        {},
+      ],
       this.linhaRV('MP base/un', this.brl(mat.mp_base)),
       this.linhaRV('Desvio/un', this.brl(mat.desvio)),
       this.linhaRV('Embalagem/un', this.brl(mat.embalagem)),
       this.linhaRV('Frete/un', this.brl(mat.frete)),
-      this.linhaRV('Custo de material/un', this.brl(mat.custo_material_un), true),
+      this.linhaRV(
+        'Custo de material/un',
+        this.brl(mat.custo_material_un),
+        true,
+      ),
     ];
     // Aviso AGREGADO de MP sem preço: a linha da MP já aparece na formulação,
     // mas o impacto no custo tem que estar junto do número (regra 7).
@@ -744,8 +819,15 @@ export class PdfService {
     }
     if (c.parcelas?.material) {
       bodyMat.push(
-        this.linhaRV('Tributos por dentro', `${this.num(c.parcelas.material.taxa_pct)}%`),
-        this.linhaRV('Preço da parcela/un (s/ IPI)', this.brl(c.parcelas.material.preco_un), true),
+        this.linhaRV(
+          'Tributos por dentro',
+          `${this.num(c.parcelas.material.taxa_pct)}%`,
+        ),
+        this.linhaRV(
+          'Preço da parcela/un (s/ IPI)',
+          this.brl(c.parcelas.material.preco_un),
+          true,
+        ),
       );
     }
 
@@ -756,9 +838,12 @@ export class PdfService {
     if (mo.setup_un != null) {
       bodyMo.push(
         this.linhaRV('Setup/un (ordem diluída no lote)', this.brl(mo.setup_un)),
-        this.linhaRV('Corrida/un (tempo real)', this.brl(mo.corrida_un!)),
-        this.linhaRV('Taxa por minuto produtivo', this.brl(mo.taxa_minuto!)),
-        this.linhaRV('Produção diária/linha', `${this.num(mo.producao_diaria)} un`),
+        this.linhaRV('Corrida/un (tempo real)', this.brl(mo.corrida_un)),
+        this.linhaRV('Taxa por minuto produtivo', this.brl(mo.taxa_minuto)),
+        this.linhaRV(
+          'Produção diária/linha',
+          `${this.num(mo.producao_diaria)} un`,
+        ),
       );
     } else {
       if (oper?.mo_folha_mensal != null) {
@@ -767,10 +852,15 @@ export class PdfService {
           this.linhaRV('Dias úteis/mês', this.num(oper.mo_dias_uteis!)),
         );
       }
-      bodyMo.push(this.linhaRV('Produção diária', `${this.num(mo.producao_diaria)} un`));
+      bodyMo.push(
+        this.linhaRV('Produção diária', `${this.num(mo.producao_diaria)} un`),
+      );
       if (mo.dias_necessarios != null) {
         bodyMo.push(
-          this.linhaRV('Dias necessários (modelo anterior)', this.num(mo.dias_necessarios)),
+          this.linhaRV(
+            'Dias necessários (modelo anterior)',
+            this.num(mo.dias_necessarios),
+          ),
         );
       }
     }
@@ -793,15 +883,28 @@ export class PdfService {
     if (c.parcelas?.mo) {
       bodyMo.push(
         this.linhaRV('Custo da parcela/un', this.brl(c.parcelas.mo.custo_un)),
-        this.linhaRV('Tributos por dentro', `${this.num(c.parcelas.mo.taxa_pct)}%`),
-        this.linhaRV('Preço da parcela/un (s/ IPI)', this.brl(c.parcelas.mo.preco_un), true),
+        this.linhaRV(
+          'Tributos por dentro',
+          `${this.num(c.parcelas.mo.taxa_pct)}%`,
+        ),
+        this.linhaRV(
+          'Preço da parcela/un (s/ IPI)',
+          this.brl(c.parcelas.mo.preco_un),
+          true,
+        ),
       );
     }
 
     return {
       columns: [
-        { table: { widths: ['*', 'auto'], body: bodyMat }, layout: this.layoutSuave() },
-        { table: { widths: ['*', 'auto'], body: bodyMo }, layout: this.layoutSuave() },
+        {
+          table: { widths: ['*', 'auto'], body: bodyMat },
+          layout: this.layoutSuave(),
+        },
+        {
+          table: { widths: ['*', 'auto'], body: bodyMo },
+          layout: this.layoutSuave(),
+        },
       ],
       columnGap: 12,
       margin: [0, 8, 0, 0],
@@ -853,9 +956,16 @@ export class PdfService {
       );
     }
     if (c.resultado.preco_produto_sipi != null) {
-      partes.push(`preço s/ embalagem ${this.brl(c.resultado.preco_produto_sipi)}`);
+      partes.push(
+        `preço s/ embalagem ${this.brl(c.resultado.preco_produto_sipi)}`,
+      );
     }
-    return { text: partes.join('  ·  '), fontSize: 8, color: COR.warm600, margin: [0, 6, 0, 0] };
+    return {
+      text: partes.join('  ·  '),
+      fontSize: 8,
+      color: COR.warm600,
+      margin: [0, 6, 0, 0],
+    };
   }
 
   /** Material (bruto → líquido de créditos) e fábrica, com as parcelas precificadas. */
@@ -865,23 +975,74 @@ export class PdfService {
     const p = c.parcelas ?? {};
 
     const bodyMat: TableCell[][] = [
-      [{ text: 'Material (líquido de créditos de entrada)', style: 'th', colSpan: 2 }, {}],
-      this.linhaRV('MP última compra/un (bruta)', this.brl(mat.mp_bruta)),
-      this.linhaRV(`Perda (${this.num(mat.perda_pct)}%)`, this.brl(mat.perda)),
-      this.linhaRV(`(−) Crédito MP (${this.num(mat.credito_mp_pct)}%)`, `− ${this.brl(mat.credito_mp)}`),
-      this.linhaRV('MP líquida/un', this.brl(mat.mp_liquida), true),
-      this.linhaRV('Frete/un', this.brl(mat.frete)),
+      [
+        {
+          text: 'Material (líquido de créditos de entrada)',
+          style: 'th',
+          colSpan: 2,
+        },
+        {},
+      ],
+      this.linhaRV(
+        'MP última compra/un (bruta)',
+        this.brl(mat.mp_bruta),
+        false,
+        true,
+      ),
+      this.linhaRV(
+        `Perda (${this.num(mat.perda_pct)}%)`,
+        this.brl(mat.perda),
+        false,
+        true,
+      ),
+      this.linhaRV(
+        `(-) Crédito MP (${this.num(mat.credito_mp_pct)}%)`,
+        `- ${this.brl(mat.credito_mp)}`,
+        false,
+        true,
+      ),
+      this.linhaRV('MP líquida/un', this.brl(mat.mp_liquida), true, true),
+      this.linhaRV('Frete/un', this.brl(mat.frete), false, true),
     ];
     if (mat.embalagem_bruta > 0) {
       bodyMat.push(
-        this.linhaRV('Embalagem/un (bruta)', this.brl(mat.embalagem_bruta)),
-        this.linhaRV(`(−) Crédito embalagem (${this.num(mat.credito_emb_pct)}%)`, `− ${this.brl(mat.credito_emb)}`),
-        this.linhaRV('Embalagem líquida/un', this.brl(mat.embalagem_liquida), true),
+        this.linhaRV(
+          'Embalagem/un (bruta)',
+          this.brl(mat.embalagem_bruta),
+          false,
+          true,
+        ),
+        this.linhaRV(
+          `(-) Crédito embalagem (${this.num(mat.credito_emb_pct)}%)`,
+          `- ${this.brl(mat.credito_emb)}`,
+          false,
+          true,
+        ),
+        this.linhaRV(
+          'Embalagem líquida/un',
+          this.brl(mat.embalagem_liquida),
+          true,
+          true,
+        ),
       );
     } else {
-      bodyMat.push(this.linhaRV('Embalagem/un', mat.embalagem_informada > 0 ? 'fornecida pelo cliente' : '—'));
+      bodyMat.push(
+        this.linhaRV(
+          'Embalagem/un',
+          mat.embalagem_informada > 0 ? 'fornecida pelo cliente' : '—',
+          false,
+          true,
+        ),
+      );
     }
-    bodyMat.push(this.linhaRV('Custo de material/un', this.brl(mat.custo_material_un), true));
+    bodyMat.push(
+      this.linhaRV(
+        'Custo de material/un',
+        this.brl(mat.custo_material_un),
+        true,
+        true,
+      ),
+    );
     const semPreco = c.alertas?.mp_sem_preco;
     if (semPreco) {
       bodyMat.push([
@@ -898,13 +1059,35 @@ export class PdfService {
     }
 
     const bodyMo: TableCell[][] = [
-      [{ text: 'Fábrica (setup diluído + corrida)', style: 'th', colSpan: 2 }, {}],
-      this.linhaRV('Taxa por minuto produtivo', this.brl(mo.taxa_minuto)),
-      this.linhaRV('Setup por ordem', this.brl(mo.custo_setup_ordem)),
-      this.linhaRV('Setup/un (ordem diluída no lote)', this.brl(mo.setup_un)),
-      this.linhaRV('Corrida/un (tempo real)', this.brl(mo.corrida_un)),
-      this.linhaRV('Produção diária/linha', `${this.num(mo.producao_diaria)} un`),
-      this.linhaRV('Fábrica/un', this.brl(mo.mo_un), true),
+      [
+        { text: 'Fábrica (setup diluído + corrida)', style: 'th', colSpan: 2 },
+        {},
+      ],
+      this.linhaRV(
+        'Taxa por minuto produtivo',
+        this.brl(mo.taxa_minuto),
+        false,
+        true,
+      ),
+      this.linhaRV(
+        'Setup/un (ordem diluída no lote)',
+        `${this.brl(mo.setup_un)}  (ordem ${this.brl(mo.custo_setup_ordem)})`,
+        false,
+        true,
+      ),
+      this.linhaRV(
+        'Corrida/un (tempo real)',
+        this.brl(mo.corrida_un),
+        false,
+        true,
+      ),
+      this.linhaRV(
+        'Produção diária/linha',
+        `${this.num(mo.producao_diaria)} un`,
+        false,
+        true,
+      ),
+      this.linhaRV('Fábrica/un', this.brl(mo.mo_un), true, true),
     ];
     const moq = c.alertas?.moq;
     if (moq) {
@@ -923,7 +1106,16 @@ export class PdfService {
 
     // parcelas precificadas (produto / embalagem / MO conforme o modo)
     const bodyParc: TableCell[][] = [
-      [{ text: 'Parcelas precificadas (tributos por dentro)', style: 'th', colSpan: 4 }, {}, {}, {}],
+      [
+        {
+          text: 'Parcelas precificadas (tributos por dentro)',
+          style: 'th',
+          colSpan: 4,
+        },
+        {},
+        {},
+        {},
+      ],
       [
         { text: 'Parcela', style: 'rotulo' },
         { text: 'Custo/un', style: 'rotulo', alignment: 'right' },
@@ -931,7 +1123,11 @@ export class PdfService {
         { text: 'Preço/un s/ IPI', style: 'rotulo', alignment: 'right' },
       ],
     ];
-    const linhaParc = (nome: string, x: CalcParcelaM2 | null | undefined, markupRotulo: string) => {
+    const linhaParc = (
+      nome: string,
+      x: CalcParcelaM2 | null | undefined,
+      markupRotulo: string,
+    ) => {
       if (!x) return;
       bodyParc.push([
         { text: nome, fontSize: 8, color: COR.warm600 },
@@ -942,23 +1138,40 @@ export class PdfService {
           alignment: 'right',
           color: COR.warm600,
         },
-        { text: this.brl(x.preco_un), fontSize: 8.5, bold: true, alignment: 'right' },
+        {
+          text: this.brl(x.preco_un),
+          fontSize: 8.5,
+          bold: true,
+          alignment: 'right',
+        },
       ]);
     };
     linhaParc(
-      c.modo_operacao === 'hibrido' ? 'Material próprio' : 'Produto (MP + frete + fábrica)',
+      c.modo_operacao === 'hibrido'
+        ? 'Material próprio'
+        : 'Produto (MP + frete + fábrica)',
       p.produto,
       'margem',
     );
     linhaParc('Embalagem (repasse)', p.embalagem, 'taxa de gestão');
-    linhaParc('Mão de obra / execução', p.mo as CalcParcelaM2 | null | undefined, 'margem');
+    linhaParc(
+      'Mão de obra / execução',
+      p.mo as CalcParcelaM2 | null | undefined,
+      'margem',
+    );
 
     return {
       stack: [
         {
           columns: [
-            { table: { widths: ['*', 'auto'], body: bodyMat }, layout: this.layoutSuave() },
-            { table: { widths: ['*', 'auto'], body: bodyMo }, layout: this.layoutSuave() },
+            {
+              table: { widths: ['*', 'auto'], body: bodyMat },
+              layout: this.layoutSuave(),
+            },
+            {
+              table: { widths: ['*', 'auto'], body: bodyMo },
+              layout: this.layoutSuave(),
+            },
           ],
           columnGap: 12,
           margin: [0, 8, 0, 0],
@@ -972,22 +1185,29 @@ export class PdfService {
     };
   }
 
-  /** Avisos não bloqueantes do Motor 2 + premissas + vigências dos parâmetros. */
+  /** Avisos não bloqueantes do Motor 2 (página 1). */
   private secaoAvisosMotor2(c: CalculoJson): Content {
     const a = c.alertas;
     const avisos: string[] = [];
     if (a?.embalagem_ignorada) avisos.push(a.embalagem_ignorada.mensagem);
     if (a?.un_min_padrao) avisos.push(a.un_min_padrao.mensagem);
-    if (a?.composicao_normalizada) avisos.push(a.composicao_normalizada.mensagem);
+    if (a?.composicao_normalizada)
+      avisos.push(a.composicao_normalizada.mensagem);
+    if (!avisos.length) return { text: '' };
+    return {
+      table: {
+        widths: ['*'],
+        body: avisos.map((t) => [{ text: `⚠  ${t}`, style: 'aviso' }]),
+      },
+      layout: 'noBorders',
+      margin: [0, 6, 0, 0],
+    };
+  }
+
+  /** Premissas + vigências dos parâmetros (auditoria) — pé da página 2 no Motor 2. */
+  private secaoPremissasVigencias(c: CalculoJson): Content {
     const vig = c.vigencias_parametros ?? [];
     const stack: Content[] = [];
-    if (avisos.length) {
-      stack.push({
-        table: { widths: ['*'], body: avisos.map((t) => [{ text: `⚠  ${t}`, style: 'aviso' }]) },
-        layout: 'noBorders',
-        margin: [0, 6, 0, 0],
-      });
-    }
     if (c.premissas?.length) {
       stack.push({
         text: `Premissas: ${c.premissas.join(' ')}`,
@@ -1000,16 +1220,20 @@ export class PdfService {
       stack.push({
         text:
           'Vigências dos parâmetros: ' +
-          vig.map((v) => `${v.chave}=${this.num(v.valor)} (${v.vigencia_inicio})`).join('; '),
+          vig
+            .map(
+              (v) => `${v.chave}=${this.num(v.valor)} (${v.vigencia_inicio})`,
+            )
+            .join('; '),
         fontSize: 7,
         color: COR.warm500,
         margin: [0, 3, 0, 0],
       });
     }
-    return stack.length ? { stack } : { text: '' };
+    return stack.length ? { stack, margin: [0, 10, 0, 0] } : { text: '' };
   }
 
-  private secaoFundamentosV3(fundamentos: string[]): Content {
+  private secaoFundamentosV3(fundamentos: string[], compacto = false): Content {
     if (!fundamentos.length) return { text: '' };
     return {
       stack: [
@@ -1018,7 +1242,12 @@ export class PdfService {
           table: {
             widths: ['*'],
             body: fundamentos.map((f) => [
-              { text: `•  ${f}`, fontSize: 7.5, color: COR.warm600, margin: [4, 1, 4, 1] },
+              {
+                text: `•  ${f}`,
+                fontSize: compacto ? 7 : 7.5,
+                color: COR.warm600,
+                margin: compacto ? [4, 0.5, 4, 0.5] : [4, 1, 4, 1],
+              },
             ]),
           },
           layout: 'noBorders',
@@ -1034,9 +1263,19 @@ export class PdfService {
       table: {
         widths: ['*', 'auto'],
         body: [
-          [{ text: 'Custo de matéria-prima (modelo anterior)', style: 'th', colSpan: 2 }, {}],
+          [
+            {
+              text: 'Custo de matéria-prima (modelo anterior)',
+              style: 'th',
+              colSpan: 2,
+            },
+            {},
+          ],
           this.linhaRV('MP base/un', this.brl(mp.mp_base)),
-          this.linhaRV(`Desvio (${this.num(mp.desvio_pct)}%)`, this.brl(mp.desvio)),
+          this.linhaRV(
+            `Desvio (${this.num(mp.desvio_pct)}%)`,
+            this.brl(mp.desvio),
+          ),
           this.linhaRV('Embalagem/un', this.brl(mp.embalagem)),
           this.linhaRV('Frete/un', this.brl(mp.frete)),
           this.linhaRV(
@@ -1053,7 +1292,10 @@ export class PdfService {
       table: {
         widths: ['*', 'auto'],
         body: [
-          [{ text: 'Mão de obra (modelo anterior)', style: 'th', colSpan: 2 }, {}],
+          [
+            { text: 'Mão de obra (modelo anterior)', style: 'th', colSpan: 2 },
+            {},
+          ],
           this.linhaRV('Produção diária', `${this.num(mo.producao_diaria)} un`),
           this.linhaRV('Dias necessários', this.num(mo.dias_necessarios)),
           this.linhaRV('MO/lote', this.brl(mo.mo_lote)),
@@ -1068,7 +1310,11 @@ export class PdfService {
       layout: this.layoutSuave(),
     };
 
-    return { columns: [tabelaMp, tabelaMo], columnGap: 12, margin: [0, 10, 0, 0] };
+    return {
+      columns: [tabelaMp, tabelaMo],
+      columnGap: 12,
+      margin: [0, 10, 0, 0],
+    };
   }
 
   private secaoParametrosV1(par: CalcParametrosV1): Content {
@@ -1099,7 +1345,7 @@ export class PdfService {
 
   // ================= PAGINA 2 — SO formulacao + embalagem (SEMPRE) =================
 
-  private pagina2(orc: OrcamentoPdf, c: CalculoJson): Content {
+  private pagina2(orc: OrcamentoPdf, c: CalculoJson, m2 = false): Content {
     return {
       // pageBreak 'before' garante a estrutura fixa: pagina 2 comeca aqui.
       pageBreak: 'before',
@@ -1111,6 +1357,13 @@ export class PdfService {
         },
         this.secaoFormulacao(c),
         this.secaoEmbalagem(orc),
+        // Motor 2: fundamentos + premissas + vigências (auditoria) ao pé da página 2.
+        ...(m2
+          ? [
+              this.secaoFundamentosV3(c.fundamentos ?? [], true),
+              this.secaoPremissasVigencias(c),
+            ]
+          : []),
       ],
     };
   }
@@ -1128,7 +1381,16 @@ export class PdfService {
       return {
         stack: [
           { text: 'Formulação', style: 'secao' },
-          ...(base ? [{ text: base, fontSize: 8, color: COR.warm600, margin: [0, 0, 0, 6] as [number, number, number, number] }] : []),
+          ...(base
+            ? [
+                {
+                  text: base,
+                  fontSize: 8,
+                  color: COR.warm600,
+                  margin: [0, 0, 0, 6] as [number, number, number, number],
+                },
+              ]
+            : []),
           {
             table: {
               widths: ['*'],
@@ -1200,7 +1462,16 @@ export class PdfService {
     return {
       stack: [
         { text: 'Formulação', style: 'secao' },
-        ...(base ? [{ text: base, fontSize: 8, color: COR.warm600, margin: [0, 0, 0, 6] as [number, number, number, number] }] : []),
+        ...(base
+          ? [
+              {
+                text: base,
+                fontSize: 8,
+                color: COR.warm600,
+                margin: [0, 0, 0, 6] as [number, number, number, number],
+              },
+            ]
+          : []),
         {
           table: {
             headerRows: 1,

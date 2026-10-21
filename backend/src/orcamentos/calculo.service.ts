@@ -1,16 +1,36 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { ParametrosCusto } from './custo-engine';
-import { scoreCotacao, faixaScore, scoreMaterialPonderado } from '../formulas/score.util';
+import {
+  scoreCotacao,
+  faixaScore,
+  scoreMaterialPonderado,
+} from '../formulas/score.util';
 import { lerParametrosCusto } from './params.util';
 import { CalcularDto } from './dto/calcular.dto';
 import { resolverNcmEfetivo } from './ncm-efetivo.util';
 import { lerParametrosFiscaisVigentes } from './params-fiscais.util';
 import { lerParametrosProducaoVigentes } from './params-producao.util';
 import { calcularCustoFiscal, InputsFiscal } from './custo-engine-fiscal';
-import { calcularCustoMotor2, MOTOR_2_ID, type InputsMotor2 } from './custo-engine-motor2';
-import { lerMotorPadrao, lerParametrosMotor2, type MotorPrecificacao } from './params-motor2.util';
-import type { ModoOperacao, NcmFiscal, PerfilClienteFiscal } from './matriz-fiscal.util';
+import {
+  calcularCustoMotor2,
+  MOTOR_2_ID,
+  type InputsMotor2,
+} from './custo-engine-motor2';
+import {
+  lerMotorPadrao,
+  lerParametrosMotor2,
+  type MotorPrecificacao,
+} from './params-motor2.util';
+import type {
+  ModoOperacao,
+  NcmFiscal,
+  PerfilClienteFiscal,
+} from './matriz-fiscal.util';
 import { resolverTributosSaida } from './matriz-fiscal.util';
 
 /** Tolerância da soma da composição (pontos percentuais) antes de normalizar. */
@@ -48,7 +68,7 @@ function alertaComposicao(n: ComposicaoNormalizada | null | undefined) {
   return {
     ...n,
     mensagem:
-      `Composição da fórmula soma ${n.soma_pct}% (≠ 100%). O custo de MP foi NORMALIZADO ` +
+      `Composição da fórmula soma ${n.soma_pct}% (diferente de 100%). O custo de MP foi NORMALIZADO ` +
       `para 100% (fator ${n.fator}; bruto R$ ${n.custo_mp_kg_bruto.toFixed(4)}/kg). Revise a fórmula.`,
   };
 }
@@ -82,7 +102,9 @@ export class CalculoService {
     if (!orc) throw new NotFoundException('Orcamento nao encontrado');
 
     const cfg = await this.getParametros();
-    const formula = orc.formula_id ? await this.carregarFormula(orc.formula_id) : null;
+    const formula = orc.formula_id
+      ? await this.carregarFormula(orc.formula_id)
+      : null;
 
     // ---------- entradas obrigatórias (falha visível, nunca default) ----------
     if (orc.volume_un == null || Number(orc.volume_un) <= 0) {
@@ -99,11 +121,13 @@ export class CalculoService {
     const quantidade = orc.quantidade;
 
     // ---------- motor ----------
-    const motor: MotorPrecificacao = overrides.motor ?? (await lerMotorPadrao(this.prisma));
+    const motor: MotorPrecificacao =
+      overrides.motor ?? (await lerMotorPadrao(this.prisma));
 
     // Margem: override do cálculo > gravada no orçamento > (Motor 2) escada automática.
     const margemManual: number | null =
-      overrides.margem_pct ?? (orc.margem_pct != null ? Number(orc.margem_pct) : null);
+      overrides.margem_pct ??
+      (orc.margem_pct != null ? Number(orc.margem_pct) : null);
     if (motor === 1 && margemManual == null) {
       throw new BadRequestException(
         'margem_pct e obrigatoria no Motor 1. Informe a margem no calculo ou grave no orcamento (o Motor 2 aplica a escada por lote automaticamente).',
@@ -128,18 +152,24 @@ export class CalculoService {
         })
       : null;
     const ncmId = resolverNcmEfetivo(orc.ncm_id, formulaNcm?.ncm_id ?? null);
-    const ncmRow = ncmId ? await this.prisma.ncm.findUnique({ where: { id: ncmId } }) : null;
+    const ncmRow = ncmId
+      ? await this.prisma.ncm.findUnique({ where: { id: ncmId } })
+      : null;
     if (!ncmRow) {
       throw new BadRequestException(
         'Orcamento sem NCM efetivo (nem override, nem NCM na formula). O calculo fiscal exige NCM para o IPI — atribua um NCM ao orcamento ou a formula.',
       );
     }
 
-    const { params: pf, caracterizacao } = await lerParametrosFiscaisVigentes(this.prisma);
+    const { params: pf, caracterizacao } = await lerParametrosFiscaisVigentes(
+      this.prisma,
+    );
     const modo = (orc.modo_operacao ?? 'full_service') as ModoOperacao;
     const perfil: PerfilClienteFiscal = {
-      regime_fiscal: (orc.cliente?.regime_fiscal ?? null) as PerfilClienteFiscal['regime_fiscal'],
-      finalidade: (orc.cliente?.finalidade_padrao ?? null) as PerfilClienteFiscal['finalidade'],
+      regime_fiscal: (orc.cliente?.regime_fiscal ??
+        null) as PerfilClienteFiscal['regime_fiscal'],
+      finalidade: (orc.cliente?.finalidade_padrao ??
+        null) as PerfilClienteFiscal['finalidade'],
       uf: orc.cliente?.uf ?? null,
       contribuinte_icms: orc.cliente?.contribuinte_icms ?? null,
     };
@@ -149,9 +179,18 @@ export class CalculoService {
       ipi_pct: Number(ncmRow.ipi_pct),
       monofasico: ncmRow.monofasico,
       tratamento: ncmRow.tratamento as NcmFiscal['tratamento'],
-      icms_nominal_pct: ncmRow.icms_nominal_pct != null ? Number(ncmRow.icms_nominal_pct) : null,
+      icms_nominal_pct:
+        ncmRow.icms_nominal_pct != null
+          ? Number(ncmRow.icms_nominal_pct)
+          : null,
     };
-    const tributos = resolverTributosSaida(modo, perfil, ncmFiscal, pf, caracterizacao);
+    const tributos = resolverTributosSaida(
+      modo,
+      perfil,
+      ncmFiscal,
+      pf,
+      caracterizacao,
+    );
 
     // CORTE F3: a fábrica vem de parametro_producao (versionado, com fonte).
     const producao = await lerParametrosProducaoVigentes(this.prisma);
@@ -164,7 +203,12 @@ export class CalculoService {
     const custoEmbUn = emb.embalagem_un;
     const dataEmb = await this.resolverDataCotacaoEmbalagem(emb.snapshot);
     const scoreEmb = emb.snapshot ? scoreCotacao(dataEmb) : null;
-    const score_global = scoreMaterialPonderado(scoreMp, custoMpUn, scoreEmb, custoEmbUn);
+    const score_global = scoreMaterialPonderado(
+      scoreMp,
+      custoMpUn,
+      scoreEmb,
+      custoEmbUn,
+    );
 
     // Blindagem: sem base de MP (R$0/kg) o preco vira so MO — sinaliza preliminar.
     const semBaseMp = cmp_base_mp_kg === 0;
@@ -204,7 +248,11 @@ export class CalculoService {
       ingredientes: formula?.ingredientes ?? [],
     };
 
-    const retorno = (calculo: Record<string, unknown>, preco_sipi: number, preco_cipi: number) => ({
+    const retorno = (
+      calculo: Record<string, unknown>,
+      preco_sipi: number,
+      preco_cipi: number,
+    ) => ({
       calculo,
       preco_sipi,
       preco_cipi,
@@ -222,7 +270,9 @@ export class CalculoService {
       });
 
       // un_min: cálculo > orçamento > padrão vigente (COM alerta) > 400.
-      let un_min = overrides.un_min ?? (orc.un_min != null ? Number(orc.un_min) : undefined);
+      let un_min =
+        overrides.un_min ??
+        (orc.un_min != null ? Number(orc.un_min) : undefined);
       let alertaUnMinPadrao: { un_min: number; mensagem: string } | null = null;
       if (un_min == null) {
         if (lidos.un_min_padrao == null) {
@@ -274,18 +324,25 @@ export class CalculoService {
         alertas: {
           ...calc.alertas,
           un_min_padrao: alertaUnMinPadrao,
-          composicao_normalizada: alertaComposicao(formula?.composicao_normalizada),
+          composicao_normalizada: alertaComposicao(
+            formula?.composicao_normalizada,
+          ),
         },
         parcelas: calc.parcelas,
         resultado: calc.resultado,
         premissas: calc.premissas,
         fundamentos: calc.fundamentos,
       };
-      return retorno(calculo, calc.resultado.preco_sipi, calc.resultado.preco_cipi);
+      return retorno(
+        calculo,
+        calc.resultado.preco_sipi,
+        calc.resultado.preco_cipi,
+      );
     }
 
     // ====================== MOTOR 1 (fiscal granular 3.1) ======================
-    const un_min = overrides.un_min ?? (orc.un_min != null ? Number(orc.un_min) : undefined);
+    const un_min =
+      overrides.un_min ?? (orc.un_min != null ? Number(orc.un_min) : undefined);
     if (un_min == null) {
       throw new BadRequestException(
         'un_min (produtividade em unidades/minuto) e obrigatorio. Informe no calculo ou grave no orcamento.',
@@ -320,13 +377,19 @@ export class CalculoService {
       mao_de_obra: calc.mao_de_obra,
       alertas: {
         ...calc.alertas,
-        composicao_normalizada: alertaComposicao(formula?.composicao_normalizada),
+        composicao_normalizada: alertaComposicao(
+          formula?.composicao_normalizada,
+        ),
       },
       parcelas: calc.parcelas,
       resultado: calc.resultado,
       fundamentos: calc.fundamentos,
     };
-    return retorno(calculo, calc.resultado.preco_sipi, calc.resultado.preco_cipi);
+    return retorno(
+      calculo,
+      calc.resultado.preco_sipi,
+      calc.resultado.preco_cipi,
+    );
   }
 
   // ---------------- parametros de custo (system_config) ----------------
@@ -337,12 +400,15 @@ export class CalculoService {
 
   // ---------------- embalagem do catalogo (Doc 2d §B4) ----------------
   private async resolverEmbalagem(orc: any): Promise<EmbalagemResolvida> {
-    if (orc.sem_embalagem) return { embalagem_un: 0, preliminar: false, snapshot: null };
+    if (orc.sem_embalagem)
+      return { embalagem_un: 0, preliminar: false, snapshot: null };
 
     // Snapshot ja gravado tem prioridade (preco travado no momento do orcamento).
     let snap = orc.embalagem_snapshot as any | null;
     if (!snap && orc.embalagem_id) {
-      const e = await this.prisma.embalagem.findUnique({ where: { id: orc.embalagem_id } });
+      const e = await this.prisma.embalagem.findUnique({
+        where: { id: orc.embalagem_id },
+      });
       if (e) {
         snap = {
           id: e.id,
@@ -360,7 +426,11 @@ export class CalculoService {
 
     const preco = snap.preco_un_brl != null ? Number(snap.preco_un_brl) : null;
     // Sem cotacao -> usa R$0 e marca o orcamento como preliminar.
-    return { embalagem_un: preco ?? 0, preliminar: preco == null, snapshot: snap };
+    return {
+      embalagem_un: preco ?? 0,
+      preliminar: preco == null,
+      snapshot: snap,
+    };
   }
 
   /**
@@ -376,7 +446,9 @@ export class CalculoService {
    * NUNCA reescreve o snapshot, NUNCA toca o preço (que segue vindo do snapshot).
    * Embalagem removida do catálogo -> null -> pontua 50, comportamento atual.
    */
-  private async resolverDataCotacaoEmbalagem(snapshot: any | null): Promise<Date | null> {
+  private async resolverDataCotacaoEmbalagem(
+    snapshot: any | null,
+  ): Promise<Date | null> {
     if (!snapshot) return null;
     if (snapshot.data_cotacao) return new Date(snapshot.data_cotacao);
     if (snapshot.id == null) return null;
@@ -394,7 +466,16 @@ export class CalculoService {
       include: {
         composicao: {
           orderBy: { ordem: 'asc' },
-          include: { mp: { select: { codigo: true, nome: true, preco_kg_brl: true, data_cotacao: true } } },
+          include: {
+            mp: {
+              select: {
+                codigo: true,
+                nome: true,
+                preco_kg_brl: true,
+                data_cotacao: true,
+              },
+            },
+          },
         },
       },
     });
@@ -403,7 +484,8 @@ export class CalculoService {
     let custoAtual = 0;
     const ingredientes = f.composicao.map((c) => {
       const conc = c.concentracao_pct != null ? Number(c.concentracao_pct) : 0;
-      const preco = c.mp?.preco_kg_brl != null ? Number(c.mp.preco_kg_brl) : null;
+      const preco =
+        c.mp?.preco_kg_brl != null ? Number(c.mp.preco_kg_brl) : null;
       const custo = preco != null ? (conc / 100) * preco : null;
       if (custo != null) custoAtual += custo;
       return {
@@ -417,12 +499,23 @@ export class CalculoService {
       };
     });
 
-    const somaPeso = ingredientes.reduce((a, i) => a + (i.custo_na_formula ?? 0), 0);
+    const somaPeso = ingredientes.reduce(
+      (a, i) => a + (i.custo_na_formula ?? 0),
+      0,
+    );
     const score =
       somaPeso > 0
-        ? Math.round(ingredientes.reduce((a, i) => a + (i.custo_na_formula ?? 0) * i.score, 0) / somaPeso)
+        ? Math.round(
+            ingredientes.reduce(
+              (a, i) => a + (i.custo_na_formula ?? 0) * i.score,
+              0,
+            ) / somaPeso,
+          )
         : ingredientes.length
-          ? Math.round(ingredientes.reduce((a, i) => a + i.score, 0) / ingredientes.length)
+          ? Math.round(
+              ingredientes.reduce((a, i) => a + i.score, 0) /
+                ingredientes.length,
+            )
           : 50;
 
     // Regra 6 — MP sem preço entra valendo R$0: o custo sai SUBESTIMADO e isso
@@ -462,14 +555,25 @@ export class CalculoService {
 export function normalizarCustoComposicao(
   custo_bruto: number,
   concentracoes: number[],
-): { custo_mp_kg: number; composicao_normalizada: ComposicaoNormalizada | null } {
-  const soma_pct = Number(concentracoes.reduce((a, c) => a + (Number.isFinite(c) ? c : 0), 0).toFixed(3));
+): {
+  custo_mp_kg: number;
+  composicao_normalizada: ComposicaoNormalizada | null;
+} {
+  const soma_pct = Number(
+    concentracoes
+      .reduce((a, c) => a + (Number.isFinite(c) ? c : 0), 0)
+      .toFixed(3),
+  );
   if (soma_pct <= 0 || Math.abs(soma_pct - 100) <= TOLERANCIA_SOMA_PCT) {
     return { custo_mp_kg: custo_bruto, composicao_normalizada: null };
   }
   const fator = Number((100 / soma_pct).toFixed(6));
   return {
     custo_mp_kg: custo_bruto * (100 / soma_pct),
-    composicao_normalizada: { soma_pct, fator, custo_mp_kg_bruto: Number(custo_bruto.toFixed(4)) },
+    composicao_normalizada: {
+      soma_pct,
+      fator,
+      custo_mp_kg_bruto: Number(custo_bruto.toFixed(4)),
+    },
   };
 }

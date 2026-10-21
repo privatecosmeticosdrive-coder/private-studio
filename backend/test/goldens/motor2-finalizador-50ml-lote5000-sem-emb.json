@@ -90,7 +90,7 @@
       "origem": "escada",
       "escada_pct": 35,
       "faixa": "grande",
-      "faixa_descricao": "≥ 5000 un"
+      "faixa_descricao": ">= 5000 un"
     },
     "alertas": {
       "moq": null,

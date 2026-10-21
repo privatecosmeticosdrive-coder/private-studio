@@ -123,14 +123,14 @@ export function margemPorEscada(
     return {
       pct: e.lote_grande_pct,
       faixa: 'grande',
-      descricao: `≥ ${e.lote_grande_min_un} un`,
+      descricao: `>= ${e.lote_grande_min_un} un`,
     };
   }
   if (quantidade >= e.lote_medio_min_un) {
     return {
       pct: e.lote_medio_pct,
       faixa: 'medio',
-      descricao: `${e.lote_medio_min_un}–${e.lote_grande_min_un - 1} un`,
+      descricao: `${e.lote_medio_min_un}-${e.lote_grande_min_un - 1} un`,
     };
   }
   return {
@@ -403,8 +403,8 @@ export function calcularCustoMotor2(
     },
     premissas: [
       'Densidade 1,0 g/mL: volume_un (mL) tratado como massa (g) para converter R$/kg em R$/un.',
-      `MP pelo preço da última compra × (1 + perda ${p.perda_mp_pct}%) × (1 − crédito ${p.credito_mp_pct}%).`,
-      `Embalagem × (1 − crédito ${p.credito_emb_pct}%); gross-up com taxa de gestão ${p.taxa_gestao_embalagem_pct}% (sem margem do produto).`,
+      `MP pelo preço da última compra x (1 + perda ${p.perda_mp_pct}%) x (1 - crédito ${p.credito_mp_pct}%).`,
+      `Embalagem x (1 - crédito ${p.credito_emb_pct}%); gross-up com taxa de gestão ${p.taxa_gestao_embalagem_pct}% (sem margem do produto).`,
     ],
     fundamentos: tributos.fundamentos,
   };
