@@ -5,6 +5,19 @@
 
 ---
 
+## -1. INCIDENTE 22/10/2026 — banco de produção zerado (ler `docs/INCIDENTE-2026-10-23-banco-producao.md`)
+
+Um `prisma migrate diff --shadow-database-url <produção>` executado pelo agente resetou o schema `public` do banco da KingHost.
+**Nada deve ser publicado (merge/deploy) nem escrito no banco até a restauração do backup pela KingHost e a conferência das contagens
+(1.255 MPs · 927 fórmulas · 13.599 linhas · 48 orçamentos · 1.623 históricos).** O serviço no Railway continua no ar apontando para o banco vazio.
+
+## 0a. Trabalho de 22/10/2026 na branch `motor-2-10-26` (NÃO mergeado, NÃO publicado; validado em banco LOCAL)
+
+- **Red team do Motor 2 aplicado** (achados em código): C1 margem gravada no orçamento não é mais override escondido no Motor 2 (só o override do cálculo; `duplicar` zera; PATCH aceita `margem_pct: null`); C2 "hoje" = data civil de São Paulo (`hoje.util.ts`) em todas as vigências — fim do buraco de 24 h; `motor_precificacao` inválido ou sem vigência ativa lança (nunca Motor 1 em silêncio); A1 arredondamento único (partes somam o total; preço com IPI = sem IPI + IPI arredondados); A2 PDF lê volume/lote/un_min do snapshot e alterar o briefing de um RASCUNHO descarta o cálculo; A3 alerta `uf_fora_sp`; A4 industrialização com cmp=0 não é "preliminar" e não cobra frete de MP; A5 forçar `motor` só admin; M3 erros de parâmetro/engine viram 400 e teto de 85% (tributos + margem); M4 seed não cria vigência aberta duplicada; M5 embalagem só é precificada/pontuada no full service; B1 fábrica sem arredondar antes do gross-up; B2 faixas de parâmetros; B4 discriminação do Motor 2 por presença de campo. Goldens regerados (mesmos 5 preços). Pendentes (decisão de negócio): M1 gross-up do ICMS sobre o IPI; A3 alíquotas interestaduais/DIFAL.
+- **Integração Omie → MP** (`docs/integracao-omie-mp.md`): tabela `mp_omie_vinculos`, mapa de pareamento revisado, sincronizador com backup/rollback, tela de MPs com a última compra, passo diário no robô. Auditoria de preços: `docs/auditoria-precos-mp-2026-10.md`.
+- **Análise de viabilidade de projetos** (`backend/src/viabilidade`, `/viabilidade`): dois cenários lado a lado (ideal × até onde podemos ir) com tributos, enquadramento, margem, tempo de linha, h/h, hora extra, investimento/depreciação, DRE do projeto, ponto de equilíbrio, produção mínima, payback e preço mínimo viável; tabela `projetos_viabilidade`; 27 specs.
+- Validação: `tsc` backend/frontend zero erros; `jest` 149/149; smoke local (PostgreSQL embarcado, API real): os 5 preços de referência do Motor 2 batem; sincronização Omie aplicada no banco local (591 vínculos, 150 MPs novas, 332 preços).
+
 ## 0. Motor 2 10/26 — branch `motor-2-10-26` (2026-10-20, NÃO mergeado, NÃO aplicado em produção)
 
 Regras completas em **`docs/precificacao/MOTOR-2-10-26.md`** (substitui a lógica do PDF de regras).
