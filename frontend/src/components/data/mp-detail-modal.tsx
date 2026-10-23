@@ -14,7 +14,10 @@ import { mpsApi } from '@/lib/services/materias-primas';
 function fmtData(iso: string | null): string {
   if (!iso) return '—';
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString('pt-BR');
+  if (Number.isNaN(d.getTime())) return '—';
+  // Data só-dia (aaaa-mm-dd ou meia-noite UTC do @db.Date) é lida em UTC — senão aparece um dia antes no fuso de SP.
+  const soDia = /^\d{4}-\d{2}-\d{2}(T00:00:00(\.000)?Z)?$/.test(iso);
+  return d.toLocaleDateString('pt-BR', soDia ? { timeZone: 'UTC' } : undefined);
 }
 
 function Campo({ label, children }: { label: string; children: React.ReactNode }) {
@@ -131,6 +134,71 @@ export function MpDetailModal({ open, onClose, mp, onEditar, onAtualizarPreco }:
             <div className="rounded-md bg-sand/60 px-3 py-2 text-sm text-warm-700">{mp.observacoes}</div>
           )}
 
+          {/* Integração Omie — códigos do ERP e a última compra (NF de entrada) */}
+          <section className="space-y-2">
+            <h3 className="font-display text-h3 text-ink">Omie — códigos e última compra</h3>
+            {(mp.omie_vinculos ?? []).length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                Sem código do Omie vinculado: o preço desta MP não vem de nota de compra.
+              </p>
+            ) : (
+              <ul className="divide-y divide-border rounded-md border border-border">
+                {(mp.omie_vinculos ?? []).map((v) => {
+                  const c = v.ultima_compra;
+                  return (
+                    <li key={v.codigo_omie} className="space-y-1 px-3 py-2 text-sm">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="text-ink">
+                          <span className="font-mono text-warm-700">{v.codigo_omie}</span>
+                          {' · '}
+                          {v.descricao_omie}
+                          {v.unidade_omie ? <span className="text-warm-500"> ({v.unidade_omie})</span> : null}
+                        </span>
+                        <span className="flex items-center gap-2">
+                          {v.principal && <Badge variant="success">alimenta o preço</Badge>}
+                          <Badge variant="neutral">
+                            {v.origem === 'manual'
+                              ? 'vínculo manual'
+                              : v.origem === 'auto_exato'
+                                ? 'nome igual'
+                                : v.origem === 'auto_similar'
+                                  ? 'nome semelhante'
+                                  : v.origem === 'criado_do_omie'
+                                    ? 'criada do Omie'
+                                    : v.origem}
+                          </Badge>
+                        </span>
+                      </div>
+                      <p className="text-caption text-warm-600">
+                        {c ? (
+                          <>
+                            Última compra {fmtData(c.data)} · NF {c.nf} · {c.fornecedor} ·{' '}
+                            <span className="tnum">
+                              {c.qtde.toLocaleString('pt-BR')} {c.un} a {brl(c.unitario)}/{c.un}
+                            </span>{' '}
+                            (com ICMS/IPI/ST)
+                            {c.preco_kg != null ? (
+                              <>
+                                {' → '}
+                                <span className="font-medium text-ink tnum">{brl(c.preco_kg)}/kg</span>
+                                {c.conversao ? ` (${c.conversao})` : ''}
+                              </>
+                            ) : (
+                              <span className="text-error"> · sem R$/kg: {v.motivo_sem_preco ?? 'sem conversão'}</span>
+                            )}
+                          </>
+                        ) : (
+                          <>Sem compra registrada no Omie{v.motivo_sem_preco ? ` (${v.motivo_sem_preco})` : ''}.</>
+                        )}
+                        {v.sincronizado_em ? ` · sincronizado em ${fmtData(v.sincronizado_em)}` : ''}
+                      </p>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
+
           {/* grafico */}
           <section className="space-y-2">
             <h3 className="font-display text-h3 text-ink">Evolução de preço</h3>
@@ -168,8 +236,10 @@ export function MpDetailModal({ open, onClose, mp, onEditar, onAtualizarPreco }:
                             {v}%{' · '}
                           </span>
                         )}
+                        {h.origem === 'integracao_omie' ? 'Omie (última compra) · ' : ''}
                         {h.fornecedor || 'fornecedor não informado'}
                         {h.registrador?.nome ? ` · ${h.registrador.nome}` : ''}
+                        {h.observacoes ? ` · ${h.observacoes}` : ''}
                       </p>
                     </li>
                   );

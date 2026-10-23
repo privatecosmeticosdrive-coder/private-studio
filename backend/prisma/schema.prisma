@@ -103,8 +103,36 @@ model Cliente {
   criado_por User?       @relation("ClienteCreatedBy", fields: [created_by], references: [id])
   formulas   Formula[]
   orcamentos Orcamento[]
+  projetos_viabilidade ProjetoViabilidade[]
 
   @@map("clientes")
+}
+
+// ----------------------- ANALISE DE VIABILIDADE DE PROJETOS (Matriz de Custo, 10/26) -----------------------
+// Projeto impar avaliado individualmente, linha a linha: tributos, enquadramento, margens,
+// tempo de linha, producao minima para dar lucro, investimento, hora extra. `premissas`
+// guarda TODAS as entradas ajustaveis (dois cenarios: ideal e limite); `resultado` guarda o
+// ultimo calculo (espelho dos dois cenarios) — recalculado pelo engine puro, nunca editado.
+// *_por = escalar UUID sem relation (padrao do codebase).
+
+model ProjetoViabilidade {
+  id          Int       @id @default(autoincrement())
+  nome        String
+  cliente_id  String?   @db.Uuid
+  status      String    @default("rascunho") // rascunho | analisado | aprovado | descartado
+  premissas   Json
+  resultado   Json?
+  observacoes String?
+  calculado_em DateTime?
+  created_at  DateTime  @default(now())
+  created_by  String?   @db.Uuid
+  updated_at  DateTime  @updatedAt
+
+  cliente Cliente? @relation(fields: [cliente_id], references: [id])
+
+  @@index([status])
+  @@index([cliente_id])
+  @@map("projetos_viabilidade")
 }
 
 // ----------------------- MATERIAS-PRIMAS -----------------------
@@ -133,9 +161,44 @@ model MateriaPrima {
   composicoes        FormulaComposicao[]
   cotacoes_pendentes CotacaoPendente[]
   historico_precos   MpHistoricoPreco[]
+  omie_vinculos      MpOmieVinculo[] // integracao Omie (10/26): codigos do ERP ligados a esta MP
 
   @@index([nome])
   @@map("materias_primas")
+}
+
+// ----------------------- INTEGRACAO OMIE — VINCULO MP x PRODUTO DO ERP (10/26) -----------------------
+// Uma linha por produto de materia-prima do Omie (PRD*, MT*, MC*...). Varios codigos do
+// Omie podem apontar para a MESMA MP do Studio (ex.: o mesmo acido citrico comprado com
+// codigo proprio e com codigo de cliente). `principal` marca o codigo cuja ultima compra
+// alimenta o preco. `ultima_compra` e um retrato da NF de entrada (valor com ICMS/IPI/ST,
+// quantidade, unidade, fornecedor, data) — o PRECO da MP continua sendo gravado por
+// MateriasPrimasService (historico + alerta + audit), nunca aqui.
+// mp_id null = produto do Omie conhecido mas nao importado (ex.: material de cliente sem compra).
+
+model MpOmieVinculo {
+  id              Int       @id @default(autoincrement())
+  codigo_omie     String    @unique // ex.: PRD00005
+  omie_id         String // codigo_produto do Omie (nao cabe em Int: 6962550559)
+  descricao_omie  String
+  unidade_omie    String?
+  ncm_omie        String?
+  familia_omie    String?
+  mp_id           Int?
+  principal       Boolean   @default(false)
+  origem          String // auto_exato | auto_similar | manual | criado_do_omie | sem_vinculo
+  score           Decimal?  @db.Decimal(5, 3)
+  ultima_compra   Json? // {data, nf, fornecedor, cnpj, qtde, un, unitario, sem_impostos, icms, pis, cofins, ipi, st, id_receb, preco_kg, conversao}
+  motivo_sem_preco String? // por que a ultima compra nao virou preco/kg (unidade sem conversao, sem compra...)
+  sincronizado_em DateTime?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  mp MateriaPrima? @relation(fields: [mp_id], references: [id], onDelete: SetNull)
+
+  @@index([mp_id])
+  @@index([origem])
+  @@map("mp_omie_vinculos")
 }
 
 // ----------------------- FORNECEDORES ALTERNATIVOS (M:N) -----------------------

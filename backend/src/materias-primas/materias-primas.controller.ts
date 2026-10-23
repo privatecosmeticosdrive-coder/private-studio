@@ -25,6 +25,7 @@ export class MateriasPrimasController {
     @Query('q') q?: string,
     @Query('fornecedor') fornecedor?: string,
     @Query('vencidas') vencidas?: string,
+    @Query('semOmie') semOmie?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
   ) {
@@ -32,9 +33,16 @@ export class MateriasPrimasController {
       q,
       fornecedor,
       vencidas: vencidas === 'true' || vencidas === '1',
+      semOmie: semOmie === 'true' || semOmie === '1',
       page: page ? parseInt(page, 10) : undefined,
       pageSize: pageSize ? parseInt(pageSize, 10) : undefined,
     });
+  }
+
+  // Integracao Omie (10/26) - rota estatica ANTES de :codigo (regra 9)
+  @Get('omie/resumo')
+  resumoOmie() {
+    return this.mps.resumoOmie();
   }
 
   @Get(':codigo')

@@ -15,9 +15,24 @@ export interface ListarMpQuery {
   q?: string;
   fornecedor?: string;
   vencidas?: boolean; // cotacao > 12 meses (ou sem data)
+  semOmie?: boolean; // sem nenhum codigo do Omie vinculado (integracao 10/26)
   page?: number;
   pageSize?: number;
 }
+
+/** Campos do vinculo Omie expostos junto da MP (integracao 10/26). */
+const VINCULO_SELECT = {
+  codigo_omie: true,
+  descricao_omie: true,
+  unidade_omie: true,
+  ncm_omie: true,
+  principal: true,
+  origem: true,
+  score: true,
+  ultima_compra: true,
+  motivo_sem_preco: true,
+  sincronizado_em: true,
+} as const;
 
 @Injectable()
 export class MateriasPrimasService {
@@ -32,13 +47,21 @@ export class MateriasPrimasService {
     const pageSize = Math.min(200, Math.max(1, query.pageSize ?? 50));
     const where: Prisma.MateriaPrimaWhereInput = {};
 
-    if (query.q) where.nome = { contains: query.q, mode: 'insensitive' };
+    if (query.q) {
+      // busca pelo nome OU pelo codigo do Omie vinculado (ex.: "PRD00005")
+      where.OR = [
+        { nome: { contains: query.q, mode: 'insensitive' } },
+        { omie_vinculos: { some: { codigo_omie: { contains: query.q, mode: 'insensitive' } } } },
+      ];
+    }
+    if (query.semOmie) where.omie_vinculos = { none: {} };
     if (query.fornecedor)
       where.fornecedor = { contains: query.fornecedor, mode: 'insensitive' };
     if (query.vencidas) {
       const limite = new Date();
       limite.setMonth(limite.getMonth() - 12);
-      where.OR = [{ data_cotacao: { lt: limite } }, { data_cotacao: null }];
+      const vencida = { OR: [{ data_cotacao: { lt: limite } }, { data_cotacao: null }] };
+      where.AND = [...(Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : []), vencida];
     }
 
     const [data, total] = await Promise.all([
@@ -47,6 +70,7 @@ export class MateriasPrimasService {
         orderBy: { nome: 'asc' },
         skip: (page - 1) * pageSize,
         take: pageSize,
+        include: { omie_vinculos: { select: VINCULO_SELECT, orderBy: [{ principal: 'desc' }, { codigo_omie: 'asc' }] } },
       }),
       this.prisma.materiaPrima.count({ where }),
     ]);
@@ -54,10 +78,40 @@ export class MateriasPrimasService {
     return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
   }
 
+  /**
+   * Resumo da integracao Omie (tela de MPs): quantas MPs tem codigo do ERP, quantas
+   * tem a ultima compra convertida para R$/kg, codigos do Omie sem MP e data da
+   * ultima sincronizacao. Contagens reais (COUNT) - nunca estimadas.
+   */
+  async resumoOmie() {
+    const [total, comVinculo, comCompraKg, codigosOmie, semMp, ultima] = await Promise.all([
+      this.prisma.materiaPrima.count(),
+      this.prisma.materiaPrima.count({ where: { omie_vinculos: { some: {} } } }),
+      this.prisma.materiaPrima.count({
+        where: { omie_vinculos: { some: { principal: true, ultima_compra: { path: ['preco_kg'], not: Prisma.DbNull } } } },
+      }),
+      this.prisma.mpOmieVinculo.count(),
+      this.prisma.mpOmieVinculo.count({ where: { mp_id: null } }),
+      this.prisma.mpOmieVinculo.aggregate({ _max: { sincronizado_em: true } }),
+    ]);
+    return {
+      mps_total: total,
+      mps_com_omie: comVinculo,
+      mps_sem_omie: total - comVinculo,
+      mps_com_ultima_compra_kg: comCompraKg,
+      codigos_omie: codigosOmie,
+      codigos_omie_sem_mp: semMp,
+      ultima_sincronizacao: ultima._max.sincronizado_em,
+    };
+  }
+
   async findByCodigo(codigo: number) {
     const mp = await this.prisma.materiaPrima.findUnique({
       where: { codigo },
-      include: { fornecedores_alt: true },
+      include: {
+        fornecedores_alt: true,
+        omie_vinculos: { select: VINCULO_SELECT, orderBy: [{ principal: 'desc' }, { codigo_omie: 'asc' }] },
+      },
     });
     if (!mp) throw new NotFoundException('Materia-prima nao encontrada');
     return mp;

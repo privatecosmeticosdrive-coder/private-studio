@@ -3,6 +3,7 @@ import type {
   FormulaQueUsa,
   MateriaPrima,
   MpHistoricoPreco,
+  MpOmieResumo,
   Paginado,
   PontoHistorico,
 } from '@/lib/types';
@@ -11,6 +12,7 @@ export interface ListarMpParams {
   q?: string;
   fornecedor?: string;
   vencidas?: boolean;
+  semOmie?: boolean; // sem código do Omie vinculado
   page?: number;
   pageSize?: number;
 }
@@ -41,6 +43,11 @@ export const mpsApi = {
   },
   obter: async (codigo: number) => {
     const { data } = await api.get<MateriaPrima>(`/mps/${codigo}`);
+    return data;
+  },
+  /** Integração Omie: contagens reais (rota estática /mps/omie/resumo). */
+  resumoOmie: async () => {
+    const { data } = await api.get<MpOmieResumo>('/mps/omie/resumo');
     return data;
   },
   formulas: async (codigo: number) => {

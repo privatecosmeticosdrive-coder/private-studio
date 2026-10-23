@@ -1,0 +1,906 @@
+{
+  "_doc": [
+    "Mapa de pareamento Omie -> Studio usado por prisma/sync-omie-mp.cjs. Fonte de verdade das decisoes HUMANAS (revisao de 22/10/2026).",
+    "bloqueados: codigos do Studio genericos demais para receber vinculo automatico por semelhanca (so por igualdade exata ou override).",
+    "overrides[CODIGO_OMIE]: { acao: 'vincular', studio: <codigo Studio> } | { acao: 'criar', nome?: 'Nome no Studio', grupo?: 'chave' } | { acao: 'ignorar', motivo }.",
+    "  grupo: varios codigos do Omie que sao o MESMO material viram UMA MP nova (a primeira compra mais recente alimenta o preco).",
+    "  forcar_preco: true aplica a ultima compra mesmo quando a variacao passa da guarda de outlier (x5 ou /5).",
+    "Regras automaticas (no script): igualdade exata do nome normalizado; semelhanca >= 0,85 fora dos bloqueados; sem par -> criar se o codigo e PRD* (catalogo proprio) ou se tem compra; senao fica 'sem_vinculo' (material de cliente sem compra: nao polui o catalogo)."
+  ],
+  "bloqueados": [
+    281,
+    261,
+    572,
+    595,
+    425,
+    490,
+    621,
+    132
+  ],
+  "limiar_similaridade": 0.85,
+  "overrides": {
+    "PRD21905": {
+      "acao": "vincular",
+      "studio": 759
+    },
+    "PRD01667": {
+      "acao": "vincular",
+      "studio": 983
+    },
+    "PRD01591": {
+      "acao": "vincular",
+      "studio": 966
+    },
+    "PRD00061": {
+      "acao": "vincular",
+      "studio": 43
+    },
+    "PRD01652": {
+      "acao": "vincular",
+      "studio": 741
+    },
+    "PRD57022": {
+      "acao": "vincular",
+      "studio": 1249
+    },
+    "PRD00722": {
+      "acao": "vincular",
+      "studio": 75
+    },
+    "PRD00490": {
+      "acao": "vincular",
+      "studio": 419
+    },
+    "PRD01668": {
+      "acao": "vincular",
+      "studio": 985
+    },
+    "PRD01637": {
+      "acao": "vincular",
+      "studio": 950
+    },
+    "MT17932": {
+      "acao": "vincular",
+      "studio": 1002
+    },
+    "MT656959": {
+      "acao": "vincular",
+      "studio": 36
+    },
+    "PRD57071": {
+      "acao": "vincular",
+      "studio": 1470
+    },
+    "PRD56986": {
+      "acao": "vincular",
+      "studio": 1256
+    },
+    "PRD00688": {
+      "acao": "vincular",
+      "studio": 622
+    },
+    "PRD90201": {
+      "acao": "vincular",
+      "studio": 240
+    },
+    "PRD21825": {
+      "acao": "vincular",
+      "studio": 239
+    },
+    "PRD00818": {
+      "acao": "vincular",
+      "studio": 589
+    },
+    "PRD21908": {
+      "acao": "vincular",
+      "studio": 1151
+    },
+    "PRD21853": {
+      "acao": "vincular",
+      "studio": 1167
+    },
+    "MT21806": {
+      "acao": "vincular",
+      "studio": 826
+    },
+    "PRD21831": {
+      "acao": "vincular",
+      "studio": 431
+    },
+    "MC015570": {
+      "acao": "vincular",
+      "studio": 1078
+    },
+    "PRD01710": {
+      "acao": "vincular",
+      "studio": 779
+    },
+    "PRD21741": {
+      "acao": "vincular",
+      "studio": 1060
+    },
+    "PRD21798": {
+      "acao": "vincular",
+      "studio": 1170
+    },
+    "PRD00064": {
+      "acao": "vincular",
+      "studio": 37
+    },
+    "MT000013": {
+      "acao": "vincular",
+      "studio": 137
+    },
+    "MT000018": {
+      "acao": "vincular",
+      "studio": 32
+    },
+    "PRD00216": {
+      "acao": "vincular",
+      "studio": 328
+    },
+    "PRD56963": {
+      "acao": "vincular",
+      "studio": 799
+    },
+    "MT000012": {
+      "acao": "vincular",
+      "studio": 38
+    },
+    "PRD21876": {
+      "acao": "vincular",
+      "studio": 1243
+    },
+    "PRD21801": {
+      "acao": "vincular",
+      "studio": 1189
+    },
+    "PRD00914": {
+      "acao": "vincular",
+      "studio": 777
+    },
+    "PRD00797": {
+      "acao": "vincular",
+      "studio": 706
+    },
+    "PRD40604": {
+      "acao": "vincular",
+      "studio": 1441
+    },
+    "MT000011": {
+      "acao": "vincular",
+      "studio": 33
+    },
+    "PRD00033": {
+      "acao": "vincular",
+      "studio": 186
+    },
+    "MT001677": {
+      "acao": "vincular",
+      "studio": 160
+    },
+    "PRD21828": {
+      "acao": "vincular",
+      "studio": 805
+    },
+    "MT32219": {
+      "acao": "vincular",
+      "studio": 49
+    },
+    "PRD00703": {
+      "acao": "vincular",
+      "studio": 643
+    },
+    "PRD57026": {
+      "acao": "vincular",
+      "studio": 1376
+    },
+    "MT32932": {
+      "acao": "vincular",
+      "studio": 1073
+    },
+    "MC015571": {
+      "acao": "vincular",
+      "studio": 963
+    },
+    "PRD57114": {
+      "acao": "vincular",
+      "studio": 1013
+    },
+    "MT000023": {
+      "acao": "vincular",
+      "studio": 29
+    },
+    "MT001660": {
+      "acao": "vincular",
+      "studio": 893
+    },
+    "PRD00065": {
+      "acao": "vincular",
+      "studio": 38
+    },
+    "PRD01550": {
+      "acao": "vincular",
+      "studio": 688
+    },
+    "PRD90219": {
+      "acao": "vincular",
+      "studio": 1527
+    },
+    "PRD57028": {
+      "acao": "vincular",
+      "studio": 1378
+    },
+    "PRD00724": {
+      "acao": "vincular",
+      "studio": 143,
+      "forcar_preco": true,
+      "motivo": "R$ 522,60/kg no Studio e erro de digitacao (D-Pantenol custa ~R$ 50/kg nas NFs)"
+    },
+    "MT001659": {
+      "acao": "vincular",
+      "studio": 309
+    },
+    "MT38932": {
+      "acao": "vincular",
+      "studio": 1118
+    },
+    "MT000015": {
+      "acao": "vincular",
+      "studio": 30
+    },
+    "PRD21720": {
+      "acao": "vincular",
+      "studio": 893
+    },
+    "PRD90233": {
+      "acao": "vincular",
+      "studio": 1286
+    },
+    "PRD01615": {
+      "acao": "vincular",
+      "studio": 743
+    },
+    "PRD01636": {
+      "acao": "vincular",
+      "studio": 1238,
+      "forcar_preco": true,
+      "motivo": "R$ 350/kg no Studio nao bate com NFs (tartrazina ~R$ 10/kg)"
+    },
+    "PRD00021": {
+      "acao": "vincular",
+      "studio": 183
+    },
+    "PRD00008": {
+      "acao": "vincular",
+      "studio": 208
+    },
+    "MC015602": {
+      "acao": "vincular",
+      "studio": 77
+    },
+    "MT000758": {
+      "acao": "vincular",
+      "studio": 688
+    },
+    "MT321932": {
+      "acao": "vincular",
+      "studio": 27
+    },
+    "PRD00911": {
+      "acao": "vincular",
+      "studio": 428
+    },
+    "MT41932": {
+      "acao": "vincular",
+      "studio": 825
+    },
+    "SH0641": {
+      "acao": "vincular",
+      "studio": 36
+    },
+    "PRD01567": {
+      "acao": "vincular",
+      "studio": 540
+    },
+    "MT001684": {
+      "acao": "vincular",
+      "studio": 267
+    },
+    "MT13932": {
+      "acao": "vincular",
+      "studio": 1347
+    },
+    "MT66959": {
+      "acao": "vincular",
+      "studio": 1418
+    },
+    "PRD00648": {
+      "acao": "vincular",
+      "studio": 48
+    },
+    "PRD01549": {
+      "acao": "vincular",
+      "studio": 962
+    },
+    "MT000150": {
+      "acao": "vincular",
+      "studio": 962
+    },
+    "PRD57040": {
+      "acao": "vincular",
+      "studio": 1412
+    },
+    "MT000004": {
+      "acao": "vincular",
+      "studio": 77
+    },
+    "MT001681": {
+      "acao": "vincular",
+      "studio": 862
+    },
+    "MT21932": {
+      "acao": "vincular",
+      "studio": 1006
+    },
+    "MT56936": {
+      "acao": "vincular",
+      "studio": 703
+    },
+    "MT00070": {
+      "acao": "vincular",
+      "studio": 223
+    },
+    "MT58935": {
+      "acao": "vincular",
+      "studio": 1013
+    },
+    "PRD00023": {
+      "acao": "vincular",
+      "studio": 184
+    },
+    "MT000759": {
+      "acao": "criar",
+      "nome": "HYA-ACT (Ácido Hialurônico puro, pó)"
+    },
+    "MT001678": {
+      "acao": "vincular",
+      "studio": 619
+    },
+    "MT000043": {
+      "acao": "vincular",
+      "studio": 44
+    },
+    "PRD00767": {
+      "acao": "vincular",
+      "studio": 603
+    },
+    "SH5038": {
+      "acao": "vincular",
+      "studio": 842
+    },
+    "MTP000007": {
+      "acao": "vincular",
+      "studio": 538
+    },
+    "MT000607": {
+      "acao": "vincular",
+      "studio": 615
+    },
+    "PRD00120": {
+      "acao": "vincular",
+      "studio": 601
+    },
+    "PRD00676": {
+      "acao": "vincular",
+      "studio": 573
+    },
+    "PRD00720": {
+      "acao": "vincular",
+      "studio": 35
+    },
+    "PRD00774": {
+      "acao": "vincular",
+      "studio": 712
+    },
+    "PRD56942": {
+      "acao": "vincular",
+      "studio": 1229
+    },
+    "PRD56991": {
+      "acao": "vincular",
+      "studio": 1234
+    },
+    "PRD00125": {
+      "acao": "vincular",
+      "studio": 737
+    },
+    "PRD00770": {
+      "acao": "vincular",
+      "studio": 17
+    },
+    "PRD00056": {
+      "acao": "vincular",
+      "studio": 52
+    },
+    "MT190166": {
+      "acao": "vincular",
+      "studio": 1257
+    },
+    "PRD90258": {
+      "acao": "vincular",
+      "studio": 1257
+    },
+    "PRD00784": {
+      "acao": "vincular",
+      "studio": 686
+    },
+    "MC015603": {
+      "acao": "vincular",
+      "studio": 686
+    },
+    "PRD00690": {
+      "acao": "vincular",
+      "studio": 633
+    },
+    "PRD56943": {
+      "acao": "vincular",
+      "studio": 1231
+    },
+    "MC57010": {
+      "acao": "vincular",
+      "studio": 741
+    },
+    "ADT001": {
+      "acao": "vincular",
+      "studio": 659
+    },
+    "PRD00036": {
+      "acao": "vincular",
+      "studio": 267
+    },
+    "PRD00071": {
+      "acao": "vincular",
+      "studio": 25
+    },
+    "SH5041": {
+      "acao": "vincular",
+      "studio": 686
+    },
+    "PRD00075": {
+      "acao": "vincular",
+      "studio": 400
+    },
+    "PRD00916": {
+      "acao": "vincular",
+      "studio": 895
+    },
+    "PRD00137": {
+      "acao": "vincular",
+      "studio": 36
+    },
+    "PRD00551": {
+      "acao": "vincular",
+      "studio": 427
+    },
+    "PRD00656": {
+      "acao": "vincular",
+      "studio": 134
+    },
+    "MT156953": {
+      "acao": "vincular",
+      "studio": 114
+    },
+    "PRD00652": {
+      "acao": "vincular",
+      "studio": 639
+    },
+    "SH4422": {
+      "acao": "vincular",
+      "studio": 240
+    },
+    "PRD00783": {
+      "acao": "vincular",
+      "studio": 504
+    },
+    "MT000730": {
+      "acao": "vincular",
+      "studio": 596
+    },
+    "MC015580": {
+      "acao": "vincular",
+      "studio": 95
+    },
+    "MC015607": {
+      "acao": "vincular",
+      "studio": 27
+    },
+    "MT000320": {
+      "acao": "vincular",
+      "studio": 52
+    },
+    "PRD00045": {
+      "acao": "vincular",
+      "studio": 867
+    },
+    "MT000397": {
+      "acao": "vincular",
+      "studio": 210
+    },
+    "MT000028": {
+      "acao": "vincular",
+      "studio": 167
+    },
+    "PRD00044": {
+      "acao": "vincular",
+      "studio": 868
+    },
+    "MC0257108": {
+      "acao": "vincular",
+      "studio": 841
+    },
+    "PRD00610": {
+      "acao": "vincular",
+      "studio": 452
+    },
+    "PRD90203": {
+      "acao": "vincular",
+      "studio": 1158
+    },
+    "PRD00079": {
+      "acao": "vincular",
+      "studio": 707
+    },
+    "PRD00612": {
+      "acao": "vincular",
+      "studio": 448
+    },
+    "EML004": {
+      "acao": "vincular",
+      "studio": 85
+    },
+    "PRD01670": {
+      "acao": "criar",
+      "grupo": "polisorbato-20",
+      "nome": "Polisorbato 20 (Tween 20)"
+    },
+    "MT33932": {
+      "acao": "criar",
+      "grupo": "polisorbato-20",
+      "nome": "Polisorbato 20 (Tween 20)"
+    },
+    "MT001668": {
+      "acao": "criar",
+      "grupo": "vitamina-e",
+      "nome": "Vitamina E (Tocoferol)"
+    },
+    "MC015606": {
+      "acao": "criar",
+      "grupo": "vitamina-e",
+      "nome": "Vitamina E (Tocoferol)"
+    },
+    "PRD01711": {
+      "acao": "criar",
+      "grupo": "extrato-hidroetanolico-neem",
+      "nome": "Extrato Hidroetanólico de Neem"
+    },
+    "MTP000004": {
+      "acao": "criar",
+      "grupo": "extrato-hidroetanolico-neem",
+      "nome": "Extrato Hidroetanólico de Neem"
+    },
+    "PRD56961": {
+      "acao": "criar",
+      "grupo": "extrato-hidroetanolico-neem",
+      "nome": "Extrato Hidroetanólico de Neem"
+    },
+    "PRD57039": {
+      "acao": "criar",
+      "nome": "Cetiol E (PEG-7 Glyceryl Cocoate)"
+    },
+    "MT721936": {
+      "acao": "criar",
+      "nome": "Extrato Glicólico de Papaya"
+    },
+    "PRD00015": {
+      "acao": "criar",
+      "nome": "Amida 90 (Cocamida DEA)"
+    },
+    "MT001663": {
+      "acao": "criar",
+      "nome": "Lexgard MHG Natural MB"
+    },
+    "PRD90228": {
+      "acao": "criar",
+      "nome": "DL Alpha Tocopheryl Acetate"
+    },
+    "MT221932": {
+      "acao": "criar",
+      "nome": "Emulium 22"
+    },
+    "MT000033": {
+      "acao": "criar",
+      "nome": "Acetato de Chumbo"
+    },
+    "MT566959": {
+      "acao": "criar",
+      "nome": "Essência Fresch 2 (FAV 323745)"
+    },
+    "MT000036": {
+      "acao": "criar",
+      "nome": "Citrato de Bismuto"
+    },
+    "MT556959": {
+      "acao": "criar",
+      "nome": "Ascorbyl Glucoside"
+    },
+    "MT000003": {
+      "acao": "criar",
+      "nome": "Essência Bouquet FAV 192190 (Hidratante Pepino)"
+    },
+    "MT001673": {
+      "acao": "criar",
+      "nome": "Fragrância Lavanda Provençal"
+    },
+    "MT56935": {
+      "acao": "criar",
+      "nome": "Essência Daily 1 (FAV 323742)"
+    },
+    "PRD90240": {
+      "acao": "criar",
+      "nome": "Neelilip Orange Paste"
+    },
+    "PRD90241": {
+      "acao": "criar",
+      "nome": "Neelilip Yellow Paste"
+    },
+    "PRD90238": {
+      "acao": "criar",
+      "nome": "Neelilip Kuku Paste"
+    },
+    "PRD90239": {
+      "acao": "criar",
+      "nome": "Neelilip Lilac Paste"
+    },
+    "PRD90234": {
+      "acao": "criar",
+      "nome": "Neelilip Chaadni Paste"
+    },
+    "PRD90237": {
+      "acao": "criar",
+      "nome": "Neelilip Flamingo Paste"
+    },
+    "PRD90235": {
+      "acao": "criar",
+      "nome": "Neelilip Dark Brown Paste"
+    },
+    "PRD21800": {
+      "acao": "criar",
+      "nome": "Essência de Pêssego"
+    },
+    "PRD00222": {
+      "acao": "criar",
+      "nome": "Polímero W-25"
+    },
+    "PRD90218": {
+      "acao": "criar",
+      "nome": "Innoricino Branco 45"
+    },
+    "PRD90173": {
+      "acao": "criar",
+      "nome": "Óleo Vegetal de Arnica Montana"
+    },
+    "MT82193": {
+      "acao": "criar",
+      "nome": "Ácido Ferúlico"
+    },
+    "MT24932": {
+      "acao": "criar",
+      "nome": "Bioprotect Vegan (Extrato Glicólico Campos Ciliares)"
+    },
+    "MT000001": {
+      "acao": "criar",
+      "nome": "Essência Bouquet FAV 192712 (Creme Luva de Silicone)"
+    },
+    "MT366970": {
+      "acao": "criar",
+      "nome": "Carbopol ETD 2020"
+    },
+    "MT690182": {
+      "acao": "criar",
+      "nome": "Fragrância SCE961277 (Nouê 2)"
+    },
+    "PRD90224": {
+      "acao": "criar",
+      "nome": "Fragrância Solar Skin (Qualitê)"
+    },
+    "MT000038": {
+      "acao": "criar",
+      "nome": "Essência Man (SCE 174081)"
+    },
+    "MT000006": {
+      "acao": "criar",
+      "nome": "Essência Faciale (JDR309868)"
+    },
+    "MT22932": {
+      "acao": "criar",
+      "nome": "Beta-Hydroxide ACSD"
+    },
+    "PRD57072": {
+      "acao": "criar",
+      "nome": "Essência Dark Dreams (SCE944866)"
+    },
+    "PRD00546": {
+      "acao": "criar",
+      "nome": "Essência Million (Vegan Lizz)"
+    },
+    "PRD90229": {
+      "acao": "criar",
+      "nome": "Mica Roma com Champagne"
+    },
+    "PRD90202": {
+      "acao": "criar",
+      "nome": "Fragrância Pear & Freesia (SCE961295)"
+    },
+    "MT000021": {
+      "acao": "criar",
+      "nome": "BHT (Butil Hidroxitolueno)"
+    },
+    "MT11932": {
+      "acao": "criar",
+      "nome": "Hydrovance"
+    },
+    "PRD00029": {
+      "acao": "criar",
+      "nome": "Enxofre Coloidal"
+    },
+    "MT121932": {
+      "acao": "criar",
+      "nome": "Emogreen L15"
+    },
+    "MT35932": {
+      "acao": "criar",
+      "nome": "Sipigel 305"
+    },
+    "PRD90212": {
+      "acao": "criar",
+      "nome": "Linquad 16-50"
+    },
+    "MT000032": {
+      "acao": "criar",
+      "nome": "Essência Magic Wood BM II (LP/02297)"
+    },
+    "PRD57112": {
+      "acao": "criar",
+      "nome": "DMAE Base Líquida"
+    },
+    "PRD01662": {
+      "acao": "criar",
+      "nome": "Gel de Silicone (Ciclopentasiloxano/Dimeticone Crosspolímero)"
+    },
+    "PRD90217": {
+      "acao": "ignorar",
+      "motivo": "Corte/transporte/termosselagem: servico, nao materia-prima"
+    },
+    "RTM2K6": {
+      "acao": "ignorar",
+      "motivo": "rtm 2k SUP: nao e materia-prima (R$ 30.000/UN)"
+    },
+    "TESTE-IAPP-01": {
+      "acao": "ignorar",
+      "motivo": "produto de teste da integracao iApp"
+    },
+    "PRD00055": {
+      "acao": "criar",
+      "nome": "Massa Base Vegetal 100% com Branqueador"
+    },
+    "PRD90230": {
+      "acao": "criar",
+      "nome": "Pêssego Caramelado (fragrância)"
+    },
+    "MT000037": {
+      "acao": "criar",
+      "nome": "N-Metil Pirrolidona"
+    },
+    "MT256959": {
+      "acao": "criar",
+      "nome": "Officinol"
+    },
+    "PRD57093": {
+      "acao": "criar",
+      "nome": "Dermalcare 6040 LW BB 20"
+    },
+    "MT23932": {
+      "acao": "criar",
+      "nome": "Biocalmin"
+    },
+    "PRD90149": {
+      "acao": "criar",
+      "nome": "Alphabio 818"
+    },
+    "MT101932": {
+      "acao": "criar",
+      "nome": "Genencare OSMS BA"
+    },
+    "MT14932": {
+      "acao": "criar",
+      "nome": "Lexemul 561 MB"
+    },
+    "PRD90231": {
+      "acao": "criar",
+      "nome": "Innoricino Ox Yellow"
+    },
+    "PRD90232": {
+      "acao": "criar",
+      "nome": "Innoricino Ox Red"
+    },
+    "MT286959": {
+      "acao": "criar",
+      "nome": "Lamesoft PO"
+    },
+    "MT856959": {
+      "acao": "criar",
+      "nome": "Frulix Acerola BS"
+    },
+    "MT20932": {
+      "acao": "criar",
+      "nome": "All-Q Coenzyme Q10 Plus"
+    },
+    "PRD55679": {
+      "acao": "criar",
+      "nome": "Pitaya Creamy LPS (fragrância)"
+    },
+    "MT000852": {
+      "acao": "criar",
+      "nome": "Perfum Cleaning 2 (FAV 323740)"
+    },
+    "MT921932": {
+      "acao": "criar",
+      "nome": "Frulix Kiwi BS"
+    },
+    "PRD44379": {
+      "acao": "criar",
+      "nome": "Daily 3 Scentblock"
+    },
+    "MT12932": {
+      "acao": "criar",
+      "nome": "Hypskin BS"
+    },
+    "MT000027": {
+      "acao": "criar",
+      "nome": "Extrato de Camomila (Nova)"
+    },
+    "PRD90276": {
+      "acao": "criar",
+      "nome": "Carbopol Ultrez 20"
+    },
+    "MT356959": {
+      "acao": "criar",
+      "nome": "Hidróxido de Sódio Solução 30%"
+    },
+    "MT000981": {
+      "acao": "criar",
+      "nome": "Óleo Essencial de Sálvia Sclarea"
+    },
+    "PRD57034": {
+      "acao": "criar",
+      "nome": "Óleo Essencial de Tomilho Branco"
+    },
+    "PRD57037": {
+      "acao": "criar",
+      "nome": "Óleo Essencial de Bortela Pimenta"
+    },
+    "PRD21832": {
+      "acao": "criar",
+      "nome": "Óleo Essencial de Cedro Virginal"
+    },
+    "PRD21836": {
+      "acao": "criar",
+      "nome": "Óleo Essencial de Sândalo"
+    },
+    "PRD00917": {
+      "acao": "criar",
+      "nome": "Hya-ACT S (Ácido Hialurônico puro, pó)"
+    }
+  }
+}

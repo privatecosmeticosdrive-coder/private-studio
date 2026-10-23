@@ -104,6 +104,47 @@ export interface MateriaPrima {
   ativo: boolean;
   flag_aumento_relevante: boolean;
   observacoes: string | null;
+  /** Integração Omie (10/26): códigos do ERP ligados a esta MP; o `principal` alimenta o preço. */
+  omie_vinculos?: MpOmieVinculo[];
+}
+
+/** Retrato da última NF de COMPRA no Omie (valor com ICMS/IPI/ST, na unidade da NF). */
+export interface UltimaCompraOmie {
+  data: string; // ISO (aaaa-mm-dd)
+  nf: string;
+  fornecedor: string;
+  cnpj?: string;
+  cfop?: string;
+  qtde: number;
+  un: string;
+  unitario: number; // R$ por unidade da NF (mercadoria + IPI + ST)
+  sem_impostos?: number;
+  preco_kg: number | null; // convertido para R$/kg (null = sem conversão)
+  conversao?: string | null;
+}
+
+export interface MpOmieVinculo {
+  codigo_omie: string;
+  descricao_omie: string;
+  unidade_omie: string | null;
+  ncm_omie: string | null;
+  principal: boolean;
+  origem: string; // auto_exato | auto_similar | manual | criado_do_omie | sem_vinculo
+  score: Money;
+  ultima_compra: UltimaCompraOmie | null;
+  motivo_sem_preco: string | null;
+  sincronizado_em: string | null;
+}
+
+/** GET /mps/omie/resumo — contagens reais da integração. */
+export interface MpOmieResumo {
+  mps_total: number;
+  mps_com_omie: number;
+  mps_sem_omie: number;
+  mps_com_ultima_compra_kg: number;
+  codigos_omie: number;
+  codigos_omie_sem_mp: number;
+  ultima_sincronizacao: string | null;
 }
 
 export interface MpHistoricoPreco {
@@ -628,8 +669,9 @@ export function isCalculoV3(c: CalculoQualquer): c is CalculoJson | CalculoJsonM
 
 /** Discrimina o Motor 2 10/26 — por PRESENÇA do campo `motor` + forma do material. */
 export function isCalculoMotor2(c: CalculoQualquer): c is CalculoJsonMotor2 {
+  // Por PRESENÇA de campo (margem{} + material.mp_liquida), nunca pela string do motor (red team B4).
   return (
-    (c as CalculoJsonMotor2).motor === MOTOR_2_ID &&
+    (c as CalculoJsonMotor2).margem !== undefined &&
     (c as CalculoJsonMotor2).material !== undefined &&
     (c as CalculoJsonMotor2).material.mp_liquida !== undefined
   );

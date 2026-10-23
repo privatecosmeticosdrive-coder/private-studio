@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Plus, Search, Pencil, Tag, Boxes, TrendingUp } from 'lucide-react';
+import { Plus, Search, Pencil, Tag, Boxes, TrendingUp, Link2 } from 'lucide-react';
 import { PageHeader } from '@/components/ui/page-header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,7 +30,10 @@ function useDebounced<T>(value: T, delay = 350): T {
 function fmtData(iso: string | null): string {
   if (!iso) return '—';
   const d = new Date(iso);
-  return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString('pt-BR');
+  if (Number.isNaN(d.getTime())) return '—';
+  // Data só-dia (aaaa-mm-dd ou meia-noite UTC do @db.Date) é lida em UTC — senão aparece um dia antes no fuso de SP.
+  const soDia = /^\d{4}-\d{2}-\d{2}(T00:00:00(\.000)?Z)?$/.test(iso);
+  return d.toLocaleDateString('pt-BR', soDia ? { timeZone: 'UTC' } : undefined);
 }
 
 export default function MateriasPrimas() {
@@ -40,6 +43,7 @@ export default function MateriasPrimas() {
   const [fornecedor, setFornecedor] = React.useState('');
   const [vencidas, setVencidas] = React.useState(false);
   const [soAumento, setSoAumento] = React.useState(false); // filtro client-side (sem suporte no backend)
+  const [semOmie, setSemOmie] = React.useState(false); // sem código do Omie vinculado (backend)
   const [page, setPage] = React.useState(1);
   const qDebounced = useDebounced(q);
   const fornecedorDebounced = useDebounced(fornecedor);
@@ -61,9 +65,17 @@ export default function MateriasPrimas() {
     q: qDebounced || undefined,
     fornecedor: fornecedorDebounced || undefined,
     vencidas: vencidas || undefined,
+    semOmie: semOmie || undefined,
     page,
     pageSize: PAGE_SIZE,
   };
+
+  // Integração Omie — contagens reais; sem dado mostra "—" (nunca zero falso).
+  const resumoOmie = useQuery({
+    queryKey: ['mps', 'omie', 'resumo'],
+    queryFn: () => mpsApi.resumoOmie(),
+    staleTime: 60_000,
+  });
 
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ['mps', 'lista', params],
@@ -159,6 +171,32 @@ export default function MateriasPrimas() {
         ),
       },
       {
+        id: 'omie',
+        header: 'Omie',
+        enableSorting: false,
+        cell: ({ row }) => {
+          const v = row.original.omie_vinculos ?? [];
+          if (v.length === 0) return <span className="text-warm-500">—</span>;
+          const principal = v.find((x) => x.principal) ?? v[0];
+          const compra = principal.ultima_compra;
+          return (
+            <span className="inline-flex flex-col leading-tight">
+              <span className="font-mono text-caption text-warm-700">
+                {principal.codigo_omie}
+                {v.length > 1 ? ` +${v.length - 1}` : ''}
+              </span>
+              <span className="text-caption text-warm-500 tnum">
+                {compra
+                  ? compra.preco_kg != null
+                    ? `última compra ${fmtData(compra.data)}`
+                    : `compra ${fmtData(compra.data)} sem R$/kg`
+                  : 'sem compra no Omie'}
+              </span>
+            </span>
+          );
+        },
+      },
+      {
         accessorKey: 'n_formulas_uso',
         header: 'Fórmulas',
         enableSorting: false,
@@ -201,7 +239,8 @@ export default function MateriasPrimas() {
     return soAumento ? base.filter((mp) => mp.flag_aumento_relevante) : base;
   }, [data, soAumento]);
 
-  const temFiltro = !!(q || fornecedor || vencidas || soAumento);
+  const temFiltro = !!(q || fornecedor || vencidas || soAumento || semOmie);
+  const r = resumoOmie.data;
 
   return (
     <div className="space-y-6">
@@ -216,6 +255,23 @@ export default function MateriasPrimas() {
           )
         }
       />
+
+      {/* Integração Omie — contagens reais (COUNT no banco), nunca estimadas */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          ['MPs com código do Omie', r ? `${r.mps_com_omie} de ${r.mps_total}` : null],
+          ['Preço pela última compra', r ? String(r.mps_com_ultima_compra_kg) : null],
+          ['Sem vínculo com o Omie', r ? String(r.mps_sem_omie) : null],
+          ['Última sincronização', r ? (r.ultima_sincronizacao ? fmtData(r.ultima_sincronizacao) : 'nunca') : null],
+        ].map(([rotulo, valor]) => (
+          <div key={rotulo} className="rounded-lg border border-border bg-surface px-4 py-3">
+            <p className="text-caption uppercase tracking-wide text-warm-500">{rotulo}</p>
+            <p className="text-sm font-medium text-ink tnum">
+              {resumoOmie.isError ? 'erro ao carregar' : valor ?? '…'}
+            </p>
+          </div>
+        ))}
+      </div>
 
       <DataTable
         columns={columns}
@@ -255,7 +311,7 @@ export default function MateriasPrimas() {
               <Input
                 value={q}
                 onChange={(e) => aoBuscar(e.target.value)}
-                placeholder="Buscar por nome…"
+                placeholder="Buscar por nome ou código do Omie…"
                 className="pl-9"
               />
             </div>
@@ -268,6 +324,17 @@ export default function MateriasPrimas() {
             </div>
             <Button variant={vencidas ? 'gold' : 'secondary'} size="sm" onClick={alternarVencidas}>
               Vencidas
+            </Button>
+            <Button
+              variant={semOmie ? 'gold' : 'secondary'}
+              size="sm"
+              onClick={() => {
+                setSemOmie((v) => !v);
+                setPage(1);
+              }}
+              title="Matérias-primas sem nenhum código do Omie vinculado"
+            >
+              <Link2 className="size-4" /> Sem Omie
             </Button>
             <Button
               variant={soAumento ? 'gold' : 'secondary'}
