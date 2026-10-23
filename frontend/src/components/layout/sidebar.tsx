@@ -14,6 +14,7 @@ import {
   Barcode,
   ClipboardCheck,
   Beaker,
+  TrendingUp,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -41,6 +42,7 @@ const ITENS: NavItem[] = [
   { to: '/cotacoes', label: 'Cotações', icon: ClipboardList },
   { to: '/clientes', label: 'Clientes', icon: Users },
   { to: '/matriz-custo', label: 'Matriz de Custo', icon: Calculator, custos: true },
+  { to: '/viabilidade', label: 'Viabilidade', icon: TrendingUp, custos: true },
   { to: '/ncm', label: 'NCM', icon: Barcode, custos: true },
   { to: '/revisao-ncm', label: 'Revisão NCM', icon: ClipboardCheck, roles: ['admin', 'pd'] },
   { to: '/admin', label: 'Admin', icon: Settings, roles: ['admin'] },

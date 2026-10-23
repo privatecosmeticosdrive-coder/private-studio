@@ -15,6 +15,7 @@ import OrcamentoWizard from '@/pages/orcamento-wizard';
 import OrcamentoDetalhe from '@/pages/orcamento-detalhe';
 import Admin from '@/pages/admin';
 import MatrizCusto from '@/pages/matriz-custo';
+import Viabilidade from '@/pages/viabilidade';
 import NcmPage from '@/pages/ncm';
 import RevisaoNcm from '@/pages/revisao-ncm';
 import Laboratorio from '@/pages/laboratorio';
@@ -44,6 +45,7 @@ export default function App() {
           <Route path="/clientes" element={<Clientes />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/matriz-custo" element={<MatrizCusto />} />
+          <Route path="/viabilidade" element={<Viabilidade />} />
           <Route path="/ncm" element={<NcmPage />} />
           <Route path="/revisao-ncm" element={<RevisaoNcm />} />
           <Route index element={<Navigate to="/dashboard" replace />} />

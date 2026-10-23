@@ -21,6 +21,7 @@ import { CotacoesModule } from './cotacoes/cotacoes.module';
 import { SystemConfigModule } from './system-config/system-config.module';
 import { MatrizCustoModule } from './matriz-custo/matriz-custo.module';
 import { PendenciasLabModule } from './pendencias-lab/pendencias-lab.module';
+import { ViabilidadeModule } from './viabilidade/viabilidade.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { PendenciasLabModule } from './pendencias-lab/pendencias-lab.module';
     CotacoesModule,
     SystemConfigModule,
     MatrizCustoModule,
+    ViabilidadeModule,
     PendenciasLabModule,
     HealthModule,
   ],
