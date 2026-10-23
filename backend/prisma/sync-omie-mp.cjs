@@ -18,7 +18,8 @@
  *  2. Converte a ultima compra para R$/kg (KG direto; G/GR x1000; UN com peso na
  *     descricao, ex. "1KG"/"500g", pelo peso; L/mL ou UN sem peso: SEM preco + motivo).
  *  3. Para cada MP com compra em R$/kg: o codigo com a compra MAIS RECENTE vira o
- *     "principal" e o preco da MP passa a ser o da ultima compra — gravando historico
+ *     "principal" e o preco da MP passa a ser o da ultima compra SE a NF for mais recente
+ *     que a cotacao gravada (regra de 23/10/2026; cotacao igual/mais nova prevalece) — gravando historico
  *     (origem integracao_omie, fonte ultima_compra), audit_log e alerta de aumento
  *     (mesma regra de MateriasPrimasService.atualizarPreco). Guarda de outlier: variacao
  *     acima de x5 ou abaixo de /5 NAO e aplicada (fica "suspeito" no relatorio) salvo
@@ -199,7 +200,11 @@ const dataBR = (iso) => (iso ? String(iso).slice(0, 10).split('-').reverse().joi
     const igual = atual != null && Math.abs(atual - novo) < 0.00005 && dataAtual === compra.data;
     const ov = OVERRIDES[l.omie.codigo];
     const outlier = atual != null && atual > 0 && (novo / atual > OUTLIER_SOBE || novo / atual < OUTLIER_CAI) && !ov?.forcar_preco;
-    precos.push({ grupo: g, linha: l, compra, novo, atual, dataAtual, variacao, igual, outlier, aumentoRelevante: variacao != null && variacao >= threshold });
+    // REGRA (decisao do dono, 23/10/2026): a compra so substitui o preco quando a NF e MAIS RECENTE que a
+    // cotacao gravada no Studio. Cotacao de mesma data ou mais nova prevalece (fica registrada no relatorio).
+    const cotacaoMaisRecente = !igual && atual != null && dataAtual != null && compra.data <= dataAtual;
+    const aplicar = !igual && !outlier && !cotacaoMaisRecente;
+    precos.push({ grupo: g, linha: l, compra, novo, atual, dataAtual, variacao, igual, outlier, cotacaoMaisRecente, aplicar, aumentoRelevante: variacao != null && variacao >= threshold });
   }
 
   // ---- resumo do plano ----
@@ -208,13 +213,13 @@ const dataBR = (iso) => (iso ? String(iso).slice(0, 10).split('-').reverse().joi
     por_acao: cont(plano, (l) => l.acao),
     por_origem: cont(plano, (l) => l.origem),
     mps_novas: novasPorGrupo.size,
-    precos: { candidatos: precos.length, aplicar: precos.filter((p) => !p.igual && !p.outlier).length, sem_mudanca: precos.filter((p) => p.igual).length, suspeitos_outlier: precos.filter((p) => p.outlier).length, aumento_relevante: precos.filter((p) => !p.igual && !p.outlier && p.aumentoRelevante).length },
+    precos: { candidatos: precos.length, aplicar: precos.filter((p) => p.aplicar).length, sem_mudanca: precos.filter((p) => p.igual).length, cotacao_mais_recente_mantida: precos.filter((p) => p.cotacaoMaisRecente && !p.outlier).length, suspeitos_outlier: precos.filter((p) => p.outlier).length, aumento_relevante: precos.filter((p) => p.aplicar && p.aumentoRelevante).length },
     sem_preco_kg: cont(plano.filter((l) => l.omie.compra && l.conv.preco_kg == null), (l) => l.conv.motivo),
   };
   console.log('\nPLANO', COMMIT ? '(COMMIT)' : '(DRY-RUN)');
   console.log(JSON.stringify(resumo, null, 1));
   console.log('\nPrecos a aplicar (amostra de 25):');
-  for (const p of precos.filter((p) => !p.igual && !p.outlier).slice(0, 25)) console.log(`  ${p.grupo.mp ? p.grupo.mp.codigo + ' ' + p.grupo.mp.nome : 'NOVA ' + p.grupo.novo.nome} : R$ ${p.atual ?? '—'} (${p.dataAtual ?? 's/ data'}) -> R$ ${p.novo} (${p.compra.data}, NF ${p.compra.nf}, ${p.compra.fornecedor.slice(0, 25)})${p.variacao != null ? ' ' + p.variacao + '%' : ''}`);
+  for (const p of precos.filter((p) => p.aplicar).slice(0, 25)) console.log(`  ${p.grupo.mp ? p.grupo.mp.codigo + ' ' + p.grupo.mp.nome : 'NOVA ' + p.grupo.novo.nome} : R$ ${p.atual ?? '—'} (${p.dataAtual ?? 's/ data'}) -> R$ ${p.novo} (${p.compra.data}, NF ${p.compra.nf}, ${p.compra.fornecedor.slice(0, 25)})${p.variacao != null ? ' ' + p.variacao + '%' : ''}`);
   console.log('\nSUSPEITOS (outlier — NAO aplicados; use forcar_preco no mapa se estiver certo):');
   for (const p of precos.filter((p) => p.outlier)) console.log(`  ${p.grupo.mp.codigo} ${p.grupo.mp.nome}: R$ ${p.atual} -> R$ ${p.novo} (${p.variacao}%) via ${p.linha.omie.codigo} NF ${p.compra.nf} ${p.compra.qtde} ${p.compra.un}`);
   const erros = plano.filter((l) => l.acao === 'erro');
@@ -229,7 +234,7 @@ const dataBR = (iso) => (iso ? String(iso).slice(0, 10).split('-').reverse().joi
       compra: l.omie.compra, preco_kg: l.conv.preco_kg != null ? r4(l.conv.preco_kg) : null, conversao: l.conv.conversao ?? null, motivo_sem_preco: l.conv.motivo ?? null,
       detalhe: typeof l.detalhe === 'string' ? l.detalhe : null,
     })),
-    precos: precos.map((p) => ({ studio: p.grupo.mp ? { id: p.grupo.mp.id, codigo: p.grupo.mp.codigo, nome: p.grupo.mp.nome, uso: p.grupo.mp.n_formulas_uso } : { novo: true, codigo: p.grupo.novo.codigo, nome: p.grupo.novo.nome }, omie: p.linha.omie.codigo, atual: p.atual, data_atual: p.dataAtual, novo: p.novo, data_nova: p.compra.data, variacao_pct: p.variacao, nf: p.compra.nf, fornecedor: p.compra.fornecedor, qtde: p.compra.qtde, un: p.compra.un, conversao: p.linha.conv.conversao ?? null, situacao: p.igual ? 'sem_mudanca' : p.outlier ? 'suspeito_nao_aplicado' : 'aplicar', aumento_relevante: p.aumentoRelevante })),
+    precos: precos.map((p) => ({ studio: p.grupo.mp ? { id: p.grupo.mp.id, codigo: p.grupo.mp.codigo, nome: p.grupo.mp.nome, uso: p.grupo.mp.n_formulas_uso } : { novo: true, codigo: p.grupo.novo.codigo, nome: p.grupo.novo.nome }, omie: p.linha.omie.codigo, atual: p.atual, data_atual: p.dataAtual, novo: p.novo, data_nova: p.compra.data, variacao_pct: p.variacao, nf: p.compra.nf, fornecedor: p.compra.fornecedor, qtde: p.compra.qtde, un: p.compra.un, conversao: p.linha.conv.conversao ?? null, situacao: p.igual ? 'sem_mudanca' : p.outlier ? 'suspeito_nao_aplicado' : p.cotacaoMaisRecente ? 'cotacao_mais_recente_mantida' : 'aplicar', aumento_relevante: p.aumentoRelevante })),
   };
   fs.writeFileSync(RELATORIO, JSON.stringify(relatorio, null, 1));
   console.log(`\nRelatorio: ${RELATORIO}`);
@@ -239,7 +244,7 @@ const dataBR = (iso) => (iso ? String(iso).slice(0, 10).split('-').reverse().joi
 
   // ---- backup (antes de qualquer escrita) ----
   const ts = new Date().toISOString().replace(/[:.]/g, '-');
-  const afetadas = [...new Set(precos.filter((p) => !p.igual && !p.outlier && p.grupo.mp).map((p) => p.grupo.mp.id))];
+  const afetadas = [...new Set(precos.filter((p) => p.aplicar && p.grupo.mp).map((p) => p.grupo.mp.id))];
   const [maxHist, maxAlerta, maxAudit] = await Promise.all([
     prisma.mpHistoricoPreco.aggregate({ _max: { id: true } }), prisma.alerta.aggregate({ _max: { id: true } }), prisma.auditLog.aggregate({ _max: { id: true } }),
   ]);
@@ -283,7 +288,7 @@ const dataBR = (iso) => (iso ? String(iso).slice(0, 10).split('-').reverse().joi
     }
     // b) precos nas MPs existentes
     for (const p of precos) {
-      if (p.igual || p.outlier || !p.grupo.mp) continue;
+      if (!p.aplicar || !p.grupo.mp) continue;
       const mp = p.grupo.mp; const compra = p.compra;
       await tx.mpHistoricoPreco.create({ data: { mp_id: mp.id, preco_kg_brl: p.novo, preco_anterior_kg: p.atual ?? undefined, variacao_pct: p.variacao ?? undefined, fornecedor: compra.fornecedor, data_cotacao: new Date(compra.data), origem: 'integracao_omie', fonte_info: 'ultima_compra', observacoes: `NF ${compra.nf} de ${dataBR(compra.data)} - ${compra.qtde} ${compra.un} a R$ ${compra.unitario}/${compra.un} (com ICMS/IPI/ST) - Omie ${p.linha.omie.codigo}${p.linha.conv.conversao ? ' - ' + p.linha.conv.conversao : ''}`, registrado_por: admin?.id ?? null } });
       await tx.materiaPrima.update({ where: { id: mp.id }, data: { preco_anterior: p.atual ?? undefined, preco_kg_brl: p.novo, aumento_pct: p.variacao ?? undefined, fornecedor: compra.fornecedor, data_cotacao: new Date(compra.data), flag_aumento_relevante: p.aumentoRelevante } });

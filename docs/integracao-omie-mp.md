@@ -35,7 +35,8 @@ com a **compra mais recente** (PRD* desempata) vira `principal` e alimenta o pre
 ## Regras de preço
 
 - Unidade da NF: KG direto; G × 1.000; UN com peso na descrição ("1KG", "500g") pelo peso; **L/mL ou UN sem peso: sem preço** (motivo gravado, visível na tela).
-- Sempre que há compra convertida, a MP recebe o preço e a data da NF (histórico `origem = integracao_omie`, `fonte_info = ultima_compra`, observação com NF/quantidade/fornecedor).
+- **Regra de 23/10/2026 (decisão do dono): a compra só substitui o preço quando a NF é MAIS RECENTE que a cotação gravada no Studio.** Cotação de mesma data ou mais nova prevalece (situação `cotacao_mais_recente_mantida` no relatório). A primeira sincronização (23/10, regra antiga) aplicou 142 preços de compras mais antigas; `prisma/reverter-compra-antiga.cjs --backup=<backup da sincronização>` os devolve à cotação anterior.
+- Quando a compra é mais recente, a MP recebe o preço e a data da NF (histórico `origem = integracao_omie`, `fonte_info = ultima_compra`, observação com NF/quantidade/fornecedor).
 - **Guarda de outlier:** variação acima de ×5 ou abaixo de ÷5 em relação ao preço atual NÃO é aplicada automaticamente — fica como
   "suspeito" no relatório (regra 7: número estranho aparece, não entra em silêncio). Para aplicar, `forcar_preco: true` no mapa.
 - Alerta de aumento (≥ `alerta_aumento_mp_pct`, hoje 20%) igual ao da atualização manual.
