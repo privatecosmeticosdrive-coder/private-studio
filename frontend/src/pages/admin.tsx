@@ -39,8 +39,8 @@ export default function Admin() {
       />
 
       {/* Abas */}
-      <div className="border-b border-border">
-        <nav className="-mb-px flex gap-1">
+      <div className="-mx-4 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0">
+        <nav className="-mb-px flex gap-1 whitespace-nowrap">
           {ABAS.map(({ id, label, icon: Icon }) => {
             const ativa = aba === id;
             return (
@@ -49,7 +49,7 @@ export default function Admin() {
                 type="button"
                 onClick={() => setAba(id)}
                 className={cn(
-                  'inline-flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors',
+                  'inline-flex shrink-0 items-center gap-2 border-b-2 px-3 py-2.5 text-sm font-medium transition-colors sm:px-4',
                   ativa
                     ? 'border-gold-500 text-ink'
                     : 'border-transparent text-warm-500 hover:text-ink',

@@ -804,6 +804,9 @@ function Editor({
   });
 
   const [resultado, setResultado] = useState<ResultadoViabilidade | null>(null);
+  // celular: um cenário por vez (no desktop as duas colunas ficam lado a lado)
+  const [cenarioMobile, setCenarioMobile] = useState<'ideal' | 'limite'>('ideal');
+  const soDesktop = (cen: 'ideal' | 'limite') => (cen === cenarioMobile ? '' : 'hidden lg:block');
   const [premissasCalculadas, setPremissasCalculadas] = useState<string | null>(null);
   const [excluindo, setExcluindo] = useState(false);
 
@@ -1029,13 +1032,27 @@ function Editor({
       </form>
 
       {/* -------- premissas em duas colunas -------- */}
-      <form className="space-y-4 rounded-lg border border-border bg-surface p-5" noValidate onSubmit={(e) => e.preventDefault()}>
-        <div className="grid grid-cols-2 gap-6">
-          <div>
+      <form className="space-y-4 rounded-lg border border-border bg-surface p-4 sm:p-5" noValidate onSubmit={(e) => e.preventDefault()}>
+        <div className="grid grid-cols-2 gap-1 rounded-md bg-warm-100 p-1 lg:hidden" role="tablist" aria-label="Cenário">
+          {(['ideal', 'limite'] as const).map((c) => (
+            <button
+              key={c}
+              type="button"
+              role="tab"
+              aria-selected={cenarioMobile === c}
+              onClick={() => setCenarioMobile(c)}
+              className={`min-h-10 rounded px-3 text-sm font-medium transition-colors ${cenarioMobile === c ? 'bg-surface text-ink shadow-sm' : 'text-warm-600'}`}
+            >
+              {c === 'ideal' ? 'Cenário ideal' : 'Até onde ir'}
+            </button>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:gap-6">
+          <div className={soDesktop('ideal')}>
             <h3 className="font-medium text-ink">Cenário ideal</h3>
             <p className="text-caption text-warm-500">Política vigente: escada de margem, taxa de gestão, créditos e fábrica da vigência.</p>
           </div>
-          <div className="flex items-start justify-between gap-3">
+          <div className={`flex flex-wrap items-start justify-between gap-3 ${soDesktop('limite')}`}>
             <div>
               <h3 className="font-medium text-ink">Até onde podemos ir</h3>
               <p className="text-caption text-warm-500">As mesmas premissas com os ajustes (margem menor, preço imposto, volume, HE).</p>
@@ -1053,9 +1070,9 @@ function Editor({
               {s.descricao && <p className="text-caption text-warm-500">{s.descricao}</p>}
             </div>
             {s.campos.map((def) => (
-              <div key={def.campo} className="grid grid-cols-2 gap-6">
-                {renderCampo('ideal', def)}
-                {renderCampo('limite', def)}
+              <div key={def.campo} className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:gap-6">
+                <div className={soDesktop('ideal')}>{renderCampo('ideal', def)}</div>
+                <div className={soDesktop('limite')}>{renderCampo('limite', def)}</div>
               </div>
             ))}
           </div>

@@ -44,7 +44,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby={tituloId}
@@ -61,7 +61,7 @@ export function Modal({ open, onClose, title, description, children, footer, siz
         ref={painelRef}
         tabIndex={-1}
         className={cn(
-          'relative z-10 w-full overflow-hidden rounded-lg border border-border bg-card shadow-lg outline-none',
+          'relative z-10 w-full overflow-hidden rounded-t-xl border border-border bg-card shadow-lg outline-none sm:rounded-lg',
           'animate-fade-rise',
           LARGURAS[size],
         )}
@@ -86,8 +86,8 @@ export function Modal({ open, onClose, title, description, children, footer, siz
             <X className="size-4" />
           </button>
         </div>
-        <div className="max-h-[70vh] overflow-y-auto p-5">{children}</div>
-        {footer && <div className="flex justify-end gap-3 border-t border-border bg-sand/40 p-4">{footer}</div>}
+        <div className="max-h-[70dvh] overflow-y-auto p-4 sm:p-5">{children}</div>
+        {footer && <div className="flex flex-wrap justify-end gap-3 border-t border-border bg-sand/40 p-4">{footer}</div>}
       </div>
     </div>,
     document.body,

@@ -16,13 +16,13 @@ interface WizardStepperProps {
 /** Indicador de progresso das etapas do wizard (tokens Atelier Técnico). */
 export function WizardStepper({ etapas, atual, onIr }: WizardStepperProps) {
   return (
-    <ol className="flex items-center gap-2">
+    <ol className="flex items-center gap-1 sm:gap-2">
       {etapas.map((etapa, idx) => {
         const concluida = etapa.id < atual;
         const ativa = etapa.id === atual;
         const navegavel = !!onIr && etapa.id < atual;
         return (
-          <li key={etapa.id} className="flex flex-1 items-center gap-2">
+          <li key={etapa.id} className="flex min-w-0 flex-1 items-center gap-1 sm:gap-2">
             <button
               type="button"
               disabled={!navegavel}
@@ -42,8 +42,9 @@ export function WizardStepper({ etapas, atual, onIr }: WizardStepperProps) {
               >
                 {concluida ? <Check className="size-4" /> : etapa.id}
               </span>
-              <span className="flex flex-col">
-                <span className="text-caption uppercase tracking-wide text-warm-500">
+              {/* no celular só a bolinha numerada; o título da etapa ativa aparece ao lado */}
+              <span className={cn('flex-col', ativa ? 'flex' : 'hidden sm:flex')}>
+                <span className="hidden text-caption uppercase tracking-wide text-warm-500 sm:block">
                   Etapa {etapa.id}
                 </span>
                 <span
@@ -59,7 +60,7 @@ export function WizardStepper({ etapas, atual, onIr }: WizardStepperProps) {
             {idx < etapas.length - 1 && (
               <span
                 className={cn(
-                  'h-px flex-1 transition-colors',
+                  'h-px min-w-2 flex-1 transition-colors',
                   etapa.id < atual ? 'bg-gold-500' : 'bg-border',
                 )}
                 aria-hidden
