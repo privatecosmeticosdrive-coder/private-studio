@@ -11,6 +11,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
+import { ValidateIf } from 'class-validator';
 import { OrcamentoNivel } from '@prisma/client';
 import { MODOS_OPERACAO } from './create-orcamento.dto';
 
@@ -37,8 +38,9 @@ export class UpdateOrcamentoDto {
   @IsOptional() @IsInt() @Min(1)
   quantidade?: number;
 
-  @IsOptional() @IsNumber() @Min(0) @Max(99)
-  margem_pct?: number;
+  // null = limpar o override manual (Motor 2 volta a escada por lote) - red team C1
+  @ValidateIf((o) => o.margem_pct !== null) @IsOptional() @IsNumber() @Min(0) @Max(99)
+  margem_pct?: number | null;
 
   @IsOptional() @IsInt()
   formula_id?: number;

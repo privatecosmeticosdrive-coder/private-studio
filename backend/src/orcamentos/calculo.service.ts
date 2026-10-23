@@ -32,6 +32,7 @@ import type {
   PerfilClienteFiscal,
 } from './matriz-fiscal.util';
 import { resolverTributosSaida } from './matriz-fiscal.util';
+import { hojeSaoPaulo } from './hoje.util';
 
 /** Tolerância da soma da composição (pontos percentuais) antes de normalizar. */
 export const TOLERANCIA_SOMA_PCT = 0.5;
@@ -121,13 +122,18 @@ export class CalculoService {
     const quantidade = orc.quantidade;
 
     // ---------- motor ----------
+    // UM unico "hoje" (data civil de Sao Paulo) para todas as vigencias lidas neste calculo.
+    const hoje = hojeSaoPaulo();
     const motor: MotorPrecificacao =
-      overrides.motor ?? (await lerMotorPadrao(this.prisma));
+      overrides.motor ?? (await this.ouBadRequest(() => lerMotorPadrao(this.prisma, hoje)));
 
-    // Margem: override do cálculo > gravada no orçamento > (Motor 2) escada automática.
+    // Margem. Motor 1: override do calculo > gravada no orcamento (obrigatoria).
+    // Motor 2: SO o override explicito do calculo e manual; a margem gravada no
+    // orcamento (heranca da era Motor 1, obrigatoria na epoca) NAO vira override
+    // escondido - sem override, aplica-se a escada por lote (red team C1).
     const margemManual: number | null =
       overrides.margem_pct ??
-      (orc.margem_pct != null ? Number(orc.margem_pct) : null);
+      (motor === 1 && orc.margem_pct != null ? Number(orc.margem_pct) : null);
     if (motor === 1 && margemManual == null) {
       throw new BadRequestException(
         'margem_pct e obrigatoria no Motor 1. Informe a margem no calculo ou grave no orcamento (o Motor 2 aplica a escada por lote automaticamente).',
@@ -135,7 +141,15 @@ export class CalculoService {
     }
 
     // Embalagem via catalogo (Doc 2d §B): snapshot do orcamento, catalogo, ou sem embalagem.
-    const emb = await this.resolverEmbalagem(orc);
+    // Fora do full service o cliente fornece a embalagem: ela NAO e precificada,
+    // nao marca o orcamento como preliminar nem entra no score (red team M5) - o
+    // preco bruto segue para o engine so para gerar o alerta `embalagem_ignorada`.
+    const modoCedo = (orc.modo_operacao ?? 'full_service') as ModoOperacao;
+    const embBruta = await this.resolverEmbalagem(orc);
+    const emb: EmbalagemResolvida =
+      modoCedo === 'full_service'
+        ? embBruta
+        : { embalagem_un: embBruta.embalagem_un, preliminar: false, snapshot: null };
 
     // Custo de MP base por kg: formula > override manual > budget do briefing > 0.
     // Fragrancia agora e MP da composicao (decisao A) — sem input separado.
@@ -161,10 +175,10 @@ export class CalculoService {
       );
     }
 
-    const { params: pf, caracterizacao } = await lerParametrosFiscaisVigentes(
-      this.prisma,
+    const { params: pf, caracterizacao } = await this.ouBadRequest(() =>
+      lerParametrosFiscaisVigentes(this.prisma, hoje),
     );
-    const modo = (orc.modo_operacao ?? 'full_service') as ModoOperacao;
+    const modo = modoCedo;
     const perfil: PerfilClienteFiscal = {
       regime_fiscal: (orc.cliente?.regime_fiscal ??
         null) as PerfilClienteFiscal['regime_fiscal'],
@@ -192,8 +206,19 @@ export class CalculoService {
       caracterizacao,
     );
 
-    // CORTE F3: a fábrica vem de parametro_producao (versionado, com fonte).
-    const producao = await lerParametrosProducaoVigentes(this.prisma);
+    // CORTE F3: a fabrica vem de parametro_producao (versionado, com fonte).
+    const producao = await this.ouBadRequest(() =>
+      lerParametrosProducaoVigentes(this.prisma, hoje),
+    );
+
+    // Cliente fora de SP: a matriz cobre so operacao interna paulista (red team A3).
+    const alertaUf =
+      perfil.uf && perfil.uf.toUpperCase() !== 'SP'
+        ? {
+            uf: perfil.uf,
+            mensagem: `Cliente em ${perfil.uf}: a matriz fiscal cobre so a operacao interna de SP. Aliquotas interestaduais (7%/12%) e DIFAL NAO estao no preco - validar com o contador antes de enviar.`,
+          }
+        : null;
 
     // ---- SCORE do orçamento: MATERIAL INTEIRO (MP + embalagem) ----
     // Média PONDERADA pela participação de cada parte no custo de material,
@@ -210,14 +235,18 @@ export class CalculoService {
       custoEmbUn,
     );
 
-    // Blindagem: sem base de MP (R$0/kg) o preco vira so MO — sinaliza preliminar.
-    const semBaseMp = cmp_base_mp_kg === 0;
+    // Blindagem: sem base de MP (R$0/kg) o preco vira so MO — sinaliza preliminar,
+    // EXCETO na industrializacao pura, onde a MP e do cliente e R$0 e o caso
+    // legitimo (red team A4).
+    const semBaseMp = cmp_base_mp_kg === 0 && modo !== 'industrializacao';
     const preliminar = emb.preliminar || semBaseMp;
     const aviso = semBaseMp
       ? 'Calculo sem base de materia-prima (R$0/kg). Defina uma formula ou informe o budget de MP para um valor real.'
       : emb.preliminar
         ? 'Embalagem sem cotacao — custo usa R$0 e o orcamento e preliminar (Doc 2d §B4).'
-        : undefined;
+        : cmp_base_mp_kg === 0 && modo === 'industrializacao'
+          ? 'Industrializacao com material 100% do cliente: sem custo de MP no preco (so mao de obra/fabrica).'
+          : undefined;
 
     const comum = {
       _gerado_em: new Date().toISOString(),
@@ -264,10 +293,14 @@ export class CalculoService {
 
     // ====================== MOTOR 2 10/26 ======================
     if (motor === 2) {
-      const lidos = await lerParametrosMotor2(this.prisma, producao, {
-        perda_mp_pct: cfg.desvio_mp_pct,
-        frete_un_brl: cfg.frete_un_brl,
-      });
+      const lidos = await this.ouBadRequest(() =>
+        lerParametrosMotor2(
+          this.prisma,
+          producao,
+          { perda_mp_pct: cfg.desvio_mp_pct, frete_un_brl: cfg.frete_un_brl },
+          hoje,
+        ),
+      );
 
       // un_min: cálculo > orçamento > padrão vigente (COM alerta) > 400.
       let un_min =
@@ -296,7 +329,7 @@ export class CalculoService {
         embalagem_un: emb.embalagem_un,
         mp_sem_preco: formula?.mp_sem_preco ?? [],
       };
-      const calc = calcularCustoMotor2(inputs, lidos.params, tributos);
+      const calc = this.ouBadRequestSync(() => calcularCustoMotor2(inputs, lidos.params, tributos));
 
       const calculo = {
         _mode: 'motor2',
@@ -324,6 +357,7 @@ export class CalculoService {
         alertas: {
           ...calc.alertas,
           un_min_padrao: alertaUnMinPadrao,
+          uf_fora_sp: alertaUf,
           composicao_normalizada: alertaComposicao(
             formula?.composicao_normalizada,
           ),
@@ -362,7 +396,7 @@ export class CalculoService {
       desvio_mp_pct: cfg.desvio_mp_pct,
       frete_un_brl: cfg.frete_un_brl,
     };
-    const calc = calcularCustoFiscal(inputs, oper, tributos);
+    const calc = this.ouBadRequestSync(() => calcularCustoFiscal(inputs, oper, tributos));
 
     const calculo = {
       _mode: 'fiscal_granular',
@@ -377,6 +411,7 @@ export class CalculoService {
       mao_de_obra: calc.mao_de_obra,
       alertas: {
         ...calc.alertas,
+        uf_fora_sp: alertaUf,
         composicao_normalizada: alertaComposicao(
           formula?.composicao_normalizada,
         ),
@@ -390,6 +425,23 @@ export class CalculoService {
       calc.resultado.preco_sipi,
       calc.resultado.preco_cipi,
     );
+  }
+
+  /** Erro de parametro/engine vira 400 com a mensagem (nao 500 generico) - red team M3. */
+  private async ouBadRequest<T>(fn: () => Promise<T>): Promise<T> {
+    try {
+      return await fn();
+    } catch (e) {
+      if (e instanceof BadRequestException || e instanceof NotFoundException) throw e;
+      throw new BadRequestException((e as Error).message);
+    }
+  }
+  private ouBadRequestSync<T>(fn: () => T): T {
+    try {
+      return fn();
+    } catch (e) {
+      throw new BadRequestException((e as Error).message);
+    }
   }
 
   // ---------------- parametros de custo (system_config) ----------------

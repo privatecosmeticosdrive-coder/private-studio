@@ -7,6 +7,7 @@ import {
   Post,
   Query,
   Res,
+  ForbiddenException,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { Role } from '@prisma/client';
@@ -106,6 +107,11 @@ export class OrcamentosController {
     @Body() dto: CalcularDto,
     @CurrentUser() user: JwtUser,
   ) {
+    // Forcar o motor e decisao de administrador (red team A5): comercial/pd
+    // calculam sempre pelo motor vigente.
+    if (dto.motor != null && user.role !== Role.admin) {
+      throw new ForbiddenException('So administradores podem forcar o motor de precificacao.');
+    }
     return this.orcamentos.calcular(id, dto, user.sub);
   }
 

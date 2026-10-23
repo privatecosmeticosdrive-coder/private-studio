@@ -100,10 +100,10 @@
     },
     "parcelas": {
       "produto": {
-        "custo_un": 5.9876,
+        "custo_un": 5.9877,
         "taxa_pct": 24.5,
         "markup_pct": 40,
-        "preco_un": 16.8666
+        "preco_un": 16.8667
       },
       "embalagem": {
         "custo_un": 5.1708,
@@ -116,7 +116,7 @@
     "resultado": {
       "margem_pct": 40,
       "preco_produto_sipi": 16.87,
-      "preco_embalagem_sipi": 8.55,
+      "preco_embalagem_sipi": 8.54,
       "preco_sipi": 25.41,
       "ipi_pct": 0,
       "base_ipi": "nao_aplica",

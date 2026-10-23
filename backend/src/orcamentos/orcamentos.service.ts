@@ -137,9 +137,28 @@ export class OrcamentosService {
     });
   }
 
+  /** Campos do briefing que mudam o preco: altera-los invalida o calculo do RASCUNHO (red team A2). */
+  private static readonly CAMPOS_QUE_MUDAM_PRECO = [
+    'volume_un', 'quantidade', 'un_min', 'formula_id', 'embalagem_id', 'sem_embalagem',
+    'modo_operacao', 'ncm_id', 'cliente_id', 'budget_mp', 'margem_pct',
+  ] as const;
+
   async update(id: string, dto: UpdateOrcamentoDto) {
     await this.ensure(id);
-    return this.prisma.orcamento.update({ where: { id }, data: dto });
+    const atual = await this.prisma.orcamento.findUnique({
+      where: { id },
+      select: { status: true, calculo: true },
+    });
+    const mudaPreco = OrcamentosService.CAMPOS_QUE_MUDAM_PRECO.some(
+      (c) => (dto as Record<string, unknown>)[c] !== undefined,
+    );
+    // Snapshot congelado so e descartado em rascunho e so quando o briefing que
+    // o gerou muda - orcamento enviado/aprovado nunca tem o preco reescrito.
+    const invalidar =
+      mudaPreco && atual?.status === 'rascunho' && atual.calculo !== null
+        ? { calculo: Prisma.DbNull, preco_sipi: null, preco_cipi: null, score_global: null }
+        : {};
+    return this.prisma.orcamento.update({ where: { id }, data: { ...dto, ...invalidar } });
   }
 
   async duplicar(id: string, userId: string) {
@@ -152,7 +171,7 @@ export class OrcamentosService {
         nivel: o.nivel,
         volume_un: o.volume_un,
         quantidade: o.quantidade,
-        margem_pct: o.margem_pct,
+        margem_pct: null, // nao herda override manual: o Motor 2 aplica a escada por lote (red team C1)
         formula_id: o.formula_id,
         ncm_id: o.ncm_id, // preserva o override de NCM ao duplicar
         modo_operacao: o.modo_operacao, // preserva o modo fiscal ao duplicar

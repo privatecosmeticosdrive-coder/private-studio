@@ -66,6 +66,13 @@ async function planoParaTabela(nome, delegate, linhas, campoFonte) {
       plano.push({ tabela: nome, chave, acao: 'PULA', motivo: `ja existe vigencia 2026-10-01 (id=${jaTem.id}, valor=${jaTem.valor})` });
       continue;
     }
+    // Vigencia aberta POSTERIOR ja cadastrada pelo admin: a seed NAO cria uma
+    // segunda linha aberta (red team M4) - pula e avisa.
+    const posterior = await delegate.findFirst({ where: { chave, vigencia_fim: null, vigencia_inicio: { gte: VIGENCIA } } });
+    if (posterior) {
+      plano.push({ tabela: nome, chave, acao: 'PULA', motivo: `ja existe vigencia aberta posterior (id=${posterior.id}, inicio ${posterior.vigencia_inicio.toISOString().slice(0, 10)}, valor=${posterior.valor})` });
+      continue;
+    }
     const aberta = await delegate.findFirst({
       where: { chave, vigencia_fim: null, vigencia_inicio: { lt: VIGENCIA } },
       orderBy: { vigencia_inicio: 'desc' },

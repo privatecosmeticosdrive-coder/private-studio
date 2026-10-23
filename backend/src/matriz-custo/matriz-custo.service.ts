@@ -10,6 +10,7 @@ import { CreateParametroFiscalDto } from './dto/create-parametro-fiscal.dto';
 import { CreateParametroProducaoDto } from './dto/create-parametro-producao.dto';
 import { lerParametrosProducaoVigentes } from '../orcamentos/params-producao.util';
 import { calcularCustoProducao } from '../orcamentos/custo-producao.util';
+import { hojeSaoPaulo } from '../orcamentos/hoje.util';
 
 const CAMPOS_OPERACIONAL = [
   'custo_fixo_mensal', 'mo_dias_uteis', 'horas_dia', 'eficiencia_linha',
@@ -264,7 +265,7 @@ export class MatrizCustoService {
     const rows = await this.prisma.parametroFiscal.findMany({
       orderBy: [{ chave: 'asc' }, { vigencia_inicio: 'desc' }],
     });
-    const hoje = new Date();
+    const hoje = hojeSaoPaulo();
     return rows.map((r) => ({
       ...r,
       valor: toNum(r.valor),
@@ -325,7 +326,7 @@ export class MatrizCustoService {
     const rows = await this.prisma.parametroProducao.findMany({
       orderBy: [{ chave: 'asc' }, { vigencia_inicio: 'desc' }],
     });
-    const hoje = new Date();
+    const hoje = hojeSaoPaulo();
     return rows.map((r) => ({
       ...r,
       valor: toNum(r.valor),
@@ -339,6 +340,13 @@ export class MatrizCustoService {
       throw new ForbiddenException('Apenas administradores alteram parâmetros de produção');
     }
     const inicio = new Date(dto.vigencia_inicio);
+    // Faixa dos percentuais (red team B2): credito/margem/taxa > 100% viram custo negativo em silencio.
+    if (/_pct$/.test(dto.chave) && dto.valor > 100) {
+      throw new ForbiddenException(`${dto.chave}: percentual acima de 100 nao e aceito.`);
+    }
+    if (dto.chave === 'motor_precificacao' && dto.valor !== 1 && dto.valor !== 2) {
+      throw new ForbiddenException('motor_precificacao aceita so 1 ou 2.');
+    }
 
     return this.prisma.$transaction(async (tx) => {
       const aberta = await tx.parametroProducao.findFirst({

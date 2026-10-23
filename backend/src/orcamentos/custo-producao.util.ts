@@ -97,7 +97,9 @@ export interface CustoProducao {
   producao_dia_linha: number; // un/dia numa linha (exibição; substitui un_min×480)
   setup_un: number; // custo_setup_ordem / quantidade
   corrida_un: number; // taxa_minuto / un_min
-  custo_producao_un: number; // setup_un + corrida_un
+  custo_producao_un: number; // setup_un + corrida_un (arredondado, exibicao)
+  /** setup + corrida SEM arredondar — o engine usa este (arredondar antes do gross-up mudava o preco em 1 centavo). */
+  custo_producao_un_exato: number;
 }
 
 const r4 = (n: number) => Number(n.toFixed(4));
@@ -136,5 +138,6 @@ export function calcularCustoProducao(
     setup_un: r4(setup_un),
     corrida_un: r4(corrida_un),
     custo_producao_un: r4(setup_un + corrida_un),
+    custo_producao_un_exato: setup_un + corrida_un,
   };
 }

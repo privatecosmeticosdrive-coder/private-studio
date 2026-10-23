@@ -17,6 +17,7 @@
 import type { PrismaService } from '../prisma/prisma.service';
 import type { ParametrosProducao } from './custo-producao.util';
 import type { ParametrosMotor2 } from './custo-engine-motor2';
+import { hojeSaoPaulo } from './hoje.util';
 
 export type MotorPrecificacao = 1 | 2;
 
@@ -94,11 +95,30 @@ async function vigentesFiscal(prisma: PrismaService, hoje: Date) {
 /** Motor padrão do sistema (parametro_producao.motor_precificacao). Ausente => 1. */
 export async function lerMotorPadrao(
   prisma: PrismaService,
-  hoje = new Date(),
+  hoje = hojeSaoPaulo(),
 ): Promise<MotorPrecificacao> {
   const vig = await vigentesProducao(prisma, hoje);
   const m = vig.get(CHAVE_MOTOR);
-  return m && Number(m.valor) === 2 ? 2 : 1;
+  if (!m) {
+    // Chave nunca cadastrada => Motor 1 (comportamento anterior). Chave com
+    // historico mas SEM vigencia ativa => falha visivel (red team C2): nunca
+    // cair no Motor 1 em silencio num dia de buraco de vigencia.
+    // So conta historico que JA COMECOU (vigencia futura ainda nao configurada = Motor 1).
+    const historico = await prisma.parametroProducao.count({
+      where: { chave: CHAVE_MOTOR, vigencia_inicio: { lte: hoje } },
+    });
+    if (historico > 0) {
+      throw new Error(
+        'parametro_producao.motor_precificacao tem historico mas nenhuma vigencia ativa hoje. Cadastre a vigencia em Matriz de Custo > Parametros de producao.',
+      );
+    }
+    return 1;
+  }
+  const v = Number(m.valor);
+  if (v !== 1 && v !== 2) {
+    throw new Error(`parametro_producao.motor_precificacao = ${m.valor} e invalido (use 1 ou 2).`);
+  }
+  return v;
 }
 
 export interface ParametrosMotor2Lidos {
@@ -113,7 +133,7 @@ export async function lerParametrosMotor2(
   prisma: PrismaService,
   producao: ParametrosProducao,
   legado: { perda_mp_pct: number; frete_un_brl: number },
-  hoje = new Date(),
+  hoje = hojeSaoPaulo(),
 ): Promise<ParametrosMotor2Lidos> {
   const [vp, vf] = await Promise.all([
     vigentesProducao(prisma, hoje),

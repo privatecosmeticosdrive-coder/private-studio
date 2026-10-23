@@ -33,6 +33,11 @@ function fakePrisma(producao: Row[], fiscal: Row[]): PrismaService {
     parametroProducao: {
       findMany: ({ where }: Args) =>
         Promise.resolve(vig(producao, where.vigencia_inicio.lte)),
+      // historico da chave (lerMotorPadrao: chave com historico sem vigencia => lanca)
+      count: ({ where }: { where: { chave: string; vigencia_inicio: { lte: Date } } }) =>
+        Promise.resolve(
+          producao.filter((r) => r.chave === where.chave && r.vigencia_inicio <= where.vigencia_inicio.lte).length,
+        ),
     },
     parametroFiscal: {
       findMany: ({ where }: Args) =>
@@ -105,6 +110,17 @@ describe('lerMotorPadrao', () => {
       row('motor_precificacao', 1, '2026-10-15'),
     ];
     expect(await lerMotorPadrao(fakePrisma(rows, []), HOJE)).toBe(1);
+  });
+
+  it('chave com historico mas SEM vigencia ativa hoje => lanca (red team C2: nunca Motor 1 em silencio)', async () => {
+    const encerrada = { ...row('motor_precificacao', 2, '2026-10-01'), vigencia_fim: new Date('2026-10-15') };
+    await expect(lerMotorPadrao(fakePrisma([encerrada], []), HOJE)).rejects.toThrow(/nenhuma vigencia ativa/);
+  });
+
+  it('valor fora de {1,2} => lanca (red team M2)', async () => {
+    await expect(
+      lerMotorPadrao(fakePrisma([row('motor_precificacao', 3, '2026-10-01')], []), HOJE),
+    ).rejects.toThrow(/invalido/);
   });
 });
 

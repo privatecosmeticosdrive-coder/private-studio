@@ -6,6 +6,7 @@
  */
 import type { PrismaService } from '../prisma/prisma.service';
 import type { ParametrosFiscaisVigentes, CaracterizacaoFiscal } from './matriz-fiscal.util';
+import { hojeSaoPaulo } from './hoje.util';
 
 const CHAVES_OBRIGATORIAS = [
   'pis_monofasico_pct',
@@ -18,7 +19,7 @@ const CHAVES_OBRIGATORIAS = [
 
 export async function lerParametrosFiscaisVigentes(
   prisma: PrismaService,
-  hoje = new Date(),
+  hoje = hojeSaoPaulo(),
 ): Promise<{ params: ParametrosFiscaisVigentes; caracterizacao: CaracterizacaoFiscal }> {
   const rows = await prisma.parametroFiscal.findMany({
     where: {

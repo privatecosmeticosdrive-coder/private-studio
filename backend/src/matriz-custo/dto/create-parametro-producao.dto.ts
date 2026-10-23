@@ -30,6 +30,9 @@ export const CHAVES_PARAMETRO_PRODUCAO = [
   'lote_grande_min_un',
   'lote_minimo_un',
   'un_min_padrao',
+  // Analise de viabilidade (10/26) - opcionais, usados como default das premissas
+  'custo_hora_extra_hora',
+  'pessoas_por_linha',
 ] as const;
 
 export class CreateParametroProducaoDto {

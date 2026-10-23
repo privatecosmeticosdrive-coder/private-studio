@@ -92,6 +92,9 @@ export interface AlertaLoteMinimo {
 const r2 = (n: number) => Number(n.toFixed(2));
 const r4 = (n: number) => Number(n.toFixed(4));
 
+/** Teto de (tributos + markup) por dentro: acima disso o preco explode (red team M3). */
+export const TETO_MARKUP_TRIBUTOS_PCT = 85;
+
 /** % de tributos "por dentro" de uma parcela (diferido/zero não oneram). */
 function taxaPorDentro(t: TributosParcela): number {
   const icms = t.icms.tipo === 'tributado' ? t.icms.pct : 0;
@@ -106,9 +109,9 @@ function grossUp(
   rotulo: string,
 ): number {
   const divisor = 1 - (markup_pct + taxa_pct) / 100;
-  if (divisor <= 0.01) {
+  if (markup_pct + taxa_pct > TETO_MARKUP_TRIBUTOS_PCT) {
     throw new Error(
-      `${rotulo}: markup (${markup_pct}%) + tributos (${taxa_pct}%) inviabilizam o preço (divisor <= 1%)`,
+      `${rotulo}: markup (${markup_pct}%) + tributos (${taxa_pct}%) = ${r2(markup_pct + taxa_pct)}% passam do teto de ${TETO_MARKUP_TRIBUTOS_PCT}% por dentro - preco inviavel. Reduza a margem.`,
     );
   }
   return custo / divisor;
@@ -169,6 +172,15 @@ export function calcularCustoMotor2(
     throw new Error('volume_un deve ser > 0 (mL/g por unidade).');
   if (!(inputs.un_min > 0))
     throw new Error('un_min deve ser > 0 (unidades por minuto produtivo).');
+  // Faixas dos parametros (red team B2): fora delas o custo liquido fica negativo em silencio.
+  if (!(p.credito_mp_pct >= 0 && p.credito_mp_pct < 100))
+    throw new Error(`credito_mp_pct = ${p.credito_mp_pct} fora da faixa [0, 100).`);
+  if (!(p.credito_emb_pct >= 0 && p.credito_emb_pct < 100))
+    throw new Error(`credito_emb_pct = ${p.credito_emb_pct} fora da faixa [0, 100).`);
+  if (!(p.perda_mp_pct >= 0)) throw new Error(`perda_mp_pct = ${p.perda_mp_pct} nao pode ser negativa.`);
+  if (!(p.frete_un_brl >= 0)) throw new Error(`frete_un_brl = ${p.frete_un_brl} nao pode ser negativo.`);
+  if ((inputs.embalagem_un ?? 0) < 0) throw new Error('embalagem_un nao pode ser negativa.');
+  if (!(inputs.cmp_base_mp_kg >= 0)) throw new Error('cmp_base_mp_kg nao pode ser negativo.');
 
   const quantidade = inputs.quantidade;
   const volume_kg = inputs.volume_un / 1000; // premissa: densidade 1,0 g/mL
@@ -182,7 +194,9 @@ export function calcularCustoMotor2(
   const mp_com_perda = mp_bruta + perda;
   const credito_mp = mp_com_perda * (p.credito_mp_pct / 100);
   const mp_liquida = mp_com_perda - credito_mp;
-  const frete = p.frete_un_brl;
+  // Frete de MP so existe quando ha MP da Private no preco: na industrializacao
+  // pura (cmp = 0, material do cliente) nao se cobra frete de MP (red team A4).
+  const frete = mp_bruta > 0 ? p.frete_un_brl : 0;
 
   // Embalagem só é precificada quando a Private a fornece (full_service). Nos
   // modos híbrido/industrialização o cliente fornece — entra 0 e, se o
@@ -195,7 +209,7 @@ export function calcularCustoMotor2(
 
   // ---- fábrica (3 componentes, parametro_producao vigente) ----
   const prod = calcularCustoProducao(p.producao, inputs.un_min, quantidade);
-  const fabrica_un = prod.custo_producao_un;
+  const fabrica_un = prod.custo_producao_un_exato;
 
   const custo_produto_un = mp_liquida + frete + fabrica_un; // sem embalagem
   const custo_material_un = mp_liquida + frete + embalagem_liquida;
@@ -325,7 +339,15 @@ export function calcularCustoMotor2(
     parcelaIpi.icms.tipo === 'tributado'
       ? ipi_un * (parcelaIpi.icms.pct / 100)
       : 0;
-  const preco_cipi = preco_sipi + ipi_un + icms_sobre_ipi;
+  // Arredondamento UNICO (red team A1): as partes exibidas somam exatamente o
+  // total exibido (16,87 + 8,54 = 25,41), e o preco com IPI = sem IPI + IPI
+  // arredondados - a aritmetica do PDF fecha ao centavo.
+  const preco_sipi_r = r2(preco_sipi);
+  const preco_produto_sipi_r = r2(preco_produto_sipi);
+  const preco_embalagem_sipi_r = r2(preco_sipi_r - preco_produto_sipi_r);
+  const ipi_un_r = r2(ipi_un);
+  const icms_sobre_ipi_r = r2(icms_sobre_ipi);
+  const preco_cipi = r2(preco_sipi_r + ipi_un_r + icms_sobre_ipi_r);
 
   const rp = (x: Parcela | null) =>
     x && {
@@ -392,14 +414,14 @@ export function calcularCustoMotor2(
     },
     resultado: {
       margem_pct: margem.aplicada_pct,
-      preco_produto_sipi: r2(preco_produto_sipi),
-      preco_embalagem_sipi: r2(preco_embalagem_sipi),
-      preco_sipi: r2(preco_sipi),
+      preco_produto_sipi: preco_produto_sipi_r,
+      preco_embalagem_sipi: preco_embalagem_sipi_r,
+      preco_sipi: preco_sipi_r,
       ipi_pct,
       base_ipi: tributos.base_ipi,
-      ipi_un: r2(ipi_un),
-      icms_sobre_ipi: r2(icms_sobre_ipi),
-      preco_cipi: r2(preco_cipi),
+      ipi_un: ipi_un_r,
+      icms_sobre_ipi: icms_sobre_ipi_r,
+      preco_cipi,
     },
     premissas: [
       'Densidade 1,0 g/mL: volume_un (mL) tratado como massa (g) para converter R$/kg em R$/un.',

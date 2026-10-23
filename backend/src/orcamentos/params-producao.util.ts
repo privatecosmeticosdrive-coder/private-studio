@@ -9,6 +9,7 @@
  */
 import type { PrismaService } from '../prisma/prisma.service';
 import type { ParametrosProducao } from './custo-producao.util';
+import { hojeSaoPaulo } from './hoje.util';
 
 const CHAVES_OBRIGATORIAS = [
   'custo_fixo_producao_mensal',
@@ -21,7 +22,7 @@ const CHAVES_OBRIGATORIAS = [
 
 export async function lerParametrosProducaoVigentes(
   prisma: PrismaService,
-  hoje = new Date(),
+  hoje = hojeSaoPaulo(),
 ): Promise<ParametrosProducao> {
   const rows = await prisma.parametroProducao.findMany({
     where: {

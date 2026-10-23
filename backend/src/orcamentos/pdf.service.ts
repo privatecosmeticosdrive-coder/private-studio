@@ -238,14 +238,17 @@ interface CalculoJson {
   };
   parametros_operacionais?: CalcOperV3;
   fundamentos?: string[];
+  /** briefing que gerou o preco (Motor 1 3.1 e Motor 2): volume, lote, un/min */
+  inputs?: { volume_un?: number; quantidade?: number; un_min?: number };
 }
 
 const MOTOR_2_ID = 'Motor 2 10/26';
 
 /** Discrimina o Motor 2 10/26 (shape 4.0) — por presença do campo `motor` + forma do material. */
 function isCalculoMotor2(c: CalculoJson): boolean {
+  // Por PRESENCA de campo (margem{} + material.mp_liquida), nunca pela string do motor (red team B4).
   return (
-    c.motor === MOTOR_2_ID &&
+    c.margem !== undefined &&
     c.material !== undefined &&
     (c.material as unknown as CalcMaterialM2).mp_liquida !== undefined
   );
@@ -565,19 +568,20 @@ export class PdfService {
       ['Cliente', orc.cliente?.nome ?? '—'],
       ['Categoria', orc.categoria ?? '—'],
       ['Nível', orc.nivel ? (NIVEL_LABEL[orc.nivel] ?? orc.nivel) : '—'],
+      // Briefing do SNAPSHOT (o que gerou o preco), nao do orcamento atual (red team A2).
       [
         'Volume/un',
-        orc.volume_un != null ? `${this.num(orc.volume_un)} mL/g` : '—',
+        (c?.inputs?.volume_un ?? orc.volume_un) != null ? `${this.num(c?.inputs?.volume_un ?? orc.volume_un)} mL/g` : '—',
       ],
       [
         'Quantidade do lote',
-        orc.quantidade != null ? this.num(orc.quantidade) : '—',
+        (c?.inputs?.quantidade ?? orc.quantidade) != null ? this.num(c?.inputs?.quantidade ?? orc.quantidade) : '—',
       ],
       ['Fórmula', f],
       ['Embalagem', emb],
       [
         'Produtividade',
-        orc.un_min != null ? `${this.num(orc.un_min)} un/min` : '—',
+        (c?.inputs?.un_min ?? orc.un_min) != null ? `${this.num(c?.inputs?.un_min ?? orc.un_min)} un/min` : '—',
       ],
       [
         'Margem',
