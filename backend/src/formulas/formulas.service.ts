@@ -278,10 +278,13 @@ export class FormulasService {
         formula_mae_id: raizId,
         derivada_de_id: origem.id,
         // D6 (Jornada de Laboratório): a nova versao HERDA o NCM da origem — nunca
-        // nasce sem NCM. ncm_revisado volta a false (a associacao vale p/ a nova
-        // composicao, que pode mudar; humano reconfirma se necessario).
+        // nasce sem NCM. Herda tambem a revisao: o NCM classifica o tipo de produto,
+        // nao as concentracoes, e o mesmo NCM ja confirmado nao volta para a fila
+        // (24/10/2026). Troca de NCM pelo laboratorio continua pedindo revisao.
         ncm_id: origem.ncm_id,
-        ncm_revisado: false,
+        ncm_revisado: origem.ncm_revisado,
+        ncm_revisado_em: origem.ncm_revisado ? origem.ncm_revisado_em : null,
+        ncm_revisado_por: origem.ncm_revisado ? origem.ncm_revisado_por : null,
         versao_codigo: novoCodigo,
         versao_descricao: dto.versao_descricao,
         origem: 'pd_manual',
@@ -369,19 +372,31 @@ export class FormulasService {
 
   // ----------------------- NCM: FILA DE REVISAO (F5 Bloco C) -----------------------
   /**
-   * Lista as formulas com NCM derivado pendente de revisao humana (as 274):
+   * Lista as formulas com NCM derivado pendente de revisao humana:
    * ncm_revisado=false E ncm_id != null. Payload traz o NCM sugerido.
+   * Fora da fila (24/10/2026): arquivadas e versoes superadas por uma versao
+   * mais nova nao arquivada — nenhuma das duas volta a ser orcada. Nada e
+   * apagado; so deixam de pedir revisao. Ordem: as mais orcadas primeiro.
+   * emUso=true: so as que ja entraram em algum orcamento (as ~600 do banco
+   * original nunca orcadas entram sozinhas na fila quando forem orcadas).
    */
-  async pendentesNcm(query: { q?: string; page?: number; pageSize?: number }) {
+  async pendentesNcm(query: { q?: string; page?: number; pageSize?: number; emUso?: boolean }) {
     const page = Math.max(1, query.page ?? 1);
     const pageSize = Math.min(200, Math.max(1, query.pageSize ?? 50));
-    const where: Prisma.FormulaWhereInput = { ncm_revisado: false, ncm_id: { not: null } };
-    if (query.q) where.nome_produto = { contains: query.q, mode: 'insensitive' };
+    const base: Prisma.FormulaWhereInput = {
+      ncm_revisado: false,
+      ncm_id: { not: null },
+      status: { not: 'arquivada' },
+      derivacoes: { none: { status: { not: 'arquivada' } } },
+    };
+    if (query.q) base.nome_produto = { contains: query.q, mode: 'insensitive' };
+    const emUso: Prisma.FormulaWhereInput = { ...base, orcamentos: { some: {} } };
+    const where = query.emUso ? emUso : base;
 
-    const [data, total] = await Promise.all([
+    const [data, total, totalEmUso, totalTodas] = await Promise.all([
       this.prisma.formula.findMany({
         where,
-        orderBy: { nome_produto: 'asc' },
+        orderBy: [{ orcamentos: { _count: 'desc' } }, { nome_produto: 'asc' }],
         skip: (page - 1) * pageSize,
         take: pageSize,
         select: {
@@ -394,11 +409,17 @@ export class FormulasService {
           ncm: {
             select: { id: true, ncm: true, descricao: true, ipi_pct: true, monofasico: true, ativo: true },
           },
+          _count: { select: { orcamentos: true } },
         },
       }),
       this.prisma.formula.count({ where }),
+      this.prisma.formula.count({ where: emUso }),
+      this.prisma.formula.count({ where: base }),
     ]);
-    return { data, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+    return {
+      data, total, page, pageSize, totalPages: Math.ceil(total / pageSize),
+      contagem: { em_uso: totalEmUso, todas: totalTodas },
+    };
   }
 
   /**

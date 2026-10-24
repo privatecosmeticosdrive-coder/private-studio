@@ -18,7 +18,7 @@ import { UpdateNcmDto } from './dto/update-ncm.dto';
 import { CreateParametroFiscalDto } from './dto/create-parametro-fiscal.dto';
 import { CreateParametroProducaoDto } from './dto/create-parametro-producao.dto';
 import { AcessoCustoGuard } from '../auth/guards/acesso-custo.guard';
-import { RequerAcessoCusto } from '../auth/decorators/requer-acesso-custo.decorator';
+import { RequerAcessoCusto, SemAcessoCusto } from '../auth/decorators/requer-acesso-custo.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { AcessoCusto } from '../auth/decorators/acesso-custo.decorator';
 
@@ -83,7 +83,10 @@ export class MatrizCustoController {
     return this.matriz.createParametroProducao(dto, userId, role);
   }
 
+  // Tabela de NCM (código, descrição, IPI) não tem custo nem margem: o comercial
+  // precisa dela para escolher o NCM do orçamento. Criar/editar/excluir seguem restritos.
   @Get('ncm')
+  @SemAcessoCusto()
   listNcm(@Query('incluirInativas') incluirInativas?: string) {
     return this.matriz.listNcm(incluirInativas === 'true');
   }

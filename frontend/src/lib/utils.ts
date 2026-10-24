@@ -14,6 +14,14 @@ export function brl(n: number | string | null | undefined): string {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
+/** Percentual no padrão brasileiro (vírgula decimal): 4.55 -> "4,55%". */
+export function pctBR(n: number | string | null | undefined): string {
+  if (n === null || n === undefined || n === '') return '—';
+  const v = typeof n === 'string' ? Number(n) : n;
+  if (Number.isNaN(v)) return '—';
+  return `${v.toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%`;
+}
+
 /** Cotacao vencida: sem data ou com mais de 12 meses (espelha o backend de MPs). */
 export function cotacaoVencida(dataCotacao: string | null): boolean {
   if (!dataCotacao) return true;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { AlertTriangle, History } from 'lucide-react';
 import { ScoreThermometer } from '@/components/data/score-thermometer';
-import { brl, cn } from '@/lib/utils';
+import { brl, cn, pctBR } from '@/lib/utils';
 import type { CalculoJson, CalculoJsonLegacy, CalculoJsonMotor2, CalculoQualquer } from '@/lib/types';
 import { isCalculoMotor2, isCalculoV3 } from '@/lib/types';
 
@@ -113,8 +113,21 @@ function ResultadoLegado({ calc }: { calc: CalculoJsonLegacy }) {
       </div>
 
       <div className="rounded-lg border border-dashed border-border bg-sand/40 p-4">
-        <Linha rotulo={`IPI (${calc.resultado.ipi_pct}%)`} valor={brl(calc.resultado.ipi_un)} />
+        <Linha rotulo={`IPI (${pctBR(calc.resultado.ipi_pct)})`} valor={brl(calc.resultado.ipi_un)} />
       </div>
+    </div>
+  );
+}
+
+/** Cliente fora de SP: o preço não tem alíquota interestadual nem DIFAL. Não bloqueia, mas fica acima do preço. */
+function AlertaUfForaSp({ alerta }: { alerta?: { uf: string; mensagem: string } | null }) {
+  if (!alerta) return null;
+  return (
+    <div className="rounded-lg border border-warning bg-warning-soft p-4">
+      <p className="font-medium text-ink">Cliente em {alerta.uf} — preço calculado como venda dentro de SP</p>
+      <p className="mt-1 text-sm text-warm-700">
+        Alíquota interestadual e DIFAL não estão neste preço. Passe pelo financeiro antes de enviar ao cliente.
+      </p>
     </div>
   );
 }
@@ -190,6 +203,7 @@ function ResultadoMotor2({ calc }: { calc: CalculoJsonMotor2 }) {
           <p className="mt-1 text-sm text-warm-700">{a.lote_minimo.mensagem}</p>
         </div>
       )}
+      <AlertaUfForaSp alerta={a.uf_fora_sp} />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div className="rounded-lg border border-border bg-surface p-5">
@@ -254,7 +268,7 @@ function ResultadoMotor2({ calc }: { calc: CalculoJsonMotor2 }) {
         <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2">
           <Linha rotulo="Modo de operação" valor={MODO_LABEL[calc.modo_operacao]} />
           <Linha rotulo="NCM" valor={ncmLabel} />
-          <Linha rotulo="IPI" valor={`${calc.resultado.ipi_pct}% (${brl(calc.resultado.ipi_un)}/un)`} />
+          <Linha rotulo="IPI" valor={`${pctBR(calc.resultado.ipi_pct)} (${brl(calc.resultado.ipi_un)}/un)`} />
           <Linha rotulo="Base do IPI" valor={BASE_IPI_LABEL[calc.resultado.base_ipi]} />
           <Linha rotulo="Produto monofásico" valor={calc.ncm.monofasico ? 'Sim' : 'Não'} />
           {calc.resultado.icms_sobre_ipi > 0 && (
@@ -390,6 +404,7 @@ export function ResultadoCalculo({ calc }: { calc: CalculoQualquer }) {
 
       {/* ALERTAS (red team) — impossíveis de ignorar: ficam ACIMA dos blocos
           de detalhe, não escondidos no score. Não bloqueiam o orçamento. */}
+      <AlertaUfForaSp alerta={calc.alertas?.uf_fora_sp} />
       {calc.alertas?.mp_sem_preco && (
         <div className="rounded-lg border border-error bg-error-soft p-4">
           <p className="font-medium text-error">
@@ -429,7 +444,7 @@ export function ResultadoCalculo({ calc }: { calc: CalculoQualquer }) {
           <Linha rotulo="NCM" valor={ncmLabel} />
           <Linha
             rotulo="IPI"
-            valor={`${calc.resultado.ipi_pct}% (${brl(calc.resultado.ipi_un)}/un)`}
+            valor={`${pctBR(calc.resultado.ipi_pct)} (${brl(calc.resultado.ipi_un)}/un)`}
           />
           <Linha rotulo="Base do IPI" valor={BASE_IPI_LABEL[calc.resultado.base_ipi]} />
           <Linha rotulo="Produto monofásico" valor={calc.ncm.monofasico ? 'Sim' : 'Não'} />

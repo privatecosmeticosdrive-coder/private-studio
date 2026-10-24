@@ -475,6 +475,8 @@ export interface AlertaMoq {
 export interface CalculoAlertas {
   moq: AlertaMoq | null;
   mp_sem_preco: { quantidade: number; nomes: string[] } | null;
+  /** Cliente fora de SP: a matriz só cobre a operação interna (sem interestadual/DIFAL). Ausente em snapshots antigos. */
+  uf_fora_sp?: { uf: string; mensagem: string } | null;
 }
 
 /** Parcela precificada (material ou MO): custo, tributos "por dentro", preço. */
@@ -1038,4 +1040,6 @@ export interface FormulaPendenteNcm {
   status: string;
   ncm_id: number;
   ncm: Pick<Ncm, 'id' | 'ncm' | 'descricao' | 'ipi_pct' | 'monofasico' | 'ativo'>;
+  /** Quantos orçamentos usam a fórmula — a fila vem ordenada por isso. */
+  _count?: { orcamentos: number };
 }

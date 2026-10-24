@@ -10,6 +10,7 @@ import { Spinner } from '@/components/ui/spinner';
 import type { OrcamentoDetalhe } from '@/lib/types';
 import { orcamentosApi } from '@/lib/services/orcamentos';
 import { ncmApi } from '@/lib/services/matriz-custo';
+import { pctBR } from '@/lib/utils';
 
 interface EditarNcmOrcamentoModalProps {
   open: boolean;
@@ -90,7 +91,7 @@ export function EditarNcmOrcamentoModal({ open, onClose, orcamento }: EditarNcmO
               <span className="font-mono font-medium text-ink">{efetivoNcm.ncm}</span>
               <span className="text-warm-700">
                 {' '}
-                — {efetivoNcm.descricao} · IPI {efetivoNcm.ipi_pct}%
+                — {efetivoNcm.descricao} · IPI {pctBR(efetivoNcm.ipi_pct)}
               </span>
             </>
           ) : (
@@ -120,7 +121,7 @@ export function EditarNcmOrcamentoModal({ open, onClose, orcamento }: EditarNcmO
             {!carregandoNcms && <option value="">Selecione um NCM…</option>}
             {ncms?.map((n) => (
               <option key={n.id} value={n.id}>
-                {n.ncm} — {n.descricao} (IPI {n.ipi_pct}%)
+                {n.ncm} — {n.descricao} (IPI {pctBR(n.ipi_pct)})
               </option>
             ))}
           </Select>

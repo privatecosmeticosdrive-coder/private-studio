@@ -191,7 +191,7 @@ export class OrcamentosService {
 
   /** FASE 1 — cálculo único. Gera e TRAVA o JSON_CALC no orcamento. */
   async calcular(id: string, dto: CalcularDto, userId: string) {
-    await this.ensure(id);
+    // gerarCalculo já devolve 404 "Orcamento nao encontrado" (sem ensure: uma ida a menos ao banco).
     const r = await this.calculo.gerarCalculo(id, dto);
     const atualizado = await this.prisma.orcamento.update({
       where: { id },

@@ -65,8 +65,10 @@ export const formulasApi = {
     return data;
   },
   // Fila de revisão da associação fórmula->NCM (F5 Bloco C).
-  listarPendentesNcm: async (params: { q?: string; page?: number; pageSize?: number }) => {
-    const { data } = await api.get<Paginado<FormulaPendenteNcm>>('/formulas/pendentes-ncm', { params });
+  listarPendentesNcm: async (params: { q?: string; page?: number; pageSize?: number; emUso?: boolean }) => {
+    const { data } = await api.get<
+      Paginado<FormulaPendenteNcm> & { contagem?: { em_uso: number; todas: number } }
+    >('/formulas/pendentes-ncm', { params });
     return data;
   },
   // Confirma (sem ncm_id) ou troca (com ncm_id) + carimbo; retorna a fórmula atualizada.

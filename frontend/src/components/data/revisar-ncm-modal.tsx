@@ -10,6 +10,7 @@ import { Spinner } from '@/components/ui/spinner';
 import type { FormulaPendenteNcm } from '@/lib/types';
 import { formulasApi } from '@/lib/services/formulas';
 import { ncmApi } from '@/lib/services/matriz-custo';
+import { pctBR } from '@/lib/utils';
 
 interface RevisarNcmModalProps {
   open: boolean;
@@ -77,7 +78,7 @@ export function RevisarNcmModal({ open, onClose, formula }: RevisarNcmModalProps
           <div className="rounded-md bg-sand px-3 py-2 text-sm">
             <span className="text-warm-600">NCM sugerido (match automático): </span>
             <span className="font-mono font-medium text-ink">{sugerido.ncm}</span>
-            <span className="text-warm-700"> — {sugerido.descricao} · IPI {sugerido.ipi_pct}%</span>
+            <span className="text-warm-700"> — {sugerido.descricao} · IPI {pctBR(sugerido.ipi_pct)}</span>
           </div>
         )}
 
@@ -94,7 +95,7 @@ export function RevisarNcmModal({ open, onClose, formula }: RevisarNcmModalProps
             {!carregandoNcms && <option value="">Selecione um NCM…</option>}
             {ncms?.map((n) => (
               <option key={n.id} value={n.id}>
-                {n.ncm} — {n.descricao} (IPI {n.ipi_pct}%)
+                {n.ncm} — {n.descricao} (IPI {pctBR(n.ipi_pct)})
               </option>
             ))}
           </Select>

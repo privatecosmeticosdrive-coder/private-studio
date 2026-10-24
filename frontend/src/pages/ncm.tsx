@@ -12,7 +12,7 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { DataTable } from '@/components/data/data-table';
 import { NcmFormModal } from '@/components/data/ncm-form-modal'; // Peça 3 (ainda não existe)
 import { useAuth } from '@/auth/auth-context';
-import { cn } from '@/lib/utils';
+import { cn, pctBR } from '@/lib/utils';
 import type { Ncm } from '@/lib/types';
 import { ncmApi } from '@/lib/services/matriz-custo';
 
@@ -110,7 +110,7 @@ export default function NcmPage() {
         header: 'IPI',
         cell: ({ row }) => (
           <span className={cn('tnum text-warm-700', !row.original.ativo && 'opacity-50')}>
-            {row.original.ipi_pct}%
+            {pctBR(row.original.ipi_pct)}
           </span>
         ),
       },

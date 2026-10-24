@@ -47,11 +47,11 @@ function Campo({ rotulo, valor }: { rotulo: string; valor: React.ReactNode }) {
 
 function ResumoBriefing({
   orc,
-  podeVerCustos,
+  podeEditarNcm,
   onEditarNcm,
 }: {
   orc: OrcamentoDetalhe;
-  podeVerCustos: boolean;
+  podeEditarNcm: boolean;
   onEditarNcm: () => void;
 }) {
   const formula = orc.formula
@@ -76,7 +76,7 @@ function ResumoBriefing({
     <Card className="p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="font-display text-h3 text-ink">Briefing</h2>
-        {podeVerCustos && (
+        {podeEditarNcm && (
           <Button variant="ghost" size="sm" onClick={onEditarNcm}>
             <Barcode className="size-4" /> Editar NCM
           </Button>
@@ -145,6 +145,8 @@ export default function OrcamentoDetalhe() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const podeVerCustos = !!user && (user.pode_ver_custos || user.role === 'admin');
+  // O NCM muda o IPI e o preço: quem orça (comercial) escolhe; a tabela de NCM é leitura liberada.
+  const podeEditarNcm = !!user && (podeVerCustos || user.role === 'comercial');
 
   const [baixando, setBaixando] = useState(false);
   const [editandoNcm, setEditandoNcm] = useState(false);
@@ -356,7 +358,7 @@ export default function OrcamentoDetalhe() {
 
       <ResumoBriefing
         orc={orc}
-        podeVerCustos={podeVerCustos}
+        podeEditarNcm={podeEditarNcm}
         onEditarNcm={() => setEditandoNcm(true)}
       />
 

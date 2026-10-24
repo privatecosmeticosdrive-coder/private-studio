@@ -35,17 +35,19 @@ export class FormulasController {
     return this.formulas.sugerirSimilar(dto);
   }
 
-  // Fila de revisao da associacao formula->NCM (F5 Bloco C) — as 274 pendentes.
+  // Fila de revisao da associacao formula->NCM (F5 Bloco C). emUso=true: so as ja orcadas.
   @Get('pendentes-ncm')
   pendentesNcm(
     @Query('q') q?: string,
     @Query('page') page?: string,
     @Query('pageSize') pageSize?: string,
+    @Query('emUso') emUso?: string,
   ) {
     return this.formulas.pendentesNcm({
       q,
       page: page ? parseInt(page, 10) : undefined,
       pageSize: pageSize ? parseInt(pageSize, 10) : undefined,
+      emUso: emUso === 'true',
     });
   }
 

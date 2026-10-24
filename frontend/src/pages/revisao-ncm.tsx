@@ -8,12 +8,12 @@ import { PageHeader } from '@/components/ui/page-header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { StatusFormulaBadge } from '@/components/ui/status-badge';
 import { DataTable } from '@/components/data/data-table';
 import { RevisarNcmModal } from '@/components/data/revisar-ncm-modal';
 import { useCan } from '@/auth/use-can';
 import type { FormulaPendenteNcm } from '@/lib/types';
 import { formulasApi } from '@/lib/services/formulas';
+import { pctBR } from '@/lib/utils';
 
 const PAGE_SIZE = 20;
 
@@ -41,14 +41,20 @@ export default function RevisaoNcm() {
 
   const [q, setQ] = React.useState('');
   const [page, setPage] = React.useState(1);
+  // Abre só nas fórmulas já orçadas: as antigas do banco original entram sozinhas quando forem orçadas.
+  const [emUso, setEmUso] = React.useState(true);
   const qDebounced = useDebounced(q);
 
   const aoBuscar = (v: string) => {
     setQ(v);
     setPage(1);
   };
+  const aoFiltrar = (v: boolean) => {
+    setEmUso(v);
+    setPage(1);
+  };
 
-  const params = { q: qDebounced || undefined, page, pageSize: PAGE_SIZE };
+  const params = { q: qDebounced || undefined, page, pageSize: PAGE_SIZE, emUso };
 
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ['formulas', 'pendentes-ncm', params],
@@ -81,15 +87,20 @@ export default function RevisaoNcm() {
         enableSorting: false,
         cell: ({ row }) => {
           const f = row.original;
+          // Só o que ajuda a decidir o NCM: categoria (define o tipo de produto) e uso em orçamento (prioridade).
+          const usos = f._count?.orcamentos ?? 0;
+          const detalhe = [f.categoria, usos > 0 ? `${usos} orçamento${usos === 1 ? '' : 's'}` : null]
+            .filter(Boolean)
+            .join(' · ');
           return (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-0.5">
               <span className="inline-flex items-center gap-2">
                 <span className="font-medium text-ink">{f.nome_produto}</span>
                 {f.versao_codigo && (
                   <span className="text-caption text-warm-500">v{f.versao_codigo}</span>
                 )}
               </span>
-              <StatusFormulaBadge status={f.status} />
+              {detalhe && <span className="text-caption text-warm-600">{detalhe}</span>}
             </div>
           );
         },
@@ -104,7 +115,7 @@ export default function RevisaoNcm() {
             <div className="flex flex-col gap-0.5">
               <span className="font-mono text-ink">{n.ncm}</span>
               <span className="text-caption text-warm-600">
-                {n.descricao} · IPI {n.ipi_pct}%
+                {n.descricao} · IPI {pctBR(n.ipi_pct)}
               </span>
             </div>
           );
@@ -135,12 +146,14 @@ export default function RevisaoNcm() {
   if (!can('formula:escrever')) return <AcessoRestrito />;
 
   const total = data?.total ?? 0;
+  const contagem = data?.contagem;
+  const plural = total === 1 ? '' : 's';
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Revisão de NCM"
-        description={`${total} fórmula${total === 1 ? '' : 's'} pendente${total === 1 ? '' : 's'} de revisão`}
+        description={`${total} fórmula${plural} ${emUso ? 'já orçada' + plural + ' ' : ''}pendente${plural} de revisão · as mais orçadas primeiro`}
       />
 
       <DataTable
@@ -151,7 +164,13 @@ export default function RevisaoNcm() {
         onRetry={() => refetch()}
         emptyIcon={ClipboardCheck}
         emptyTitle="Nada pendente"
-        emptyDescription={q ? 'Ajuste a busca.' : 'Todas as associações NCM foram revisadas.'}
+        emptyDescription={
+          q
+            ? 'Ajuste a busca.'
+            : emUso
+              ? 'Todas as fórmulas já orçadas têm o NCM revisado.'
+              : 'Todas as associações NCM foram revisadas.'
+        }
         pagination={{
           page,
           pageSize: PAGE_SIZE,
@@ -170,6 +189,12 @@ export default function RevisaoNcm() {
                 className="pl-9"
               />
             </div>
+            <Button variant={emUso ? 'gold' : 'secondary'} size="sm" onClick={() => aoFiltrar(true)}>
+              Já orçadas{contagem ? ` (${contagem.em_uso.toLocaleString('pt-BR')})` : ''}
+            </Button>
+            <Button variant={emUso ? 'secondary' : 'gold'} size="sm" onClick={() => aoFiltrar(false)}>
+              Todas{contagem ? ` (${contagem.todas.toLocaleString('pt-BR')})` : ''}
+            </Button>
           </div>
         }
       />

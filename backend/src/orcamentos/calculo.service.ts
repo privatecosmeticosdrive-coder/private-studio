@@ -102,11 +102,6 @@ export class CalculoService {
     });
     if (!orc) throw new NotFoundException('Orcamento nao encontrado');
 
-    const cfg = await this.getParametros();
-    const formula = orc.formula_id
-      ? await this.carregarFormula(orc.formula_id)
-      : null;
-
     // ---------- entradas obrigatórias (falha visível, nunca default) ----------
     if (orc.volume_un == null || Number(orc.volume_un) <= 0) {
       throw new BadRequestException(
@@ -124,8 +119,36 @@ export class CalculoService {
     // ---------- motor ----------
     // UM unico "hoje" (data civil de Sao Paulo) para todas as vigencias lidas neste calculo.
     const hoje = hojeSaoPaulo();
-    const motor: MotorPrecificacao =
-      overrides.motor ?? (await this.ouBadRequest(() => lerMotorPadrao(this.prisma, hoje)));
+
+    // Leituras que só dependem do orçamento saem juntas: cada ida ao banco custa
+    // ~0,19 s (Railway -> KingHost) e em série o Calcular passava de 6 s (24/10/2026).
+    // NCM efetivo (F4 Fase A) pela regra única resolverNcmEfetivo; sem override,
+    // o NCM da fórmula vem junto na mesma ida ao banco.
+    const lerNcmEfetivo = async () => {
+      const daFormula =
+        orc.ncm_id == null && orc.formula_id != null
+          ? await this.prisma.formula.findUnique({
+              where: { id: orc.formula_id },
+              select: { ncm_id: true, ncm: true },
+            })
+          : null;
+      const ncmId = resolverNcmEfetivo(orc.ncm_id, daFormula?.ncm_id ?? null);
+      if (ncmId == null) return null;
+      if (daFormula?.ncm && daFormula.ncm.id === ncmId) return daFormula.ncm;
+      return this.prisma.ncm.findUnique({ where: { id: ncmId } });
+    };
+    const [cfg, formula, motor, embBruta, ncmRow, fiscais, producao] = await Promise.all([
+      this.getParametros(),
+      orc.formula_id ? this.carregarFormula(orc.formula_id) : Promise.resolve(null),
+      overrides.motor != null
+        ? Promise.resolve<MotorPrecificacao>(overrides.motor)
+        : this.ouBadRequest(() => lerMotorPadrao(this.prisma, hoje)),
+      this.resolverEmbalagem(orc),
+      lerNcmEfetivo(),
+      this.ouBadRequest(() => lerParametrosFiscaisVigentes(this.prisma, hoje)),
+      // CORTE F3: a fabrica vem de parametro_producao (versionado, com fonte).
+      this.ouBadRequest(() => lerParametrosProducaoVigentes(this.prisma, hoje)),
+    ]);
 
     // Margem. Motor 1: override do calculo > gravada no orcamento (obrigatoria).
     // Motor 2: SO o override explicito do calculo e manual; a margem gravada no
@@ -145,7 +168,6 @@ export class CalculoService {
     // nao marca o orcamento como preliminar nem entra no score (red team M5) - o
     // preco bruto segue para o engine so para gerar o alerta `embalagem_ignorada`.
     const modoCedo = (orc.modo_operacao ?? 'full_service') as ModoOperacao;
-    const embBruta = await this.resolverEmbalagem(orc);
     const emb: EmbalagemResolvida =
       modoCedo === 'full_service'
         ? embBruta
@@ -159,25 +181,13 @@ export class CalculoService {
       (orc.budget_mp != null ? Number(orc.budget_mp) : 0);
 
     // ---------- CONTEXTO FISCAL (F4 Fase A) ----------
-    const formulaNcm = orc.formula_id
-      ? await this.prisma.formula.findUnique({
-          where: { id: orc.formula_id },
-          select: { ncm_id: true },
-        })
-      : null;
-    const ncmId = resolverNcmEfetivo(orc.ncm_id, formulaNcm?.ncm_id ?? null);
-    const ncmRow = ncmId
-      ? await this.prisma.ncm.findUnique({ where: { id: ncmId } })
-      : null;
     if (!ncmRow) {
       throw new BadRequestException(
         'Orcamento sem NCM efetivo (nem override, nem NCM na formula). O calculo fiscal exige NCM para o IPI — atribua um NCM ao orcamento ou a formula.',
       );
     }
 
-    const { params: pf, caracterizacao } = await this.ouBadRequest(() =>
-      lerParametrosFiscaisVigentes(this.prisma, hoje),
-    );
+    const { params: pf, caracterizacao } = fiscais;
     const modo = modoCedo;
     const perfil: PerfilClienteFiscal = {
       regime_fiscal: (orc.cliente?.regime_fiscal ??
@@ -206,10 +216,20 @@ export class CalculoService {
       caracterizacao,
     );
 
-    // CORTE F3: a fabrica vem de parametro_producao (versionado, com fonte).
-    const producao = await this.ouBadRequest(() =>
-      lerParametrosProducaoVigentes(this.prisma, hoje),
-    );
+    // Segunda onda: depende da embalagem resolvida e da produção vigente.
+    const [dataEmb, lidosMotor2] = await Promise.all([
+      this.resolverDataCotacaoEmbalagem(emb.snapshot),
+      motor === 2
+        ? this.ouBadRequest(() =>
+            lerParametrosMotor2(
+              this.prisma,
+              producao,
+              { perda_mp_pct: cfg.desvio_mp_pct, frete_un_brl: cfg.frete_un_brl },
+              hoje,
+            ),
+          )
+        : Promise.resolve(null),
+    ]);
 
     // Cliente fora de SP: a matriz cobre so operacao interna paulista (red team A3).
     const alertaUf =
@@ -226,7 +246,6 @@ export class CalculoService {
     const scoreMp = formula ? formula.score_global : 55; // sem formula => baixa confianca
     const custoMpUn = cmp_base_mp_kg * (volume_un / 1000);
     const custoEmbUn = emb.embalagem_un;
-    const dataEmb = await this.resolverDataCotacaoEmbalagem(emb.snapshot);
     const scoreEmb = emb.snapshot ? scoreCotacao(dataEmb) : null;
     const score_global = scoreMaterialPonderado(
       scoreMp,
@@ -292,15 +311,8 @@ export class CalculoService {
     });
 
     // ====================== MOTOR 2 10/26 ======================
-    if (motor === 2) {
-      const lidos = await this.ouBadRequest(() =>
-        lerParametrosMotor2(
-          this.prisma,
-          producao,
-          { perda_mp_pct: cfg.desvio_mp_pct, frete_un_brl: cfg.frete_un_brl },
-          hoje,
-        ),
-      );
+    if (motor === 2 && lidosMotor2) {
+      const lidos = lidosMotor2;
 
       // un_min: cálculo > orçamento > padrão vigente (COM alerta) > 400.
       let un_min =
