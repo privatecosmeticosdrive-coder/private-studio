@@ -1,0 +1,670 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Como nasce o preço</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: uma coluna de leitura (~70ch) com diagramas largos em faixas roláveis; cada seção = uma etapa da cadeia do preço. */
+:root {
+  --bg: #ffffff;
+  --panel: #faf7f2;
+  --ink: #1c1712;
+  --muted: #6e5e47;
+  --rule: #e7decf;
+  --gold: #8a6320;
+  --gold-mark: #b8832a;
+  --gold-tint: rgba(184,131,42,0.14);
+  --up: rgba(110,94,71,0.16);
+  --total: rgba(28,23,18,0.08);
+  --grid: rgba(28,23,18,0.08);
+  --axis: rgba(28,23,18,0.25);
+  --carry: rgba(28,23,18,0.55);
+  --c1: #5b4a36; --c2: #8c7a60; --c3: #b9a88e; --c4: #3a6b8a; --c5: #7fa3ba; --c6: #b8832a; --c7: #d9b56f; --c8: #e7decf;
+  --inbar: #ffffff;
+  --font-sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, 'Cascadia Mono', monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e0d0b; --panel: #17140f; --ink: #f2ece3; --muted: #b9a88e; --rule: #2c2519; --gold: #d4a94a; --gold-mark: #c39a55;
+  --gold-tint: rgba(195,154,85,0.18); --up: rgba(214,201,181,0.16); --total: rgba(242,236,227,0.10); --grid: rgba(242,236,227,0.08);
+  --axis: rgba(242,236,227,0.28); --carry: rgba(242,236,227,0.50);
+  --c1: #d6c9b5; --c2: #a8957a; --c3: #776650; --c4: #6fa0c0; --c5: #3f6a86; --c6: #c39a55; --c7: #8a6a2e; --c8: #2c2519; --inbar: #0e0d0b;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0e0d0b; --panel: #17140f; --ink: #f2ece3; --muted: #b9a88e; --rule: #2c2519; --gold: #d4a94a; --gold-mark: #c39a55;
+  --gold-tint: rgba(195,154,85,0.18); --up: rgba(214,201,181,0.16); --total: rgba(242,236,227,0.10); --grid: rgba(242,236,227,0.08);
+  --axis: rgba(242,236,227,0.28); --carry: rgba(242,236,227,0.50);
+  --c1: #d6c9b5; --c2: #a8957a; --c3: #776650; --c4: #6fa0c0; --c5: #3f6a86; --c6: #c39a55; --c7: #8a6a2e; --c8: #2c2519; --inbar: #0e0d0b;
+  color-scheme: dark; }
+
+body { background: var(--bg); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 72px; }
+main { max-width: 1040px; margin: 0 auto; display: grid; gap: 56px; }
+.leitura { max-width: 70ch; }
+h1, h2, h3 { text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; line-height: 1.08; }
+h2 { font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+.lede { font-size: 1.15rem; color: var(--muted); margin-top: 14px; }
+section { display: grid; gap: 18px; min-width: 0; }
+section > header { display: grid; gap: 6px; }
+.passo { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+.texto { display: grid; gap: 12px; max-width: 70ch; }
+.texto strong { font-weight: 600; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.contexto { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.contexto div { background: var(--panel); outline: 1px solid var(--rule); padding: 14px 16px; display: grid; gap: 2px; min-width: 0; }
+.contexto dt { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.contexto dd { margin: 0; font-weight: 600; }
+
+.diagrama { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); -webkit-overflow-scrolling: touch; }
+.diagrama svg { display: block; width: 100%; height: auto; }
+.dica { font-size: 0.8rem; color: var(--muted); }
+@media (min-width: 1060px) { .dica.rolar { display: none; } }
+
+table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+.tabela { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--panel); white-space: nowrap; }
+td:nth-child(n+2) { font-variant-numeric: tabular-nums; }
+.custo td:nth-child(3), .ponte td:nth-child(2), .ponte td:nth-child(3), .sobra td:nth-child(n+2), .lote td:nth-child(n+1), .perfil td:nth-child(n+3) { font-family: var(--font-mono); white-space: nowrap; }
+.custo td:nth-child(2) { font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); white-space: nowrap; }
+.custo td:nth-child(4) { color: var(--muted); }
+tr.sub td { background: var(--panel); font-weight: 600; }
+tr.tot td { background: var(--gold-tint); font-weight: 700; }
+tbody tr:last-child td { border-bottom: 0; }
+
+.legenda { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 0.85rem; color: var(--muted); }
+.legenda span { display: inline-flex; align-items: center; gap: 6px; }
+.legenda i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; border: 1px solid var(--rule); }
+
+.chave { border-left: 3px solid var(--gold-mark); background: var(--panel); padding: 14px 18px; border-radius: 0 8px 8px 0; display: grid; gap: 8px; max-width: 78ch; }
+.regras { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.regras article { border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px; display: grid; gap: 6px; min-width: 0; }
+.regras article.atencao { border-color: var(--gold-mark); }
+.regras h3 { font-size: 0.98rem; }
+.regras p { font-size: 0.92rem; color: var(--muted); }
+footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 18px; display: grid; gap: 6px; max-width: 90ch; }
+
+/* ---- SVG: papéis do diagram-design ligados aos tokens (vale nos dois temas) ---- */
+svg .s-paper { fill: var(--bg); }
+svg .s-grid { stroke: var(--grid); }
+svg .s-axis { stroke: var(--axis); }
+svg .s-carry { stroke: var(--carry); }
+svg .s-rule { stroke: var(--rule); }
+svg .s-total { fill: var(--total); stroke: var(--ink); }
+svg .s-up { fill: var(--up); stroke: var(--muted); }
+svg .s-down { fill: var(--bg); stroke: var(--muted); }
+svg .s-focal { fill: var(--gold-tint); stroke: var(--gold); }
+svg .s-node { fill: var(--total); stroke: var(--ink); }
+svg .s-node-focal { fill: var(--gold-tint); stroke: var(--gold); }
+svg .s-tag { fill: var(--total); }
+svg .s-arrow { stroke: var(--muted); } svg .s-arrowhead { fill: var(--muted); }
+svg .s-arrow-focal { stroke: var(--gold); } svg .s-arrowhead-focal { fill: var(--gold); }
+svg .s-ref { stroke: var(--ink); }
+svg .s-hatch { stroke: var(--muted); }
+svg text { font-family: var(--font-sans); }
+svg .s-eyebrow { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; fill: var(--muted); }
+svg .s-tick, svg .s-val, svg .s-val-total, svg .s-val-focal { font-family: var(--font-mono); font-size: 12px; fill: var(--muted); }
+svg .s-val-total { fill: var(--ink); font-weight: 500; }
+svg .s-val-focal { fill: var(--gold); font-weight: 500; }
+svg .s-cat { font-size: 13px; font-weight: 600; fill: var(--ink); }
+svg .s-cat-focal { fill: var(--gold); }
+svg .s-sub { font-family: var(--font-mono); font-size: 10px; fill: var(--muted); }
+svg .s-legend { font-size: 12px; fill: var(--muted); }
+svg .s-node-name { font-size: 15px; font-weight: 600; fill: var(--ink); }
+svg .s-node-line { font-size: 12px; fill: var(--muted); }
+svg .s-inbar { font-family: var(--font-mono); font-size: 12px; font-weight: 500; fill: var(--inbar); }
+svg .s-c1 { fill: var(--c1); } svg .s-c2 { fill: var(--c2); } svg .s-c3 { fill: var(--c3); } svg .s-c4 { fill: var(--c4); }
+svg .s-c5 { fill: var(--c5); } svg .s-c6 { fill: var(--c6); } svg .s-c7 { fill: var(--c7); }
+svg .s-c8 { stroke: var(--bg); } svg rect[class^="s-c"] { stroke: var(--bg); }
+</style>
+
+<main>
+  <header class="leitura">
+    <p class="eyebrow">Private Studio · Motor 2 10/26 · material da equipe</p>
+    <h1>Como nasce o preço</h1>
+    <p class="lede">A cadeia inteira de um orçamento, número por número: o que a Private paga, o que volta como crédito, onde entra cada imposto, onde entra a margem e o que sobra no fim. Todos os valores saem do motor do Studio, com os parâmetros vigentes.</p>
+  </header>
+
+  <dl class="contexto" aria-label="Caso de referência">
+    <div><dt>Produto</dt><dd>Finalizador capilar 50 ml</dd></div>
+    <div><dt>Lote</dt><dd>1.000 unidades · 6 un/min</dd></div>
+    <div><dt>Cliente</dt><dd>Lucro real, SP, revenda</dd></div>
+    <div><dt>NCM</dt><dd>3305.90.00 · IPI 14,3%</dd></div>
+    <div><dt>Embalagem</dt><dd>R$ 6,00 por unidade</dd></div>
+    <div><dt>Preço final</dt><dd class="num">R$ 25,41 + IPI = R$ 29,04</dd></div>
+  </dl>
+
+  <section id="impostos">
+    <header>
+      <p class="passo">Visão geral</p>
+      <h2>Em que momento entra cada imposto</h2>
+    </header>
+    <div class="texto">
+      <p>Imposto aparece em três lugares diferentes. Na <strong>compra</strong>, ele vem dentro da nota do fornecedor e parte dele volta como crédito. No <strong>preço</strong>, ICMS, PIS e COFINS ficam "por dentro": fazem parte do valor do produto. Na <strong>nota de venda</strong>, o IPI vai "por fora": é somado depois, o cliente paga e a Private repassa.</p>
+    </div>
+    <div class="diagrama"><svg viewBox="0 0 1000 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="impostos-title impostos-desc" style="min-width:1000px">
+<title id="impostos-title">Em que momento entra cada imposto</title>
+<desc id="impostos-desc">Cinco momentos: a compra gera crédito, o crédito reduz o custo, ICMS e PIS/COFINS entram por dentro do preço com a margem, o IPI entra por fora na nota e a apuração mensal fecha débito menos crédito; IR e CSLL incidem sobre o lucro no fim do período.</desc>
+<defs><marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="s-arrowhead" fill="#6e5e47"/></marker><marker id="seta-foco" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="s-arrowhead-focal" fill="#8a6320"/></marker></defs>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<line x1="196" y1="80" x2="218" y2="80" class="s-arrow" stroke="#6e5e47" stroke-width="1.2" marker-end="url(#seta)"/>
+<line x1="396" y1="80" x2="418" y2="80" class="s-arrow-focal" stroke="#8a6320" stroke-width="1.2" marker-end="url(#seta-foco)"/>
+<line x1="596" y1="80" x2="618" y2="80" class="s-arrow" stroke="#6e5e47" stroke-width="1.2" marker-end="url(#seta)"/>
+<line x1="796" y1="80" x2="818" y2="80" class="s-arrow" stroke="#6e5e47" stroke-width="1.2" marker-end="url(#seta)"/>
+<rect x="20" y="40" width="176" height="196" rx="6" class="s-paper" fill="#ffffff"/>
+<rect x="20" y="40" width="176" height="196" rx="6" class="s-node" fill="rgba(28,23,18,0.03)" stroke="#1c1712" stroke-width="1"/>
+<rect x="32" y="52" width="108" height="16" rx="2" class="s-tag" fill="rgba(28,23,18,0.06)"/>
+<text x="38" y="63" class="s-eyebrow" fill="#6e5e47">NF DO FORNECEDOR</text>
+<text x="32" y="92" class="s-node-name" fill="#1c1712">1 · Compra</text>
+<text x="32" y="124" class="s-node-line" fill="#6e5e47">Paga ICMS, PIS, COFINS e IPI</text>
+<text x="32" y="146" class="s-node-line" fill="#6e5e47">dentro do valor da nota</text>
+<text x="32" y="168" class="s-node-line" fill="#6e5e47">Crédito: MP 21,21%</text>
+<text x="32" y="190" class="s-node-line" fill="#6e5e47">embalagem 13,82%</text>
+<rect x="220" y="40" width="176" height="196" rx="6" class="s-paper" fill="#ffffff"/>
+<rect x="220" y="40" width="176" height="196" rx="6" class="s-node" fill="rgba(28,23,18,0.03)" stroke="#1c1712" stroke-width="1"/>
+<rect x="232" y="52" width="66" height="16" rx="2" class="s-tag" fill="rgba(28,23,18,0.06)"/>
+<text x="238" y="63" class="s-eyebrow" fill="#6e5e47">NO STUDIO</text>
+<text x="232" y="92" class="s-node-name" fill="#1c1712">2 · Custo</text>
+<text x="232" y="124" class="s-node-line" fill="#6e5e47">O crédito sai do custo:</text>
+<text x="232" y="146" class="s-node-line" fill="#6e5e47">MP vira R$ 4,83</text>
+<text x="232" y="168" class="s-node-line" fill="#6e5e47">embalagem vira R$ 5,17</text>
+<text x="232" y="190" class="s-node-line" fill="#6e5e47">imposto não é custo</text>
+<rect x="420" y="40" width="176" height="196" rx="6" class="s-paper" fill="#ffffff"/>
+<rect x="420" y="40" width="176" height="196" rx="6" class="s-node-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1"/>
+<rect x="432" y="52" width="126" height="16" rx="2" class="s-tag" fill="rgba(28,23,18,0.06)"/>
+<text x="438" y="63" class="s-eyebrow" fill="#6e5e47">TRIBUTOS POR DENTRO</text>
+<text x="432" y="92" class="s-node-name s-cat-focal" fill="#1c1712">3 · Preço</text>
+<text x="432" y="124" class="s-node-line" fill="#6e5e47">ICMS 12% + PIS 2,2%</text>
+<text x="432" y="146" class="s-node-line" fill="#6e5e47">+ COFINS 10,3% = 24,5%</text>
+<text x="432" y="168" class="s-node-line" fill="#6e5e47">entram junto com a margem</text>
+<text x="432" y="190" class="s-node-line" fill="#6e5e47">no divisor do preço</text>
+<rect x="620" y="40" width="176" height="196" rx="6" class="s-paper" fill="#ffffff"/>
+<rect x="620" y="40" width="176" height="196" rx="6" class="s-node" fill="rgba(28,23,18,0.03)" stroke="#1c1712" stroke-width="1"/>
+<rect x="632" y="52" width="84" height="16" rx="2" class="s-tag" fill="rgba(28,23,18,0.06)"/>
+<text x="638" y="63" class="s-eyebrow" fill="#6e5e47">IPI POR FORA</text>
+<text x="632" y="92" class="s-node-name" fill="#1c1712">4 · Nota</text>
+<text x="632" y="124" class="s-node-line" fill="#6e5e47">IPI 14,3% sobre o preço</text>
+<text x="632" y="146" class="s-node-line" fill="#6e5e47">o cliente paga, a Private</text>
+<text x="632" y="168" class="s-node-line" fill="#6e5e47">repassa ao governo</text>
+<text x="632" y="190" class="s-node-line" fill="#6e5e47">R$ 25,41 + 3,63 = 29,04</text>
+<rect x="820" y="40" width="176" height="196" rx="6" class="s-paper" fill="#ffffff"/>
+<rect x="820" y="40" width="176" height="196" rx="6" class="s-node" fill="rgba(28,23,18,0.03)" stroke="#1c1712" stroke-width="1"/>
+<rect x="832" y="52" width="108" height="16" rx="2" class="s-tag" fill="rgba(28,23,18,0.06)"/>
+<text x="838" y="63" class="s-eyebrow" fill="#6e5e47">APURAÇÃO E LUCRO</text>
+<text x="832" y="92" class="s-node-name" fill="#1c1712">5 · Mês seguinte</text>
+<text x="832" y="124" class="s-node-line" fill="#6e5e47">Guias: débito da venda</text>
+<text x="832" y="146" class="s-node-line" fill="#6e5e47">menos crédito da compra</text>
+<text x="832" y="168" class="s-node-line" fill="#6e5e47">IR/CSLL só no fim,</text>
+<text x="832" y="190" class="s-node-line" fill="#6e5e47">sobre o lucro do período</text>
+<line x1="20" y1="256" x2="980" y2="256" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<text x="20" y="280" class="s-legend" fill="#6e5e47">Exemplo: cliente lucro real em SP, revenda, contribuinte de ICMS. NCM 3305.90.00 (monofásico, IPI 14,3%). Destaque: o momento em que tributos e margem formam o preço.</text>
+</svg></div>
+    <p class="dica rolar">No celular, arraste o diagrama para o lado.</p>
+  </section>
+
+  <section id="custo">
+    <header>
+      <p class="passo">Etapa 1 · produto sem embalagem</p>
+      <h2>Do custo ao preço do produto</h2>
+    </header>
+    <div class="texto">
+      <p>A matéria-prima entra pelo valor da última compra. Somam-se a perda de processo, o frete e a fábrica. O crédito de entrada sai do custo, porque é dinheiro que volta. Por fim, tributos e margem entram juntos, como fatias do preço: o preço é o custo dividido por <span class="num">1 − 24,5% − 40% = 0,355</span>.</p>
+    </div>
+    <div class="diagrama"><svg viewBox="0 0 1000 524" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="custo-preco-title custo-preco-desc" style="min-width:1000px">
+<title id="custo-preco-title">Do custo ao preço do produto</title>
+<desc id="custo-preco-desc">Cascata do Finalizador capilar 50 ml, lote de 1.000: matéria-prima comprada, crédito de entrada, frete e fábrica formam o custo de R$ 5,99; tributos por dentro e margem de 40% levam ao preço de R$ 16,87 sem embalagem.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<text transform="rotate(-90 24 230)" x="24" y="230" class="s-eyebrow" fill="#6e5e47" text-anchor="middle">R$ POR UNIDADE</text>
+<line x1="80" y1="420.0" x2="960" y2="420.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="424.0" class="s-tick" fill="#6e5e47" text-anchor="end">0</text>
+<line x1="80" y1="335.6" x2="960" y2="335.6" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="339.6" class="s-tick" fill="#6e5e47" text-anchor="end">4</text>
+<line x1="80" y1="251.1" x2="960" y2="251.1" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="255.1" class="s-tick" fill="#6e5e47" text-anchor="end">8</text>
+<line x1="80" y1="166.7" x2="960" y2="166.7" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="170.7" class="s-tick" fill="#6e5e47" text-anchor="end">12</text>
+<line x1="80" y1="82.2" x2="960" y2="82.2" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="86.2" class="s-tick" fill="#6e5e47" text-anchor="end">16</text>
+<line x1="80" y1="40" x2="80" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="80" y1="420" x2="960" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="176" y1="290.67" x2="212" y2="290.67" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="6.1263"/>
+<line x1="284" y1="318.1" x2="320" y2="318.1" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="4.8269"/>
+<line x1="392" y1="315.99" x2="428" y2="315.99" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="4.9269"/>
+<line x1="500" y1="293.6" x2="536" y2="293.6" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="5.9876"/>
+<line x1="608" y1="293.6" x2="644" y2="293.6" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="5.9876"/>
+<line x1="716" y1="206.36" x2="752" y2="206.36" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="10.1199"/>
+<line x1="824" y1="63.93" x2="860" y2="63.93" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="16.8666"/>
+<rect x="104" y="290.67" width="72" height="129.33" class="s-paper" fill="#ffffff"/>
+<rect x="104" y="290.67" width="72" height="129.33" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="6.1263" data-name="MP comprada"/>
+<text x="140" y="282.67" class="s-val-total" fill="#6e5e47" text-anchor="middle">6,13</text>
+<text x="140" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">MP comprada</text>
+<text x="140" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">NF + perda 10%</text>
+<rect x="212" y="290.67" width="72" height="27.43" class="s-paper" fill="#ffffff"/>
+<rect x="212" y="290.67" width="72" height="27.43" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-1.2994" data-name="Crédito MP"/>
+<text x="248" y="330.1" class="s-val" fill="#6e5e47" text-anchor="middle">−1,30</text>
+<text x="248" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Crédito MP</text>
+<text x="248" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">21,21% volta</text>
+<rect x="320" y="315.99" width="72" height="2.11" class="s-paper" fill="#ffffff"/>
+<rect x="320" y="315.99" width="72" height="2.11" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="+0.1" data-name="Frete"/>
+<text x="356" y="307.99" class="s-val" fill="#6e5e47" text-anchor="middle">+0,10</text>
+<text x="356" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Frete</text>
+<text x="356" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">por unidade</text>
+<rect x="428" y="293.6" width="72" height="22.39" class="s-paper" fill="#ffffff"/>
+<rect x="428" y="293.6" width="72" height="22.39" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="+1.0607" data-name="Fábrica"/>
+<text x="464" y="285.6" class="s-val" fill="#6e5e47" text-anchor="middle">+1,06</text>
+<text x="464" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Fábrica</text>
+<text x="464" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">setup + corrida</text>
+<rect x="536" y="293.6" width="72" height="126.4" class="s-paper" fill="#ffffff"/>
+<rect x="536" y="293.6" width="72" height="126.4" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="subtotal" data-value="5.9876" data-name="Custo"/>
+<text x="572" y="285.6" class="s-val-total" fill="#6e5e47" text-anchor="middle">5,99</text>
+<text x="572" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Custo</text>
+<text x="572" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">do produto</text>
+<rect x="644" y="206.36" width="72" height="87.24" class="s-paper" fill="#ffffff"/>
+<rect x="644" y="206.36" width="72" height="87.24" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="+4.1323" data-name="Tributos"/>
+<text x="680" y="198.36" class="s-val" fill="#6e5e47" text-anchor="middle">+4,13</text>
+<text x="680" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Tributos</text>
+<text x="680" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">24,5% do preço</text>
+<rect x="752" y="63.93" width="72" height="142.43" class="s-paper" fill="#ffffff"/>
+<rect x="752" y="63.93" width="72" height="142.43" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1" data-role="delta" data-value="+6.7467" data-name="Margem"/>
+<text x="788" y="55.93" class="s-val-focal" fill="#6e5e47" text-anchor="middle">+6,75</text>
+<text x="788" y="440" class="s-cat s-cat-focal" fill="#1c1712" text-anchor="middle">Margem</text>
+<text x="788" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">40% do preço</text>
+<rect x="860" y="63.93" width="72" height="356.07" class="s-paper" fill="#ffffff"/>
+<rect x="860" y="63.93" width="72" height="356.07" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="16.8666" data-name="Preço"/>
+<text x="896" y="55.93" class="s-val-total" fill="#6e5e47" text-anchor="middle">16,87</text>
+<text x="896" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Preço</text>
+<text x="896" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">produto s/ IPI</text>
+<line x1="40" y1="474" x2="960" y2="474" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<rect x="40" y="492" width="16" height="10" rx="2" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1"/>
+<text x="64" y="501" class="s-legend" fill="#6e5e47">Total / subtotal</text>
+<rect x="240" y="492" width="16" height="10" rx="2" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="264" y="501" class="s-legend" fill="#6e5e47">Soma</text>
+<rect x="440" y="492" width="16" height="10" rx="2" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1"/>
+<text x="464" y="501" class="s-legend" fill="#6e5e47">Subtrai</text>
+<rect x="640" y="492" width="16" height="10" rx="2" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1"/>
+<text x="664" y="501" class="s-legend" fill="#6e5e47">Margem</text>
+</svg></div>
+    <div class="tabela"><table class="custo">
+      <thead><tr><th>Linha</th><th>Conta</th><th>Valor por unidade</th><th>O que é</th></tr></thead>
+      <tbody><tr><td>Matéria-prima da fórmula</td><td>111,39 por kg × 0,050 kg</td><td>R$ 5,5694</td><td>Preço da última compra (NF com impostos)</td></tr><tr><td>Perda de processo 10%</td><td>5,5694 × 10%</td><td>+R$ 0,5569</td><td>Produto que fica no tanque, na linha e em testes</td></tr><tr><td>Crédito de entrada 21,21%</td><td>6,1263 × 21,21%</td><td>−R$ 1,2994</td><td>ICMS, PIS/COFINS e IPI que voltam como crédito</td></tr><tr class="sub"><td>MP líquida</td><td></td><td>R$ 4,8269</td><td></td></tr><tr><td>Frete</td><td>fixo por unidade</td><td>+R$ 0,10</td><td>Frete de entrada da matéria-prima</td></tr><tr><td>Setup da ordem</td><td>280,78 ÷ 1.000 un</td><td>+R$ 0,2808</td><td>Uma hora de troca de produto, diluída no lote</td></tr><tr><td>Corrida na linha</td><td>4,6797 por min ÷ 6 un/min</td><td>+R$ 0,7799</td><td>Tempo de linha de cada unidade</td></tr><tr class="sub"><td>Custo do produto</td><td></td><td>R$ 5,9877</td><td></td></tr><tr><td>Divisor do preço</td><td>1 − 24,5% − 40%</td><td>0,355</td><td>Tributos e margem são parte do preço, não do custo</td></tr><tr class="tot"><td>Preço do produto</td><td>5,9877 ÷ 0,355</td><td>R$ 16,8667</td><td>Sem embalagem e sem IPI</td></tr><tr><td>Tributos dentro dele</td><td>16,8667 × 24,5%</td><td>R$ 4,1323</td><td>ICMS 2,02 + PIS 0,37 + COFINS 1,74</td></tr><tr><td>Margem dentro dele</td><td>16,8667 × 40%</td><td>R$ 6,7467</td><td>Escada: lote de 1.000 a 4.999 unidades</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section id="embalagem">
+    <header>
+      <p class="passo">Etapa 2 · embalagem</p>
+      <h2>Por que a embalagem pesa mais que o valor dela</h2>
+    </header>
+    <div class="texto">
+      <p>Uma embalagem de <span class="num">R$ 6,00</span> faz o preço subir <span class="num">R$ 8,55</span>. Isso acontece porque a nota de venda cobra 24,5% de ICMS, PIS e COFINS sobre o preço inteiro, inclusive sobre a parte da embalagem. Só para devolver os R$ 6,00 depois dos tributos, a embalagem precisaria custar <span class="num">R$ 7,95</span> ao cliente.</p>
+      <p>O Motor 2 trata a embalagem como repasse: tira o crédito de 13,82% e cobra uma taxa de gestão de 15%, no lugar da margem de 40% do produto. Na planilha antiga a embalagem entrava na base dos 37,5% e da margem de 30% em reais, e por isso virava <span class="num">R$ 12,27</span>.</p>
+    </div>
+    <div class="diagrama"><svg viewBox="0 0 1000 524" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="embalagem-title embalagem-desc" style="min-width:1000px">
+<title id="embalagem-title">Da embalagem comprada ao preço da embalagem</title>
+<desc id="embalagem-desc">Cascata da embalagem de R$ 6,00: o crédito de 13,82% reduz o custo a R$ 5,17; tributos por dentro de 24,5% e taxa de gestão de 15% levam o preço da embalagem a R$ 8,55.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<text transform="rotate(-90 24 230)" x="24" y="230" class="s-eyebrow" fill="#6e5e47" text-anchor="middle">R$ POR UNIDADE</text>
+<line x1="80" y1="420.0" x2="960" y2="420.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="424.0" class="s-tick" fill="#6e5e47" text-anchor="end">0</text>
+<line x1="80" y1="344.0" x2="960" y2="344.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="348.0" class="s-tick" fill="#6e5e47" text-anchor="end">2</text>
+<line x1="80" y1="268.0" x2="960" y2="268.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="272.0" class="s-tick" fill="#6e5e47" text-anchor="end">4</text>
+<line x1="80" y1="192.0" x2="960" y2="192.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="196.0" class="s-tick" fill="#6e5e47" text-anchor="end">6</text>
+<line x1="80" y1="116.0" x2="960" y2="116.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="120.0" class="s-tick" fill="#6e5e47" text-anchor="end">8</text>
+<line x1="80" y1="40.0" x2="960" y2="40.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="44.0" class="s-tick" fill="#6e5e47" text-anchor="end">10</text>
+<line x1="80" y1="40" x2="80" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="80" y1="420" x2="960" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="224" y1="192.0" x2="288" y2="192.0" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="6.0"/>
+<line x1="400" y1="223.51" x2="464" y2="223.51" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="5.1708"/>
+<line x1="576" y1="143.94" x2="640" y2="143.94" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="7.2648"/>
+<line x1="752" y1="95.22" x2="816" y2="95.22" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="8.5468"/>
+<rect x="112" y="192.0" width="112" height="228.0" class="s-paper" fill="#ffffff"/>
+<rect x="112" y="192.0" width="112" height="228.0" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="6.0" data-name="Embalagem"/>
+<text x="168" y="184.0" class="s-val-total" fill="#6e5e47" text-anchor="middle">6,00</text>
+<text x="168" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Embalagem</text>
+<text x="168" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">valor da NF</text>
+<rect x="288" y="192.0" width="112" height="31.51" class="s-paper" fill="#ffffff"/>
+<rect x="288" y="192.0" width="112" height="31.51" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-0.8292" data-name="Crédito"/>
+<text x="344" y="235.51" class="s-val" fill="#6e5e47" text-anchor="middle">−0,83</text>
+<text x="344" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Crédito</text>
+<text x="344" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">13,82% volta</text>
+<rect x="464" y="143.94" width="112" height="79.57" class="s-paper" fill="#ffffff"/>
+<rect x="464" y="143.94" width="112" height="79.57" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="+2.094" data-name="Tributos"/>
+<text x="520" y="135.94" class="s-val" fill="#6e5e47" text-anchor="middle">+2,09</text>
+<text x="520" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Tributos</text>
+<text x="520" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">24,5% do preço</text>
+<rect x="640" y="95.22" width="112" height="48.72" class="s-paper" fill="#ffffff"/>
+<rect x="640" y="95.22" width="112" height="48.72" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1" data-role="delta" data-value="+1.282" data-name="Gestão"/>
+<text x="696" y="87.22" class="s-val-focal" fill="#6e5e47" text-anchor="middle">+1,28</text>
+<text x="696" y="440" class="s-cat s-cat-focal" fill="#1c1712" text-anchor="middle">Gestão</text>
+<text x="696" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">15% do preço</text>
+<rect x="816" y="95.22" width="112" height="324.78" class="s-paper" fill="#ffffff"/>
+<rect x="816" y="95.22" width="112" height="324.78" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="8.5468" data-name="Preço"/>
+<text x="872" y="87.22" class="s-val-total" fill="#6e5e47" text-anchor="middle">8,55</text>
+<text x="872" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Preço</text>
+<text x="872" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">embalagem</text>
+<line x1="40" y1="474" x2="960" y2="474" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<rect x="40" y="492" width="16" height="10" rx="2" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1"/>
+<text x="64" y="501" class="s-legend" fill="#6e5e47">Total / subtotal</text>
+<rect x="240" y="492" width="16" height="10" rx="2" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="264" y="501" class="s-legend" fill="#6e5e47">Soma</text>
+<rect x="440" y="492" width="16" height="10" rx="2" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1"/>
+<text x="464" y="501" class="s-legend" fill="#6e5e47">Subtrai</text>
+<rect x="640" y="492" width="16" height="10" rx="2" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1"/>
+<text x="664" y="501" class="s-legend" fill="#6e5e47">Gestão</text>
+</svg></div>
+    <div class="diagrama"><svg viewBox="0 0 1000 332" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="mult-title mult-desc" style="min-width:1000px">
+<title id="mult-title">Quanto R$ 6,00 de embalagem vira no preço</title>
+<desc id="mult-desc">Comparação do acréscimo no preço causado por uma embalagem de R$ 6,00 em quatro regras: só tributos R$ 6,85, Motor 2 R$ 8,55, planilha antiga R$ 12,27 e margem cheia R$ 16,90.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<line x1="300" y1="28" x2="300" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="300" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">0</text>
+<line x1="390" y1="28" x2="390" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="390" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">3</text>
+<line x1="480" y1="28" x2="480" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="480" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">6</text>
+<line x1="570" y1="28" x2="570" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="570" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">9</text>
+<line x1="660" y1="28" x2="660" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="660" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">12</text>
+<line x1="750" y1="28" x2="750" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="750" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">15</text>
+<line x1="840" y1="28" x2="840" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="840" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">18</text>
+<line x1="300" y1="28" x2="300" y2="252" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<rect x="300" y="44" width="205.5" height="28" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="284" y="56" class="s-cat" fill="#1c1712" text-anchor="end">Só os tributos, com crédito</text>
+<text x="284" y="69" class="s-sub" fill="#6e5e47" text-anchor="end">sem margem nem gestão</text>
+<text x="515.5" y="62" class="s-val-total" fill="#6e5e47">R$ 6,85  ·  1,14×</text>
+<rect x="300" y="96" width="256.4" height="28" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1"/>
+<text x="284" y="108" class="s-cat s-cat-focal" fill="#1c1712" text-anchor="end">Motor 2</text>
+<text x="284" y="121" class="s-sub" fill="#6e5e47" text-anchor="end">crédito + tributos + gestão 15%</text>
+<text x="566.4" y="114" class="s-val-focal" fill="#6e5e47">R$ 8,55  ·  1,42×</text>
+<rect x="300" y="148" width="368.2" height="28" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="284" y="160" class="s-cat" fill="#1c1712" text-anchor="end">Planilha antiga</text>
+<text x="284" y="173" class="s-sub" fill="#6e5e47" text-anchor="end">37,5% + margem de 30% em R$</text>
+<text x="678.2" y="166" class="s-val-total" fill="#6e5e47">R$ 12,27  ·  2,05×</text>
+<rect x="300" y="200" width="507.0" height="28" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="284" y="212" class="s-cat" fill="#1c1712" text-anchor="end">Margem cheia de 40%</text>
+<text x="284" y="225" class="s-sub" fill="#6e5e47" text-anchor="end">sem crédito, como produto</text>
+<text x="817.0" y="218" class="s-val-total" fill="#6e5e47">R$ 16,90  ·  2,82×</text>
+<line x1="480" y1="28" x2="480" y2="252" class="s-ref" stroke="#1c1712" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="418" y="8" width="124" height="16" class="s-paper" fill="#ffffff"/>
+<text x="480" y="20" class="s-eyebrow" fill="#1c1712" text-anchor="middle">CUSTO DA EMBALAGEM R$ 6</text>
+<line x1="40" y1="284" x2="960" y2="284" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<text x="40" y="306" class="s-legend" fill="#6e5e47">Barra = quanto o preço sobe quando o pedido inclui a embalagem de R$ 6,00. Eixo em reais por unidade.</text>
+</svg></div>
+    <p class="dica">Na nota o preço sai arredondado uma vez só: produto R$ 16,87 + embalagem R$ 8,54 = R$ 25,41. A cascata mostra a embalagem com quatro casas (R$ 8,5468).</p>
+  </section>
+
+  <section id="sobra">
+    <header>
+      <p class="passo">Etapa 3 · produto com embalagem</p>
+      <h2>Do preço de venda ao que sobra</h2>
+    </header>
+    <div class="texto">
+      <p>Do preço de <span class="num">R$ 25,41</span>, saem os tributos da nota (<span class="num">R$ 6,23</span>), a matéria-prima e a embalagem já líquidas do crédito, o frete e a fábrica. Sobram <span class="num">R$ 8,03</span> por unidade: a margem do produto (<span class="num">R$ 6,75</span>) mais a taxa de gestão da embalagem (<span class="num">R$ 1,28</span>).</p>
+    </div>
+    <div class="diagrama"><svg viewBox="0 0 1000 524" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="preco-sobra-title preco-sobra-desc" style="min-width:1000px">
+<title id="preco-sobra-title">Do preço de venda ao que sobra</title>
+<desc id="preco-sobra-desc">Cascata do preço de R$ 25,41 do Finalizador com embalagem: saem os tributos da nota, a matéria-prima e a embalagem já líquidas de crédito, o frete e a fábrica; sobram R$ 8,03 por unidade.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<text transform="rotate(-90 24 230)" x="24" y="230" class="s-eyebrow" fill="#6e5e47" text-anchor="middle">R$ POR UNIDADE</text>
+<line x1="80" y1="420.0" x2="960" y2="420.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="424.0" class="s-tick" fill="#6e5e47" text-anchor="end">0</text>
+<line x1="80" y1="352.1" x2="960" y2="352.1" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="356.1" class="s-tick" fill="#6e5e47" text-anchor="end">5</text>
+<line x1="80" y1="284.3" x2="960" y2="284.3" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="288.3" class="s-tick" fill="#6e5e47" text-anchor="end">10</text>
+<line x1="80" y1="216.4" x2="960" y2="216.4" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="220.4" class="s-tick" fill="#6e5e47" text-anchor="end">15</text>
+<line x1="80" y1="148.6" x2="960" y2="148.6" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="152.6" class="s-tick" fill="#6e5e47" text-anchor="end">20</text>
+<line x1="80" y1="80.7" x2="960" y2="80.7" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="84.7" class="s-tick" fill="#6e5e47" text-anchor="end">25</text>
+<line x1="80" y1="40" x2="80" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="80" y1="420" x2="960" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="208" y1="75.15" x2="256" y2="75.15" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="25.41"/>
+<line x1="352" y1="159.64" x2="400" y2="159.64" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="19.1846"/>
+<line x1="496" y1="225.15" x2="544" y2="225.15" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="14.3577"/>
+<line x1="640" y1="295.32" x2="688" y2="295.32" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="9.1869"/>
+<line x1="784" y1="311.07" x2="832" y2="311.07" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="8.0262"/>
+<rect x="112" y="75.15" width="96" height="344.85" class="s-paper" fill="#ffffff"/>
+<rect x="112" y="75.15" width="96" height="344.85" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="25.41" data-name="Preço"/>
+<text x="160" y="67.15" class="s-val-total" fill="#6e5e47" text-anchor="middle">25,41</text>
+<text x="160" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Preço</text>
+<text x="160" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">sem IPI, na NF</text>
+<rect x="256" y="75.15" width="96" height="84.49" class="s-paper" fill="#ffffff"/>
+<rect x="256" y="75.15" width="96" height="84.49" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-6.2254" data-name="Tributos"/>
+<text x="304" y="171.64" class="s-val" fill="#6e5e47" text-anchor="middle">−6,23</text>
+<text x="304" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Tributos</text>
+<text x="304" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">ICMS + PIS/COFINS</text>
+<rect x="400" y="159.64" width="96" height="65.51" class="s-paper" fill="#ffffff"/>
+<rect x="400" y="159.64" width="96" height="65.51" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-4.8269" data-name="MP"/>
+<text x="448" y="237.15" class="s-val" fill="#6e5e47" text-anchor="middle">−4,83</text>
+<text x="448" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">MP</text>
+<text x="448" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">líquida de crédito</text>
+<rect x="544" y="225.15" width="96" height="70.17" class="s-paper" fill="#ffffff"/>
+<rect x="544" y="225.15" width="96" height="70.17" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-5.1708" data-name="Embalagem"/>
+<text x="592" y="307.32" class="s-val" fill="#6e5e47" text-anchor="middle">−5,17</text>
+<text x="592" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Embalagem</text>
+<text x="592" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">líquida de crédito</text>
+<rect x="688" y="295.32" width="96" height="15.75" class="s-paper" fill="#ffffff"/>
+<rect x="688" y="295.32" width="96" height="15.75" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-1.1607" data-name="Frete + fábrica"/>
+<text x="736" y="323.07" class="s-val" fill="#6e5e47" text-anchor="middle">−1,16</text>
+<text x="736" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Frete + fábrica</text>
+<text x="736" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">custo da linha</text>
+<rect x="832" y="311.07" width="96" height="108.93" class="s-paper" fill="#ffffff"/>
+<rect x="832" y="311.07" width="96" height="108.93" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="8.0262" data-name="Sobra"/>
+<text x="880" y="303.07" class="s-val-total" fill="#6e5e47" text-anchor="middle">8,03</text>
+<text x="880" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Sobra</text>
+<text x="880" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">margem + gestão</text>
+<line x1="40" y1="474" x2="960" y2="474" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<rect x="40" y="492" width="16" height="10" rx="2" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1"/>
+<text x="64" y="501" class="s-legend" fill="#6e5e47">Total / subtotal</text>
+<rect x="240" y="492" width="16" height="10" rx="2" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="264" y="501" class="s-legend" fill="#6e5e47">Soma</text>
+<rect x="440" y="492" width="16" height="10" rx="2" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1"/>
+<text x="464" y="501" class="s-legend" fill="#6e5e47">Subtrai</text>
+</svg></div>
+    <div class="diagrama"><svg viewBox="0 0 1000 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="comp-title comp-desc" style="min-width:1000px">
+<title id="comp-title">Para onde vai cada real da nota de R$ 29,04</title>
+<desc id="comp-desc">Barra empilhada da nota do Finalizador com embalagem: custos, tributos, margem, gestão e o IPI cobrado por fora somam R$ 29,04.</desc>
+<pattern id="hachura" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" class="s-hatch" stroke="#6e5e47" stroke-width="1.6"/></pattern>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<rect x="60" y="40" width="146.26" height="44" class="s-c1" stroke="#ffffff" stroke-width="1.5"/>
+<text x="133.13" y="67" class="s-inbar" text-anchor="middle">4,83</text>
+<rect x="206.26" y="40" width="35.17" height="44" class="s-c2" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="241.43" y="40" width="156.68" height="44" class="s-c3" stroke="#ffffff" stroke-width="1.5"/>
+<text x="319.76" y="67" class="s-inbar" text-anchor="middle">5,17</text>
+<rect x="398.1" y="40" width="92.39" height="44" class="s-c4" stroke="#ffffff" stroke-width="1.5"/>
+<text x="444.3" y="67" class="s-inbar" text-anchor="middle">3,05</text>
+<rect x="490.49" y="40" width="96.24" height="44" class="s-c5" stroke="#ffffff" stroke-width="1.5"/>
+<text x="538.62" y="67" class="s-inbar" text-anchor="middle">3,18</text>
+<rect x="586.74" y="40" width="204.43" height="44" class="s-c6" stroke="#ffffff" stroke-width="1.5"/>
+<text x="688.95" y="67" class="s-inbar" text-anchor="middle">6,75</text>
+<rect x="791.16" y="40" width="38.85" height="44" class="s-c7" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="830.01" y="40" width="109.99" height="44" class="s-c8" stroke="#ffffff" stroke-width="1.5" fill="url(#hachura)"/>
+<text x="885.0" y="67" class="s-inbar" text-anchor="middle">3,63</text>
+<line x1="830.01" y1="28" x2="830.01" y2="96" class="s-ref" stroke="#1c1712" stroke-width="1" stroke-dasharray="5,4"/>
+<text x="824.01" y="22" class="s-eyebrow" fill="#1c1712" text-anchor="end">PREÇO SEM IPI R$ 25,41</text>
+<text x="940" y="114" class="s-eyebrow" fill="#1c1712" text-anchor="end">TOTAL DA NOTA R$ 29,04</text>
+<text x="60" y="114" class="s-eyebrow" fill="#6e5e47">CUSTOS</text>
+</svg></div>
+    <div class="legenda" aria-label="Legenda da barra empilhada">
+      <span><i style="background:var(--c1)"></i>MP líquida 4,83</span>
+      <span><i style="background:var(--c2)"></i>Frete + fábrica 1,16</span>
+      <span><i style="background:var(--c3)"></i>Embalagem líquida 5,17</span>
+      <span><i style="background:var(--c4)"></i>ICMS 3,05</span>
+      <span><i style="background:var(--c5)"></i>PIS + COFINS 3,18</span>
+      <span><i style="background:var(--c6)"></i>Margem 6,75</span>
+      <span><i style="background:var(--c7)"></i>Gestão 1,28</span>
+      <span><i style="background:repeating-linear-gradient(45deg,var(--muted) 0 2px,transparent 2px 5px)"></i>IPI 3,63 (do governo)</span>
+    </div>
+    <div class="chave">
+      <h3>Os R$ 8,03 ainda não são lucro</h3>
+      <p>A sobra precisa pagar a estrutura que não está no custo da fábrica: administração, comercial e financeiro (cerca de R$ 89,3 mil por mês na apuração de outubro). Só o que passar disso é lucro, e sobre ele ainda incidem IR e CSLL no fim do período. O IPI de R$ 3,63 não é receita: o cliente paga e a Private repassa.</p>
+    </div>
+  </section>
+
+  <section id="ponte">
+    <header>
+      <p class="passo">Comparação · mesmo produto, mesma embalagem</p>
+      <h2>Por que R$ 28,48 virou R$ 25,41</h2>
+    </header>
+    <div class="texto">
+      <p>A ponte troca uma regra por vez, da planilha antiga até o Motor 2, e recalcula o preço a cada passo. Dois passos encarecem: o tributo real, que a planilha subestimava, e a margem do produto, que subiu para 40% no lote de 1.000. Três passos baratearam muito: os créditos de entrada, o custo real da fábrica e a embalagem fora da margem.</p>
+    </div>
+    <div class="diagrama"><svg viewBox="0 0 1000 524" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ponte-title ponte-desc" style="min-width:1000px">
+<title id="ponte-title">Da planilha antiga ao Motor 2</title>
+<desc id="ponte-desc">Ponte do preço do Finalizador com embalagem: de R$ 28,48 na planilha antiga a R$ 25,41 no Motor 2, trocando uma regra por vez; a maior queda vem dos créditos de entrada.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<text transform="rotate(-90 24 230)" x="24" y="230" class="s-eyebrow" fill="#6e5e47" text-anchor="middle">R$ POR UNIDADE</text>
+<line x1="80" y1="420.0" x2="960" y2="420.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="424.0" class="s-tick" fill="#6e5e47" text-anchor="end">0</text>
+<line x1="80" y1="314.4" x2="960" y2="314.4" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="318.4" class="s-tick" fill="#6e5e47" text-anchor="end">10</text>
+<line x1="80" y1="208.9" x2="960" y2="208.9" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="212.9" class="s-tick" fill="#6e5e47" text-anchor="end">20</text>
+<line x1="80" y1="103.3" x2="960" y2="103.3" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="107.3" class="s-tick" fill="#6e5e47" text-anchor="end">30</text>
+<line x1="80" y1="40" x2="80" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="80" y1="420" x2="960" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="176" y1="119.4" x2="212" y2="119.4" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="28.4778"/>
+<line x1="284" y1="84.55" x2="320" y2="84.55" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="31.7795"/>
+<line x1="392" y1="78.09" x2="428" y2="78.09" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="32.3915"/>
+<line x1="500" y1="127.47" x2="536" y2="127.47" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="27.7133"/>
+<line x1="608" y1="161.13" x2="644" y2="161.13" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="24.5241"/>
+<line x1="716" y1="190.88" x2="752" y2="190.88" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="21.7065"/>
+<line x1="824" y1="151.75" x2="860" y2="151.75" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="25.4134"/>
+<rect x="104" y="119.4" width="72" height="300.6" class="s-paper" fill="#ffffff"/>
+<rect x="104" y="119.4" width="72" height="300.6" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="28.4778" data-name="Planilha"/>
+<text x="140" y="111.4" class="s-val-total" fill="#6e5e47" text-anchor="middle">28,48</text>
+<text x="140" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Planilha</text>
+<text x="140" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">modelo antigo</text>
+<rect x="212" y="84.55" width="72" height="34.85" class="s-paper" fill="#ffffff"/>
+<rect x="212" y="84.55" width="72" height="34.85" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="+3.3017" data-name="Tributo real"/>
+<text x="248" y="76.55" class="s-val" fill="#6e5e47" text-anchor="middle">+3,30</text>
+<text x="248" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Tributo real</text>
+<text x="248" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">24,5% no preço</text>
+<rect x="320" y="78.09" width="72" height="6.46" class="s-paper" fill="#ffffff"/>
+<rect x="320" y="78.09" width="72" height="6.46" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="+0.612" data-name="Perda"/>
+<text x="356" y="70.09" class="s-val" fill="#6e5e47" text-anchor="middle">+0,61</text>
+<text x="356" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Perda</text>
+<text x="356" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">5% → 10%</text>
+<rect x="428" y="78.09" width="72" height="49.38" class="s-paper" fill="#ffffff"/>
+<rect x="428" y="78.09" width="72" height="49.38" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1" data-role="delta" data-value="-4.6782" data-name="Créditos"/>
+<text x="464" y="139.47" class="s-val-focal" fill="#6e5e47" text-anchor="middle">−4,68</text>
+<text x="464" y="440" class="s-cat s-cat-focal" fill="#1c1712" text-anchor="middle">Créditos</text>
+<text x="464" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">MP e embalagem</text>
+<rect x="536" y="127.47" width="72" height="33.66" class="s-paper" fill="#ffffff"/>
+<rect x="536" y="127.47" width="72" height="33.66" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-3.1892" data-name="Fábrica"/>
+<text x="572" y="173.13" class="s-val" fill="#6e5e47" text-anchor="middle">−3,19</text>
+<text x="572" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Fábrica</text>
+<text x="572" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">medida + frete</text>
+<rect x="644" y="161.13" width="72" height="29.75" class="s-paper" fill="#ffffff"/>
+<rect x="644" y="161.13" width="72" height="29.75" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-2.8176" data-name="Embalagem"/>
+<text x="680" y="202.88" class="s-val" fill="#6e5e47" text-anchor="middle">−2,82</text>
+<text x="680" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Embalagem</text>
+<text x="680" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">sai da margem</text>
+<rect x="752" y="151.75" width="72" height="39.13" class="s-paper" fill="#ffffff"/>
+<rect x="752" y="151.75" width="72" height="39.13" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="+3.7069" data-name="Margem"/>
+<text x="788" y="143.75" class="s-val" fill="#6e5e47" text-anchor="middle">+3,71</text>
+<text x="788" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Margem</text>
+<text x="788" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">30% → 40%</text>
+<rect x="860" y="151.75" width="72" height="268.25" class="s-paper" fill="#ffffff"/>
+<rect x="860" y="151.75" width="72" height="268.25" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="25.4134" data-name="Motor 2"/>
+<text x="896" y="143.75" class="s-val-total" fill="#6e5e47" text-anchor="middle">25,41</text>
+<text x="896" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Motor 2</text>
+<text x="896" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">preço novo</text>
+<line x1="40" y1="474" x2="960" y2="474" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<rect x="40" y="492" width="16" height="10" rx="2" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1"/>
+<text x="64" y="501" class="s-legend" fill="#6e5e47">Total / subtotal</text>
+<rect x="240" y="492" width="16" height="10" rx="2" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="264" y="501" class="s-legend" fill="#6e5e47">Soma</text>
+<rect x="440" y="492" width="16" height="10" rx="2" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1"/>
+<text x="464" y="501" class="s-legend" fill="#6e5e47">Subtrai</text>
+<rect x="640" y="492" width="16" height="10" rx="2" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1"/>
+<text x="664" y="501" class="s-legend" fill="#6e5e47">Créditos</text>
+</svg></div>
+    <div class="tabela"><table class="ponte">
+      <thead><tr><th>Passo</th><th>Preço depois do passo</th><th>Efeito</th></tr></thead>
+      <tbody><tr><td>Planilha antiga</td><td>R$ 28,48</td><td></td></tr><tr><td>Tributo real 24,5% sobre o preco inteiro</td><td>R$ 31,78</td><td>+3,30</td></tr><tr><td>Perda de MP 5% → 10%</td><td>R$ 32,39</td><td>+0,61</td></tr><tr><td>Creditos de entrada (MP 21,21% / emb 13,82%)</td><td>R$ 27,71</td><td>−4,68</td></tr><tr><td>Fabrica medida (R$ 2,61 → 1,06) + frete 0,10</td><td>R$ 24,52</td><td>−3,19</td></tr><tr><td>Embalagem sai da margem (taxa de gestao 15%)</td><td>R$ 21,71</td><td>−2,82</td></tr><tr><td>Margem do produto 30% → 40% (escada, lote 1.000)</td><td>R$ 25,41</td><td>+3,71</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section id="comparacao">
+    <header>
+      <p class="passo">Comparação · o que sobra de verdade</p>
+      <h2>Preço e sobra nos dois modelos</h2>
+    </header>
+    <div class="texto">
+      <p>A sobra foi calculada para os dois modelos com os custos reais de hoje: créditos, perda de 10%, fábrica medida e tributos de 24,5%. Sem embalagem, o Motor 2 cobra um pouco mais e sobra mais. Com embalagem, ele cobra bem menos e abre mão de parte da sobra que vinha da margem sobre a embalagem, que era o que tornava a cotação com embalagem difícil de fechar.</p>
+    </div>
+    <div class="tabela"><table class="sobra">
+      <thead><tr><th>Produto</th><th>Preço antigo</th><th>Preço Motor 2</th><th>Sobra antiga</th><th>Sobra Motor 2</th></tr></thead>
+      <tbody><tr><td>Finalizador 50 ml, sem embalagem</td><td>R$ 16,21</td><td>R$ 16,87</td><td>R$ 6,25</td><td>R$ 6,75</td></tr><tr><td>Finalizador 50 ml, com embalagem</td><td>R$ 28,48</td><td>R$ 25,41</td><td>R$ 10,34</td><td>R$ 8,03</td></tr><tr><td>Leave-in 150 ml, com embalagem</td><td>R$ 53,38</td><td>R$ 45,65</td><td>R$ 18,77</td><td>R$ 12,93</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section id="lote">
+    <header>
+      <p class="passo">O que muda o preço · tamanho do lote</p>
+      <h2>Lote pequeno custa mais por unidade</h2>
+    </header>
+    <div class="texto">
+      <p>O setup de R$ 280,78 por ordem se divide pelo lote, e a escada de margem sobe nos lotes pequenos (45% abaixo de 1.000, 40% até 4.999, 35% a partir de 5.000). Abaixo de 500 unidades o Studio mostra o preço só como referência, com o aviso de lote mínimo.</p>
+    </div>
+    <div class="tabela"><table class="lote">
+      <thead><tr><th>Lote</th><th>Margem</th><th>Setup por unidade</th><th>Preço sem IPI</th><th>Preço com IPI</th><th>Situação</th></tr></thead>
+      <tbody><tr><td>300</td><td>45%</td><td>R$ 0,9359</td><td>R$ 21,78</td><td>R$ 24,89</td><td>bloqueado: abaixo de 500</td></tr><tr><td>500</td><td>45%</td><td>R$ 0,5616</td><td>R$ 20,55</td><td>R$ 23,49</td><td></td></tr><tr><td>1.000</td><td>40%</td><td>R$ 0,2808</td><td>R$ 16,87</td><td>R$ 19,28</td><td></td></tr><tr><td>5.000</td><td>35%</td><td>R$ 0,0562</td><td>R$ 14,23</td><td>R$ 16,26</td><td></td></tr></tbody>
+    </table></div>
+    <p class="dica">Finalizador 50 ml sem embalagem.</p>
+  </section>
+
+  <section id="cliente">
+    <header>
+      <p class="passo">O que muda o preço · perfil do cliente</p>
+      <h2>O cliente muda o imposto</h2>
+    </header>
+    <div class="texto">
+      <p>O mesmo produto tem tributos diferentes conforme quem compra. Cliente de lucro real que revende, em SP, usa a carga de 12% de ICMS. Simples e consumidor final usam 18%. Para consumidor final, o IPI também entra na base do ICMS e gera ICMS sobre o IPI.</p>
+    </div>
+    <div class="tabela"><table class="perfil">
+      <thead><tr><th>Cliente</th><th>Tributos por dentro</th><th>Total</th><th>Preço sem IPI</th><th>IPI</th><th>ICMS sobre IPI</th><th>Nota</th></tr></thead>
+      <tbody><tr><td>Lucro real ou presumido, revenda, SP</td><td>ICMS 12% (art. 34) + 12,5%</td><td>24,5%</td><td>R$ 25,41</td><td>R$ 3,63</td><td>—</td><td>R$ 29,04</td></tr><tr><td>Simples Nacional, revenda</td><td>ICMS 18% + 12,5%</td><td>30,5%</td><td>R$ 29,78</td><td>R$ 4,26</td><td>—</td><td>R$ 34,04</td></tr><tr><td>Consumidor final</td><td>ICMS 18% + 12,5%</td><td>30,5%</td><td>R$ 29,78</td><td>R$ 4,26</td><td>R$ 0,77</td><td>R$ 34,81</td></tr></tbody>
+    </table></div>
+    <p class="dica">Finalizador 50 ml com embalagem, lote de 1.000. Cliente sem perfil cadastrado entra como o caso mais caro.</p>
+  </section>
+
+  <section id="regras">
+    <header>
+      <p class="passo">Antes de cotar</p>
+      <h2>Regras de bolso para a equipe</h2>
+    </header>
+    <div class="regras">
+      <article class="atencao"><h3>Cadastre o perfil fiscal do cliente</h3><p>Regime, finalidade, UF e se é contribuinte de ICMS. Sem isso o Studio usa o pior caso e o preço sai mais alto.</p></article>
+      <article class="atencao"><h3>Cliente fora de SP passa pelo financeiro</h3><p>O preço considera só a operação dentro de SP. Alíquota interestadual e DIFAL ainda não entram no cálculo.</p></article>
+      <article class="atencao"><h3>O PDF do Studio é interno</h3><p>Ele mostra custo, margem e fórmula. Não envie ao cliente; monte a proposta com o preço sem IPI e com IPI.</p></article>
+      <article><h3>Embalagem só entra em full service</h3><p>Em industrialização ou híbrido o cliente fornece a embalagem e ela vale zero no preço.</p></article>
+      <article><h3>Olhe a idade do preço da MP</h3><p>Score abaixo de 75 indica cotação antiga. Peça cotação nova a compras antes de fechar.</p></article>
+      <article><h3>Margem vazia usa a escada</h3><p>Digitar margem é permitido e fica registrado como manual. Deixe vazio para usar 45%, 40% ou 35% pelo lote.</p></article>
+    </div>
+  </section>
+
+  <footer>
+    <p>Valores calculados em 24/10/2026 com o motor do Studio (Motor 2 10/26) e os parâmetros vigentes: fábrica R$ 101.305 por mês (R$ 4,68 por minuto, setup R$ 280,78), créditos de entrada 21,21% (MP) e 13,82% (embalagem), perda 10%, frete R$ 0,10, escada 45/40/35, taxa de gestão 15%.</p>
+    <p>Tributos de saída pela matriz fiscal do Studio, validada pelo contador. Planilha antiga: aba "Skin Care" (37,5% sobre material, 9,25% sobre mão de obra, margem de 30% em reais). As cascatas usam quatro casas internas para fechar as somas; os rótulos mostram centavos.</p>
+  </footer>
+</main>
