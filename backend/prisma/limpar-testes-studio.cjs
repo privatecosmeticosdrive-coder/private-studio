@@ -95,7 +95,7 @@ async function levantar(tx) {
 }
 
 async function checarFksDesconhecidas(tx) {
-  const fks = await q(tx, `select tc.table_name tabela, kcu.column_name coluna, ccu.table_name ref
+  const fks = await q(tx, `select tc.table_name as tabela, kcu.column_name as coluna, ccu.table_name as ref
     from information_schema.table_constraints tc
     join information_schema.key_column_usage kcu on kcu.constraint_name = tc.constraint_name
     join information_schema.constraint_column_usage ccu on ccu.constraint_name = tc.constraint_name
