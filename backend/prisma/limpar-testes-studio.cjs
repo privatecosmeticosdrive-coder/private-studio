@@ -27,7 +27,8 @@ const COMMIT = process.argv.includes('--commit');
 const DUVIDAS = process.argv.includes('--incluir-duvidas');
 
 const CLIENTES_TESTE = ['Brunão Dev Monstro'];
-const CLIENTES_DUVIDA = [{ nome: 'Bianca Beauty', motivo: 'e-mail mgquintino8@gmail.com parece ser do proprio dono; sem proposta no Canva' }];
+// 24/10/2026: Bianca Beauty confirmada pelo dono como cliente REAL (nao e teste) — fica fora da limpeza.
+const CLIENTES_DUVIDA = [];
 const EMAIL_USUARIO_TESTE = /@([a-z0-9-]+\.)*localhost$|@local\.test$/i;
 // Tabelas que este script sabe tratar quando apontam para orcamentos/formulas/clientes/users/pendencias.
 const FK_CONHECIDAS = new Set([
