@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { AxiosError } from 'axios';
@@ -16,6 +17,7 @@ import type { Cliente } from '@/lib/types';
 import { clientesApi } from '@/lib/services/clientes';
 
 export default function Clientes() {
+  const navigate = useNavigate();
   const can = useCan();
   const queryClient = useQueryClient();
 
@@ -149,7 +151,7 @@ export default function Clientes() {
         loading={isLoading}
         error={isError ? true : undefined}
         onRetry={() => refetch()}
-        onRowClick={(c) => setDetalhe(c)}
+        onRowClick={(c) => navigate(`/clientes/${c.id}`)}
         emptyIcon={Users}
         emptyTitle="Nenhum cliente encontrado"
         emptyDescription={

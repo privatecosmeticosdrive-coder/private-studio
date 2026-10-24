@@ -1,5 +1,6 @@
 import { api } from '@/lib/api';
 import type {
+  AcaoFac,
   MatchResposta,
   MotivoRecusa,
   NivelOrcamento,
@@ -123,6 +124,25 @@ export const orcamentosApi = {
   },
   duplicar: async (id: string) => {
     const { data } = await api.post<OrcamentoDetalhe>(`/orcamentos/${id}/duplicar`, {});
+    return data;
+  },
+  // 10/26 — editar orçamento já enviado/fechado = nova versão derivada (rascunho).
+  novaVersao: async (id: string) => {
+    const { data } = await api.post<OrcamentoDetalhe>(`/orcamentos/${id}/nova-versao`, {});
+    return data;
+  },
+  // 10/26 — exclusão lógica (some das listas; histórico preservado).
+  excluir: async (id: string, motivo?: string) => {
+    const { data } = await api.delete<{ id: string; numero: number }>(`/orcamentos/${id}`, { data: { motivo } });
+    return data;
+  },
+  // 10/26 — FAC: até 5 itens / 5 pontos percentuais; avisa o laboratório.
+  aplicarFac: async (id: string, itens: { mp_id: number; acao: AcaoFac; para_pct?: number }[]) => {
+    const { data } = await api.post<OrcamentoDetalhe>(`/orcamentos/${id}/fac`, { itens });
+    return data;
+  },
+  removerFac: async (id: string) => {
+    const { data } = await api.delete<OrcamentoDetalhe>(`/orcamentos/${id}/fac`);
     return data;
   },
   // Fase 1 — gera e trava o JSON_CALC. Retorna o orçamento já calculado.

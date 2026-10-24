@@ -6,6 +6,7 @@ import Dashboard from '@/pages/dashboard';
 import Embalagens from '@/pages/embalagens';
 import MateriasPrimas from '@/pages/materias-primas';
 import Clientes from '@/pages/clientes';
+import ClienteDetalhe from '@/pages/cliente-detalhe';
 import Formulas from '@/pages/formulas';
 import FormulaDetalhe from '@/pages/formula-detalhe';
 import FormulaNovaVersao from '@/pages/formula-nova-versao';
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/amostras" element={<Placeholder title="Amostras (pipeline)" dia="Dia 11" />} />
           <Route path="/cotacoes" element={<Placeholder title="Cotações" dia="Dia 11" />} />
           <Route path="/clientes" element={<Clientes />} />
+          <Route path="/clientes/:id" element={<ClienteDetalhe />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/matriz-custo" element={<MatrizCusto />} />
           <Route path="/viabilidade" element={<Viabilidade />} />

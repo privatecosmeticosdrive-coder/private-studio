@@ -13,6 +13,8 @@ import {
   Send,
   ThumbsUp,
   ThumbsDown,
+  GitBranch,
+  Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -34,6 +36,9 @@ import {
 import { orcamentosApi } from '@/lib/services/orcamentos';
 import { useAuth } from '@/auth/auth-context';
 import { EditarNcmOrcamentoModal } from '@/components/data/editar-ncm-orcamento';
+import { FormulaOrcamento } from '@/components/orcamento/formula-orcamento';
+import { VersoesOrcamento } from '@/components/orcamento/versoes-orcamento';
+import { Textarea } from '@/components/ui/textarea';
 
 /** Item rótulo → valor do resumo do briefing. */
 function Campo({ rotulo, valor }: { rotulo: string; valor: React.ReactNode }) {
@@ -149,6 +154,11 @@ export default function OrcamentoDetalhe() {
   const podeEditarNcm = !!user && (podeVerCustos || user.role === 'comercial');
 
   const [baixando, setBaixando] = useState(false);
+  // 10/26 — versões e exclusão lógica
+  const [confirmandoVersao, setConfirmandoVersao] = useState(false);
+  const [excluindo, setExcluindo] = useState(false);
+  const [motivoExclusao, setMotivoExclusao] = useState('');
+  const podeOrcar = !!user && (user.role === 'admin' || user.role === 'comercial');
   const [editandoNcm, setEditandoNcm] = useState(false);
   // P1: qual transição está aguardando confirmação (null = nenhuma)
   const [transicao, setTransicao] = useState<null | 'enviado' | 'aprovado_cliente' | 'recusado'>(null);
@@ -197,6 +207,32 @@ export default function OrcamentoDetalhe() {
       const m = err.response?.data?.message;
       toast.error(Array.isArray(m) ? m[0] : m || 'Falha ao mudar o status.');
     },
+  });
+
+  const erroApi = (err: AxiosError<{ message?: string | string[] }>, padrao: string) => {
+    const m = err.response?.data?.message;
+    toast.error(Array.isArray(m) ? m[0] : m || padrao);
+  };
+
+  const novaVersao = useMutation({
+    mutationFn: () => orcamentosApi.novaVersao(id!),
+    onSuccess: (nova) => {
+      queryClient.invalidateQueries({ queryKey: ['orcamentos'] });
+      setConfirmandoVersao(false);
+      toast.success(`Versão ${nova.versao} criada (#${nova.numero}). Edite e recalcule.`);
+      navigate(`/orcamentos/${nova.id}/editar`);
+    },
+    onError: (err: AxiosError<{ message?: string | string[] }>) => erroApi(err, 'Falha ao criar a nova versão.'),
+  });
+
+  const excluir = useMutation({
+    mutationFn: () => orcamentosApi.excluir(id!, motivoExclusao.trim() || undefined),
+    onSuccess: (r) => {
+      queryClient.invalidateQueries({ queryKey: ['orcamentos'] });
+      toast.success(`Orçamento #${r.numero} excluído.`);
+      navigate('/orcamentos');
+    },
+    onError: (err: AxiosError<{ message?: string | string[] }>) => erroApi(err, 'Falha ao excluir o orçamento.'),
   });
 
   const { data: orc, isLoading, isError, refetch } = useQuery({
@@ -266,8 +302,14 @@ export default function OrcamentoDetalhe() {
           <h1 className="font-display text-h1 text-ink">
             <span className="tnum">#{orc.numero}</span> · {orc.produto}
           </h1>
-          <div className="mt-2 flex items-center gap-3">
+          <div className="mt-2 flex flex-wrap items-center gap-3">
             <StatusOrcamentoBadge status={orc.status} />
+            {(orc.versao > 1 || orc.versoes.length > 1) && <Badge variant="neutral">versão {orc.versao}</Badge>}
+            {orc.ajuste_fac && (
+              <Badge variant="gold" title="Fórmula Ajustada pelo Comercial">
+                FAC
+              </Badge>
+            )}
             {orc.preco_cipi != null && (
               <span className="text-sm text-warm-600">
                 Preço c/ IPI <span className="tnum font-semibold text-ink">{brl(orc.preco_cipi)}</span>
@@ -314,6 +356,12 @@ export default function OrcamentoDetalhe() {
               </Button>
             </>
           )}
+          {/* 10/26 — mexer num orçamento já enviado/fechado = nova versão (o enviado não muda). */}
+          {podeOrcar && orc.status !== 'rascunho' && (
+            <Button variant="outline" disabled={novaVersao.isPending} onClick={() => setConfirmandoVersao(true)}>
+              <GitBranch className="size-4" /> Nova versão
+            </Button>
+          )}
           <span
             title={!orc.calculo ? 'Calcule o orçamento antes de exportar' : undefined}
           >
@@ -330,6 +378,18 @@ export default function OrcamentoDetalhe() {
               Baixar PDF
             </Button>
           </span>
+          {podeOrcar && !orc.propostas.some((p) => p.status === 'assinada') && orc.amostra_status === 'nao_solicitada' && (
+            <Button
+              variant="ghost"
+              className="text-error hover:bg-error-soft"
+              onClick={() => {
+                setMotivoExclusao('');
+                setExcluindo(true);
+              }}
+            >
+              <Trash2 className="size-4" /> Excluir
+            </Button>
+          )}
         </div>
       </div>
 
@@ -362,6 +422,10 @@ export default function OrcamentoDetalhe() {
         onEditarNcm={() => setEditandoNcm(true)}
       />
 
+      <VersoesOrcamento orc={orc} />
+
+      <FormulaOrcamento orc={orc} podeAjustar={podeOrcar} />
+
       <Card className="p-6">
         <h2 className="mb-4 font-display text-h3 text-ink">Cálculo</h2>
         {orc.calculo ? (
@@ -372,6 +436,38 @@ export default function OrcamentoDetalhe() {
           </p>
         )}
       </Card>
+
+      <ConfirmDialog
+        open={confirmandoVersao}
+        onClose={() => setConfirmandoVersao(false)}
+        onConfirm={() => novaVersao.mutate()}
+        loading={novaVersao.isPending}
+        title="Criar nova versão"
+        confirmLabel="Criar versão"
+        description={`O orçamento #${orc.numero} fica como está (é o que o cliente recebeu). A nova versão nasce em rascunho com o mesmo briefing${orc.ajuste_fac ? ' e o mesmo ajuste FAC' : ''}, para você editar e recalcular.`}
+      />
+
+      <ConfirmDialog
+        open={excluindo}
+        onClose={() => setExcluindo(false)}
+        onConfirm={() => excluir.mutate()}
+        loading={excluir.isPending}
+        title={`Excluir o orçamento #${orc.numero}`}
+        confirmLabel="Excluir"
+        description={
+          <div className="space-y-3">
+            <p>
+              O orçamento some das listas e do painel. O histórico continua guardado (auditoria, versões e propostas).
+            </p>
+            <Textarea
+              value={motivoExclusao}
+              onChange={(e) => setMotivoExclusao(e.target.value)}
+              placeholder="Motivo (opcional)"
+              rows={2}
+            />
+          </div>
+        }
+      />
 
       <EditarNcmOrcamentoModal
         open={editandoNcm}

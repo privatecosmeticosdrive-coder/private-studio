@@ -36,6 +36,54 @@ export class AlertasService {
     });
   }
 
+  /**
+   * FAC (10/26): avisa o laboratorio de que o comercial ajustou a formula no
+   * orcamento (ou que o ajuste foi aprovado pelo cliente / removido). So controle:
+   * nada e bloqueado; quando aprovado, o lab ja sabe o que mudou.
+   */
+  gerarAlertaFac(
+    p: {
+      numero: number;
+      produto: string;
+      cliente: string | null;
+      evento: 'ajustado' | 'aprovado' | 'removido';
+      itens: { nome: string; acao: string; de_pct: number; para_pct: number }[];
+      compensacao: { nome: string; de_pct: number; para_pct: number } | null;
+    },
+    tx?: Prisma.TransactionClient,
+  ) {
+    const client = tx ?? this.prisma;
+    const quem = p.cliente ? ` (${p.cliente})` : '';
+    const titulo =
+      p.evento === 'aprovado'
+        ? `FAC aprovada pelo cliente — orçamento #${p.numero} ${p.produto}${quem}`
+        : p.evento === 'removido'
+          ? `FAC removida — orçamento #${p.numero} ${p.produto}${quem}`
+          : `Fórmula ajustada pelo comercial (FAC) — orçamento #${p.numero} ${p.produto}${quem}`;
+    const linhas = p.itens.map((i) =>
+      i.acao === 'adicionar'
+        ? `+ ${i.nome}: ${i.para_pct}%`
+        : i.acao === 'remover'
+          ? `− ${i.nome}: ${i.de_pct}% → removida`
+          : `${i.nome}: ${i.de_pct}% → ${i.para_pct}%`,
+    );
+    if (p.compensacao) {
+      linhas.push(`(compensado em ${p.compensacao.nome}: ${p.compensacao.de_pct}% → ${p.compensacao.para_pct}%)`);
+    }
+    return client.alerta.create({
+      data: {
+        tipo: 'ajuste_fac',
+        titulo,
+        mensagem:
+          p.evento === 'removido' ? 'O orçamento voltou para a fórmula original do laboratório.' : linhas.join('\n'),
+        entidade_tipo: 'orcamento',
+        entidade_id: p.numero,
+        severidade: p.evento === 'aprovado' ? 'warn' : 'info',
+        created_for: ['pd', 'admin'],
+      },
+    });
+  }
+
   /** Lista alertas. lido/resolvido sao calculados/filtrados para o usuario atual. */
   async findAll(userId: string, opts: { lido?: boolean; resolvido?: boolean }) {
     const where: Prisma.AlertaWhereInput = {};

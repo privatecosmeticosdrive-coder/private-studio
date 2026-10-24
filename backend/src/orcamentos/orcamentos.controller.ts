@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -16,6 +17,7 @@ import { CreateOrcamentoDto } from './dto/create-orcamento.dto';
 import { UpdateOrcamentoDto } from './dto/update-orcamento.dto';
 import { CalcularDto } from './dto/calcular.dto';
 import { MudarStatusDto } from './dto/mudar-status.dto';
+import { AjusteFacDto, ExcluirOrcamentoDto } from './dto/ajuste-fac.dto';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser, type JwtUser } from '../auth/decorators/current-user.decorator';
 
@@ -86,6 +88,33 @@ export class OrcamentosController {
   @Roles(Role.admin, Role.comercial)
   duplicar(@Param('id') id: string, @CurrentUser() user: JwtUser) {
     return this.orcamentos.duplicar(id, user.sub);
+  }
+
+  // 10/26 — editar um orçamento já enviado/fechado = nova versão derivada (rascunho).
+  @Post(':id/nova-versao')
+  @Roles(Role.admin, Role.comercial)
+  novaVersao(@Param('id') id: string, @CurrentUser() user: JwtUser) {
+    return this.orcamentos.novaVersao(id, user.sub);
+  }
+
+  // 10/26 — exclusão lógica (some das listas; histórico preservado).
+  @Delete(':id')
+  @Roles(Role.admin, Role.comercial)
+  excluir(@Param('id') id: string, @Body() dto: ExcluirOrcamentoDto, @CurrentUser() user: JwtUser) {
+    return this.orcamentos.excluir(id, user.sub, dto?.motivo);
+  }
+
+  // 10/26 — Fórmula Ajustada pelo Comercial (FAC): até 5 itens / 5 pontos, avisa o lab.
+  @Post(':id/fac')
+  @Roles(Role.admin, Role.comercial)
+  aplicarFac(@Param('id') id: string, @Body() dto: AjusteFacDto, @CurrentUser() user: JwtUser) {
+    return this.orcamentos.aplicarFac(id, dto.itens, user.sub);
+  }
+
+  @Delete(':id/fac')
+  @Roles(Role.admin, Role.comercial)
+  removerFac(@Param('id') id: string, @CurrentUser() user: JwtUser) {
+    return this.orcamentos.removerFac(id, user.sub);
   }
 
   // P1 — transição de status (máquina de estados; auditada).

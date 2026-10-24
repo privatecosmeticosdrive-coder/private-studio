@@ -394,6 +394,72 @@ export interface OrcamentoListItem {
   preco_cipi: Money;
   created_at: string;
   cliente: { id: string; nome: string } | null;
+  // 10/26 — versões derivadas e formula ajustada pelo comercial
+  versao: number;
+  versao_de_id: string | null;
+  ajuste_fac: AjusteFac | null;
+}
+
+// ---- FAC — Fórmula Ajustada pelo Comercial (10/26) ----
+export type AcaoFac = 'alterar' | 'adicionar' | 'remover';
+export interface AjusteFac {
+  itens: { mp_id: number; nome: string; acao: AcaoFac; de_pct: number; para_pct: number }[];
+  compensacao: { mp_id: number | null; nome: string; de_pct: number; para_pct: number } | null;
+  delta_total_pct: number;
+  limites: { max_itens: number; max_delta_pct: number };
+}
+
+// ---- Proposta comercial (10/26) ----
+export type StatusProposta = 'emitida' | 'assinada' | 'cancelada';
+export interface CondicoesProposta {
+  pedido_minimo: string;
+  prazo_entrega: string;
+  forma_pagamento: string;
+  validade_dias: number;
+  frete: string;
+  reajustes: string[];
+  consideracoes: string[];
+  amostras: string;
+  local: string;
+}
+export interface SnapshotItemProposta {
+  numero: number;
+  versao: number;
+  produto: string;
+  volume_un: number | null;
+  quantidade: number | null;
+  preco_sipi: number;
+  preco_cipi: number;
+  ipi_pct: number | null;
+  preco_sem_embalagem_sipi: number | null;
+  com_embalagem: boolean;
+  embalagem: string | null;
+  fornecimento: string;
+  fac: boolean;
+}
+export interface PropostaListItem {
+  id: string;
+  numero: number;
+  cliente_id: string;
+  status: StatusProposta;
+  emitida_em: string;
+  assinada_em: string | null;
+  assinada_por_nome: string | null;
+  vendedor_nome: string | null;
+  cliente: { id: string; nome: string };
+  _count: { itens: number };
+}
+export interface PropostaDetalhe extends Omit<PropostaListItem, '_count'> {
+  condicoes: CondicoesProposta;
+  observacoes: string | null;
+  assinada_por_documento: string | null;
+  itens: {
+    id: number;
+    ordem: number;
+    orcamento_id: string;
+    snapshot: SnapshotItemProposta;
+    orcamento: { id: string; numero: number; status: string; amostra_status: string };
+  }[];
 }
 
 // ---- JSON_CALC travado (espelha calculo.service.ts → gerarCalculo) ----
@@ -731,6 +797,23 @@ export interface OrcamentoDetalhe {
   ncm: Pick<Ncm, 'id' | 'ncm' | 'descricao' | 'ipi_pct' | 'monofasico'> | null; // objeto do override
   ncm_efetivo: number | null; // override ?? formula ?? null
   ncm_efetivo_origem: 'orcamento' | 'formula' | null;
+  // 10/26 — versões, exclusão lógica, FAC e propostas em que aparece
+  versao: number;
+  versao_de_id: string | null;
+  excluido_em: string | null;
+  ajuste_fac: AjusteFac | null;
+  ajuste_fac_em: string | null;
+  versoes: {
+    id: string;
+    numero: number;
+    versao: number;
+    status: string;
+    created_at: string;
+    preco_sipi: Money;
+    excluido_em: string | null;
+    ajuste_fac: AjusteFac | null;
+  }[];
+  propostas: { id: string; numero: number; status: StatusProposta; emitida_em: string }[];
 }
 
 // ---- Dashboard — stats de orçamentos (GET /orcamentos/stats) ----

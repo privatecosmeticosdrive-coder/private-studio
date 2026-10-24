@@ -35,6 +35,17 @@ export class AmostrasService {
         `Só é possível solicitar amostra apos aprovacao do cliente (status atual: '${orc.status}').`,
       );
     }
+    // 10/26: amostra so depois do aceite formal — o orcamento precisa estar numa
+    // proposta comercial ASSINADA pelo cliente.
+    const assinada = await this.prisma.propostaItem.findFirst({
+      where: { orcamento_id: id, proposta: { status: 'assinada' } },
+      select: { id: true },
+    });
+    if (!assinada) {
+      throw new BadRequestException(
+        'A amostra so pode ser solicitada depois que a proposta comercial com este orcamento for assinada pelo cliente.',
+      );
+    }
     if (!orc.requer_amostra) {
       throw new BadRequestException('Este orcamento esta marcado como requer_amostra=false.');
     }

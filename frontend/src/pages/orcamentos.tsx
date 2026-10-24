@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Plus, Search, FileText } from 'lucide-react';
@@ -72,13 +72,36 @@ export default function Orcamentos() {
       {
         accessorKey: 'produto',
         header: 'Produto',
-        cell: ({ row }) => <span className="font-medium text-ink">{row.original.produto}</span>,
+        cell: ({ row }) => (
+          <span className="inline-flex flex-wrap items-center gap-1.5">
+            <span className="font-medium text-ink">{row.original.produto}</span>
+            {(row.original.versao > 1 || row.original.versao_de_id) && (
+              <span className="text-caption text-warm-500">v{row.original.versao}</span>
+            )}
+            {row.original.ajuste_fac && (
+              <span className="rounded-full bg-gold-500/15 px-2 py-0.5 text-caption font-medium text-gold-700" title="Fórmula Ajustada pelo Comercial">
+                FAC
+              </span>
+            )}
+          </span>
+        ),
       },
       {
         id: 'cliente',
         header: 'Cliente',
         enableSorting: false,
-        cell: ({ row }) => row.original.cliente?.nome || '—',
+        cell: ({ row }) =>
+          row.original.cliente ? (
+            <Link
+              to={`/clientes/${row.original.cliente.id}`}
+              onClick={(e) => e.stopPropagation()}
+              className="hover:underline"
+            >
+              {row.original.cliente.nome}
+            </Link>
+          ) : (
+            '—'
+          ),
       },
       {
         accessorKey: 'status',

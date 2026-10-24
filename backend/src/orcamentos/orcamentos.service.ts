@@ -16,6 +16,8 @@ import { MudarStatusDto } from './dto/mudar-status.dto';
 import { resolverNcmEfetivo } from './ncm-efetivo.util';
 import { validarTransicao } from './status-orcamento.util';
 import { PendenciasLabService } from '../pendencias-lab/pendencias-lab.service';
+import { AlertasService } from '../alertas/alertas.service';
+import { montarAjusteFac, type AjusteFac, type PedidoItemFac } from './fac.util';
 
 export interface ListarOrcamentoQuery {
   status?: string;
@@ -40,12 +42,14 @@ export class OrcamentosService {
     // orcamento_id via Prisma, nunca via OrcamentosService). Se aparecerem
     // múltiplos consumidores, migra pra evento — o schema não muda.
     private readonly pendenciasLab: PendenciasLabService,
+    private readonly alertas: AlertasService,
   ) {}
 
   async findAll(query: ListarOrcamentoQuery) {
     const page = Math.max(1, query.page ?? 1);
     const pageSize = Math.min(200, Math.max(1, query.pageSize ?? 50));
-    const where: Prisma.OrcamentoWhereInput = {};
+    // Excluidos (exclusao logica, 10/26) nunca aparecem nas listas.
+    const where: Prisma.OrcamentoWhereInput = { excluido_em: null };
     if (query.status) where.status = query.status;
     if (query.motivo) where.recusa_motivo = query.motivo; // FASE 3
     if (query.cliente_id) where.cliente_id = query.cliente_id;
@@ -67,12 +71,13 @@ export class OrcamentosService {
   // Dashboard — agregações (por status + volume mensal dos últimos 12 meses).
   async stats() {
     const [porStatusRaw, por_mes] = await Promise.all([
-      this.prisma.orcamento.groupBy({ by: ['status'], _count: true }),
+      this.prisma.orcamento.groupBy({ by: ['status'], where: { excluido_em: null }, _count: true }),
       this.prisma.$queryRaw<Array<{ mes: string; count: number }>>`
         SELECT to_char(date_trunc('month', created_at), 'YYYY-MM') AS mes,
                COUNT(*)::int AS count
         FROM orcamentos
         WHERE created_at >= date_trunc('month', now()) - interval '11 months'
+          AND excluido_em IS NULL
         GROUP BY 1
         ORDER BY 1
       `,
@@ -97,9 +102,23 @@ export class OrcamentosService {
         },
         // override de NCM do proprio orcamento (F3)
         ncm: { select: { id: true, ncm: true, descricao: true, ipi_pct: true, monofasico: true } },
+        proposta_itens: {
+          select: { proposta: { select: { id: true, numero: true, status: true, emitida_em: true } } },
+        },
       },
     });
     if (!orc) throw new NotFoundException('Orcamento nao encontrado');
+
+    // Familia de versoes (10/26): raiz + derivadas, inclusive excluidas (marcadas).
+    const raizId = orc.versao_de_id ?? orc.id;
+    const versoes = await this.prisma.orcamento.findMany({
+      where: { OR: [{ id: raizId }, { versao_de_id: raizId }] },
+      orderBy: { versao: 'asc' },
+      select: {
+        id: true, numero: true, versao: true, status: true, created_at: true,
+        preco_sipi: true, excluido_em: true, ajuste_fac: true,
+      },
+    });
 
     // NCM efetivo: READ-ONLY computado, NUNCA persistido (snapshot stale). A F4
     // usa a MESMA resolverNcmEfetivo no engine. override do orcamento vence.
@@ -107,7 +126,8 @@ export class OrcamentosService {
     const ncm_efetivo_origem =
       orc.ncm_id != null ? 'orcamento' : orc.formula?.ncm_id != null ? 'formula' : null;
 
-    return { ...orc, ncm_efetivo, ncm_efetivo_origem };
+    const propostas = orc.proposta_itens.map((i) => i.proposta);
+    return { ...orc, ncm_efetivo, ncm_efetivo_origem, versoes, propostas };
   }
 
   create(dto: CreateOrcamentoDto, userId: string) {
@@ -147,8 +167,9 @@ export class OrcamentosService {
     await this.ensure(id);
     const atual = await this.prisma.orcamento.findUnique({
       where: { id },
-      select: { status: true, calculo: true },
+      select: { status: true, calculo: true, excluido_em: true },
     });
+    if (atual?.excluido_em) throw new BadRequestException('Orcamento excluido nao pode ser editado.');
     const mudaPreco = OrcamentosService.CAMPOS_QUE_MUDAM_PRECO.some(
       (c) => (dto as Record<string, unknown>)[c] !== undefined,
     );
@@ -186,6 +207,221 @@ export class OrcamentosService {
         status: 'rascunho',
         created_by: userId,
       },
+    });
+  }
+
+  /**
+   * VERSAO DERIVADA (10/26): editar um orcamento ja enviado/fechado sem reescrever
+   * o que foi mandado ao cliente. Copia o briefing (e a FAC) para um rascunho novo
+   * da mesma familia: versao_de_id = raiz, versao = maior da familia + 1.
+   */
+  async novaVersao(id: string, userId: string) {
+    const o = await this.prisma.orcamento.findUnique({ where: { id } });
+    if (!o) throw new NotFoundException('Orcamento nao encontrado');
+    if (o.excluido_em) throw new BadRequestException('Orcamento excluido nao gera versao.');
+    const raizId = o.versao_de_id ?? o.id;
+    const ultima = await this.prisma.orcamento.aggregate({
+      where: { OR: [{ id: raizId }, { versao_de_id: raizId }] },
+      _max: { versao: true },
+    });
+    const nova = await this.prisma.orcamento.create({
+      data: {
+        produto: o.produto,
+        cliente_id: o.cliente_id,
+        categoria: o.categoria,
+        nivel: o.nivel,
+        volume_un: o.volume_un,
+        quantidade: o.quantidade,
+        margem_pct: null, // a escada do Motor 2 decide; override manual nao e herdado (C1)
+        formula_id: o.formula_id,
+        ncm_id: o.ncm_id,
+        modo_operacao: o.modo_operacao,
+        embalagem: o.embalagem,
+        un_min: o.un_min,
+        embalagem_id: o.embalagem_id,
+        sem_embalagem: o.sem_embalagem,
+        budget_mp: o.budget_mp,
+        produto_referencia: o.produto_referencia,
+        requer_amostra: o.requer_amostra,
+        amostra_qtd: o.amostra_qtd,
+        ajuste_fac: o.ajuste_fac ?? undefined,
+        ajuste_fac_em: o.ajuste_fac_em,
+        ajuste_fac_por: o.ajuste_fac_por,
+        versao_de_id: raizId,
+        versao: (ultima._max.versao ?? 1) + 1,
+        status: 'rascunho',
+        created_by: userId,
+      },
+    });
+    await this.audit.registrar({
+      userId,
+      acao: 'nova_versao_orcamento',
+      entidade: 'orcamento',
+      entidadeId: nova.id,
+      detalhes: { de: o.numero, de_versao: o.versao, nova: nova.numero, versao: nova.versao },
+    });
+    return nova;
+  }
+
+  /**
+   * EXCLUSAO LOGICA (10/26): some das listas e do painel; historico preservado.
+   * Bloqueada quando ja ha compromisso com o cliente: proposta assinada ou
+   * amostra em andamento.
+   */
+  async excluir(id: string, userId: string, motivo?: string) {
+    const o = await this.prisma.orcamento.findUnique({
+      where: { id },
+      select: {
+        id: true, numero: true, excluido_em: true, amostra_status: true, status: true,
+        proposta_itens: { select: { proposta: { select: { numero: true, status: true } } } },
+      },
+    });
+    if (!o) throw new NotFoundException('Orcamento nao encontrado');
+    if (o.excluido_em) throw new BadRequestException('Orcamento ja excluido.');
+    const assinada = o.proposta_itens.find((i) => i.proposta.status === 'assinada');
+    if (assinada) {
+      throw new BadRequestException(
+        `Orcamento esta na proposta ${assinada.proposta.numero}, ja assinada pelo cliente: crie uma nova versao em vez de excluir.`,
+      );
+    }
+    if (o.amostra_status !== 'nao_solicitada') {
+      throw new BadRequestException(`Amostra em '${o.amostra_status}': nao da para excluir.`);
+    }
+    const r = await this.prisma.orcamento.update({
+      where: { id },
+      data: { excluido_em: new Date(), excluido_por: userId, exclusao_motivo: motivo?.trim() || null },
+    });
+    await this.audit.registrar({
+      userId,
+      acao: 'excluir_orcamento',
+      entidade: 'orcamento',
+      entidadeId: id,
+      detalhes: { numero: o.numero, status: o.status, motivo: motivo ?? null },
+    });
+    return { id: r.id, numero: r.numero, excluido_em: r.excluido_em };
+  }
+
+  /**
+   * FAC (10/26): o comercial ajusta a formula do lab direto no orcamento (rascunho),
+   * dentro dos limites de fac.util. Grava a camada, descarta o calculo (o preco
+   * muda) e avisa o laboratorio. A formula do lab nao e tocada.
+   */
+  async aplicarFac(id: string, pedido: PedidoItemFac[], userId: string) {
+    const o = await this.prisma.orcamento.findUnique({
+      where: { id },
+      select: {
+        id: true, numero: true, produto: true, status: true, formula_id: true, excluido_em: true,
+        cliente: { select: { nome: true } },
+      },
+    });
+    if (!o) throw new NotFoundException('Orcamento nao encontrado');
+    if (o.excluido_em) throw new BadRequestException('Orcamento excluido.');
+    if (o.status !== 'rascunho') {
+      throw new BadRequestException(
+        'Ajuste de formula so no rascunho. Para um orcamento ja enviado, crie uma nova versao.',
+      );
+    }
+    if (o.formula_id == null) throw new BadRequestException('Orcamento sem formula: nada para ajustar.');
+    const [composicao, novas] = await Promise.all([
+      this.prisma.formulaComposicao.findMany({
+        where: { formula_id: o.formula_id },
+        select: { mp_id: true, mp_nome_original: true, concentracao_pct: true, mp: { select: { nome: true } } },
+      }),
+      this.prisma.materiaPrima.findMany({
+        where: { id: { in: pedido.filter((p) => p.acao === 'adicionar').map((p) => p.mp_id) } },
+        select: { id: true, nome: true },
+      }),
+    ]);
+    let ajuste: AjusteFac;
+    try {
+      ajuste = montarAjusteFac(
+        composicao.map((c) => ({
+          mp_id: c.mp_id,
+          nome: c.mp?.nome ?? c.mp_nome_original ?? '(sem nome)',
+          concentracao_pct: c.concentracao_pct != null ? Number(c.concentracao_pct) : 0,
+        })),
+        pedido,
+        new Map(novas.map((m) => [m.id, m.nome])),
+      );
+    } catch (e) {
+      throw new BadRequestException((e as Error).message);
+    }
+    return this.prisma.$transaction(async (tx) => {
+      const r = await tx.orcamento.update({
+        where: { id },
+        data: {
+          ajuste_fac: ajuste as unknown as Prisma.InputJsonValue,
+          ajuste_fac_em: new Date(),
+          ajuste_fac_por: userId,
+          calculo: Prisma.DbNull,
+          preco_sipi: null,
+          preco_cipi: null,
+          score_global: null,
+        },
+      });
+      await this.alertas.gerarAlertaFac(
+        {
+          numero: o.numero,
+          produto: o.produto,
+          cliente: o.cliente?.nome ?? null,
+          evento: 'ajustado',
+          itens: ajuste.itens,
+          compensacao: ajuste.compensacao,
+        },
+        tx,
+      );
+      await this.audit.registrar(
+        {
+          userId,
+          acao: 'ajuste_fac',
+          entidade: 'orcamento',
+          entidadeId: id,
+          detalhes: ajuste as unknown as Prisma.InputJsonValue,
+        },
+        tx,
+      );
+      return r;
+    });
+  }
+
+  /** Remove a FAC: o orcamento volta para a formula do lab (rascunho; calculo descartado). */
+  async removerFac(id: string, userId: string) {
+    const o = await this.prisma.orcamento.findUnique({
+      where: { id },
+      select: {
+        id: true, numero: true, produto: true, status: true, ajuste_fac: true,
+        cliente: { select: { nome: true } },
+      },
+    });
+    if (!o) throw new NotFoundException('Orcamento nao encontrado');
+    if (o.ajuste_fac == null) throw new BadRequestException('Orcamento sem ajuste de formula.');
+    if (o.status !== 'rascunho') throw new BadRequestException('So no rascunho. Crie uma nova versao.');
+    return this.prisma.$transaction(async (tx) => {
+      const r = await tx.orcamento.update({
+        where: { id },
+        data: {
+          ajuste_fac: Prisma.DbNull,
+          ajuste_fac_em: null,
+          ajuste_fac_por: null,
+          calculo: Prisma.DbNull,
+          preco_sipi: null,
+          preco_cipi: null,
+          score_global: null,
+        },
+      });
+      await this.alertas.gerarAlertaFac(
+        {
+          numero: o.numero,
+          produto: o.produto,
+          cliente: o.cliente?.nome ?? null,
+          evento: 'removido',
+          itens: [],
+          compensacao: null,
+        },
+        tx,
+      );
+      await this.audit.registrar({ userId, acao: 'remover_fac', entidade: 'orcamento', entidadeId: id }, tx);
+      return r;
     });
   }
 

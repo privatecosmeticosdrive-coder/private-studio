@@ -104,6 +104,7 @@ model Cliente {
   formulas   Formula[]
   orcamentos Orcamento[]
   projetos_viabilidade ProjetoViabilidade[]
+  propostas  Proposta[]
 
   @@map("clientes")
 }
@@ -414,10 +415,32 @@ model Orcamento {
   preco_cipi   Decimal? @db.Decimal(10, 2)
   pdf_url      String?
 
+  // VERSOES (10/26): editar um orcamento ja enviado/fechado cria uma versao
+  // derivada; versao_de_id aponta SEMPRE para a raiz da familia (v1).
+  versao_de_id String? @db.Uuid
+  versao       Int     @default(1)
+
+  // EXCLUSAO LOGICA (10/26): some das listas, mas o historico (amostras,
+  // auditoria, propostas) continua apontando para a linha.
+  excluido_em     DateTime?
+  excluido_por    String?   @db.Uuid
+  exclusao_motivo String?
+
+  // FORMULA AJUSTADA PELO COMERCIAL — FAC (10/26). Camada sobre a formula do
+  // lab, aplicada no calculo; a formula original nao muda. Shape:
+  // { itens: [{ mp_id, nome, acao: 'alterar'|'adicionar'|'remover', de_pct, para_pct }],
+  //   compensacao: { mp_id, nome, de_pct, para_pct } | null, delta_total_pct }
+  ajuste_fac     Json?
+  ajuste_fac_em  DateTime?
+  ajuste_fac_por String?   @db.Uuid
+
   created_at DateTime @default(now())
   created_by String?  @db.Uuid
   updated_at DateTime @updatedAt
 
+  versao_de           Orcamento?      @relation("OrcamentoVersoes", fields: [versao_de_id], references: [id])
+  versoes             Orcamento[]     @relation("OrcamentoVersoes")
+  proposta_itens      PropostaItem[]
   cliente             Cliente?        @relation(fields: [cliente_id], references: [id])
   formula             Formula?        @relation(fields: [formula_id], references: [id])
   ncm                 Ncm?            @relation(fields: [ncm_id], references: [id]) // F3-prep
@@ -435,7 +458,58 @@ model Orcamento {
   @@index([amostra_responsavel_id])
   @@index([ncm_id]) // F3-prep
   @@index([recusa_motivo]) // Fase 3 — filtro por motivo na lista
+  @@index([versao_de_id])
+  @@index([excluido_em])
   @@map("orcamentos")
+}
+
+// ----------------------- PROPOSTA COMERCIAL (10/26) -----------------------
+// Agrupa orcamentos (um por formula) de UM cliente num documento padronizado
+// que substitui o modelo feito a mao no Canva. Amostra so e produzida depois
+// da proposta ASSINADA. `condicoes` congela os textos/valores usados no PDF;
+// cada item congela o preco do orcamento no momento da emissao.
+
+model Proposta {
+  id                         String    @id @default(uuid()) @db.Uuid
+  numero                     Int       @unique @default(autoincrement())
+  cliente_id                 String    @db.Uuid
+  status                     String    @default("emitida") // emitida | assinada | cancelada
+  condicoes                  Json
+  observacoes                String?
+  vendedor_nome              String?
+  emitida_em                 DateTime  @default(now())
+  emitida_por                String?   @db.Uuid
+  assinada_em                DateTime?
+  assinada_por_nome          String? // quem assinou pelo cliente
+  assinada_por_documento     String? // CPF/cargo informado
+  assinatura_registrada_por  String?   @db.Uuid
+  cancelada_em               DateTime?
+  cancelada_por              String?   @db.Uuid
+  cancelamento_motivo        String?
+  created_at                 DateTime  @default(now())
+  updated_at                 DateTime  @updatedAt
+
+  cliente Cliente        @relation(fields: [cliente_id], references: [id])
+  itens   PropostaItem[]
+
+  @@index([cliente_id])
+  @@index([status])
+  @@map("propostas")
+}
+
+model PropostaItem {
+  id           Int    @id @default(autoincrement())
+  proposta_id  String @db.Uuid
+  orcamento_id String @db.Uuid
+  ordem        Int
+  snapshot     Json // { produto, volume_un, quantidade, preco_sipi, preco_cipi, ipi_pct, com_embalagem, embalagem, fac, versao }
+
+  proposta  Proposta  @relation(fields: [proposta_id], references: [id], onDelete: Cascade)
+  orcamento Orcamento @relation(fields: [orcamento_id], references: [id])
+
+  @@unique([proposta_id, orcamento_id])
+  @@index([orcamento_id])
+  @@map("proposta_itens")
 }
 
 // ----------------------- COTACOES PENDENTES -----------------------

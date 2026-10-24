@@ -123,6 +123,10 @@ svg .s-inbar { font-family: var(--font-mono); font-size: 12px; font-weight: 500;
 svg .s-c1 { fill: var(--c1); } svg .s-c2 { fill: var(--c2); } svg .s-c3 { fill: var(--c3); } svg .s-c4 { fill: var(--c4); }
 svg .s-c5 { fill: var(--c5); } svg .s-c6 { fill: var(--c6); } svg .s-c7 { fill: var(--c7); }
 svg .s-c8 { stroke: var(--bg); } svg rect[class^="s-c"] { stroke: var(--bg); }
+svg .s-line { stroke: var(--ink); } svg .s-line-focal { stroke: var(--gold); }
+svg .s-dot { fill: var(--ink); } svg .s-dot-focal { fill: var(--gold); }
+.volume td:nth-child(n+2), .saude td:nth-child(2), .impun td:nth-child(2), .impun td:nth-child(3), .cenarios td:nth-child(n+2), .v3 td:nth-child(n+2) { font-family: var(--font-mono); white-space: nowrap; }
+section > h3 { margin-top: 8px; }
 </style>
 
 <main>
@@ -646,6 +650,373 @@ svg .s-c8 { stroke: var(--bg); } svg rect[class^="s-c"] { stroke: var(--bg); }
       <tbody><tr><td>Lucro real ou presumido, revenda, SP</td><td>ICMS 12% (art. 34) + 12,5%</td><td>24,5%</td><td>R$ 25,41</td><td>R$ 3,63</td><td>—</td><td>R$ 29,04</td></tr><tr><td>Simples Nacional, revenda</td><td>ICMS 18% + 12,5%</td><td>30,5%</td><td>R$ 29,78</td><td>R$ 4,26</td><td>—</td><td>R$ 34,04</td></tr><tr><td>Consumidor final</td><td>ICMS 18% + 12,5%</td><td>30,5%</td><td>R$ 29,78</td><td>R$ 4,26</td><td>R$ 0,77</td><td>R$ 34,81</td></tr></tbody>
     </table></div>
     <p class="dica">Finalizador 50 ml com embalagem, lote de 1.000. Cliente sem perfil cadastrado entra como o caso mais caro.</p>
+  </section>
+
+  <section id="volume">
+    <header>
+      <p class="passo">Estratégia · por que vender mais</p>
+      <h2>Ganhar menos por pedido, fechar mais pedidos</h2>
+    </header>
+    <div class="texto">
+      <p>A BPO tem razão nos dois lados. No pedido com embalagem, o Motor 2 deixa <span class="num">R$ 8.796</span> por pedido de 1.000 unidades para pagar a estrutura. A planilha antiga deixava <span class="num">R$ 11.077</span>, ou seja, <strong>20,6% a menos por pedido</strong>. Em troca, o preço cai de <span class="num">R$ 28,48</span> para <span class="num">R$ 25,41</span> e a proposta fica mais fácil de fechar. No pedido sem embalagem não há troca: o Motor 2 cobra um pouco mais e deixa <span class="num">6,9% a mais</span>.</p>
+      <p>A conta que a diretoria precisa ver: para o Motor 2 render o mesmo que a planilha nos pedidos com embalagem, ele precisa fechar <strong>1,26 vez</strong> o número de pedidos. Quem fechava 20% das propostas precisa passar a fechar <span class="num">25,2%</span>.</p>
+    </div>
+    <div class="diagrama"><svg viewBox="0 0 1000 338" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="contrib-title contrib-desc" style="min-width:1000px">
+<title id="contrib-title">Quanto cada pedido-tipo deixa para pagar a estrutura</title>
+<desc id="contrib-desc">Contribuição por pedido de 1.000 unidades do Finalizador, depois de impostos, material líquido, frete e tarifa bancária: com embalagem a planilha antiga deixava R$ 11.077 e o Motor 2 deixa R$ 8.796; sem embalagem o Motor 2 deixa mais.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<line x1="320.0" y1="28" x2="320.0" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="320.0" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">R$ 0</text>
+<line x1="450.0" y1="28" x2="450.0" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="450.0" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">R$ 3.000</text>
+<line x1="580.0" y1="28" x2="580.0" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="580.0" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">R$ 6.000</text>
+<line x1="710.0" y1="28" x2="710.0" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="710.0" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">R$ 9.000</text>
+<line x1="840.0" y1="28" x2="840.0" y2="252" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="840.0" y="268" class="s-tick" fill="#6e5e47" text-anchor="middle">R$ 12.000</text>
+<line x1="320" y1="28" x2="320" y2="252" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<rect x="320" y="40" width="480.0" height="28" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="304" y="52" class="s-cat" fill="#1c1712" text-anchor="end">Planilha antiga, com embalagem</text>
+<text x="304" y="65" class="s-sub" fill="#6e5e47" text-anchor="end">preço R$ 28,48</text>
+<text x="810.0" y="58" class="s-val-total" fill="#6e5e47">R$ 11.077</text>
+<rect x="320" y="92" width="381.1" height="28" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1"/>
+<text x="304" y="104" class="s-cat s-cat-focal" fill="#1c1712" text-anchor="end">Motor 2, com embalagem</text>
+<text x="304" y="117" class="s-sub" fill="#6e5e47" text-anchor="end">preço R$ 25,41</text>
+<text x="711.1" y="110" class="s-val-focal" fill="#6e5e47">R$ 8.796</text>
+<rect x="320" y="144" width="308.7" height="28" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="304" y="156" class="s-cat" fill="#1c1712" text-anchor="end">Planilha antiga, sem embalagem</text>
+<text x="304" y="169" class="s-sub" fill="#6e5e47" text-anchor="end">preço R$ 16,21</text>
+<text x="638.7" y="162" class="s-val-total" fill="#6e5e47">R$ 7.123</text>
+<rect x="320" y="196" width="330.1" height="28" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="304" y="208" class="s-cat" fill="#1c1712" text-anchor="end">Motor 2, sem embalagem</text>
+<text x="304" y="221" class="s-sub" fill="#6e5e47" text-anchor="end">preço R$ 16,87</text>
+<text x="660.1" y="214" class="s-val-total" fill="#6e5e47">R$ 7.617</text>
+<line x1="40" y1="286" x2="960" y2="286" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<text x="40" y="308" class="s-legend" fill="#6e5e47">Contribuição = preço − tributos da nota − MP e embalagem líquidas de crédito − frete − 1% de tarifa bancária. A fábrica fica de fora: é custo fixo.</text>
+</svg></div>
+    <div class="diagrama"><svg viewBox="0 0 1000 490" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="conversao-title conversao-desc" style="min-width:1000px">
+<title id="conversao-title">Contribuição por mês conforme a taxa de fechamento</title>
+<desc id="conversao-desc">Com 25 propostas por mês de pedidos-tipo com embalagem, a contribuição cresce com a taxa de fechamento; o Motor 2 precisa fechar 1,259 vezes mais para empatar: 20% na planilha equivalem a 25,2% no Motor 2.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<text transform="rotate(-90 24 210)" x="24" y="210" class="s-eyebrow" fill="#6e5e47" text-anchor="middle">R$ MIL POR MÊS</text>
+<line x1="80" y1="380.0" x2="800" y2="380.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="384.0" class="s-tick" fill="#6e5e47" text-anchor="end">0</text>
+<line x1="80" y1="304.4" x2="800" y2="304.4" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="308.4" class="s-tick" fill="#6e5e47" text-anchor="end">20</text>
+<line x1="80" y1="228.9" x2="800" y2="228.9" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="232.9" class="s-tick" fill="#6e5e47" text-anchor="end">40</text>
+<line x1="80" y1="153.3" x2="800" y2="153.3" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="157.3" class="s-tick" fill="#6e5e47" text-anchor="end">60</text>
+<line x1="80" y1="77.8" x2="800" y2="77.8" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="81.8" class="s-tick" fill="#6e5e47" text-anchor="end">80</text>
+<text x="80.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">0%</text>
+<text x="200.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">5%</text>
+<text x="320.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">10%</text>
+<text x="440.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">15%</text>
+<text x="560.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">20%</text>
+<text x="680.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">25%</text>
+<text x="800.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">30%</text>
+<line x1="80" y1="40" x2="80" y2="380" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="80" y1="380" x2="800" y2="380" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<text x="440" y="420" class="s-eyebrow" fill="#6e5e47" text-anchor="middle">TAXA DE FECHAMENTO DAS PROPOSTAS</text>
+<line x1="200.0" y1="40" x2="200.0" y2="380" class="s-ref" stroke="#1c1712" stroke-width="1" stroke-dasharray="5,4"/>
+<rect x="204.0" y="38" width="66" height="14" class="s-paper" fill="#ffffff"/>
+<text x="208.0" y="49" class="s-eyebrow" fill="#1c1712">HOJE ≈ 5%</text>
+<line x1="560.0" y1="170.8" x2="684.5" y2="170.8" class="s-ref" stroke="#1c1712" stroke-width="1" stroke-dasharray="5,4"/>
+<circle cx="560.0" cy="170.8" r="3.5" class="s-dot" fill="#1c1712"/>
+<circle cx="684.5" cy="170.8" r="3.5" class="s-dot-focal" fill="#8a6320"/>
+<rect x="556.0" y="146.8" width="130" height="15" class="s-paper" fill="#ffffff"/>
+<text x="560.0" y="157.8" class="s-eyebrow" fill="#1c1712">EMPATE: 20% → 25,2%</text>
+<path d="M80.0,380.0 L104.0,369.5 L128.0,359.1 L152.0,348.6 L176.0,338.2 L200.0,327.7 L224.0,317.2 L248.0,306.8 L272.0,296.3 L296.0,285.8 L320.0,275.4 L344.0,264.9 L368.0,254.5 L392.0,244.0 L416.0,233.5 L440.0,223.1 L464.0,212.6 L488.0,202.1 L512.0,191.7 L536.0,181.2 L560.0,170.8 L584.0,160.3 L608.0,149.8 L632.0,139.4 L656.0,128.9 L680.0,118.4 L704.0,108.0 L728.0,97.5 L752.0,87.1 L776.0,76.6 L800.0,66.1" class="s-line" fill="none" stroke="#1c1712" stroke-width="1.4"/>
+<path d="M80.0,380.0 L104.0,371.7 L128.0,363.4 L152.0,355.1 L176.0,346.8 L200.0,338.5 L224.0,330.2 L248.0,321.9 L272.0,313.5 L296.0,305.2 L320.0,296.9 L344.0,288.6 L368.0,280.3 L392.0,272.0 L416.0,263.7 L440.0,255.4 L464.0,247.1 L488.0,238.8 L512.0,230.5 L536.0,222.2 L560.0,213.9 L584.0,205.6 L608.0,197.2 L632.0,188.9 L656.0,180.6 L680.0,172.3 L704.0,164.0 L728.0,155.7 L752.0,147.4 L776.0,139.1 L800.0,130.8" class="s-line-focal" fill="none" stroke="#8a6320" stroke-width="2"/>
+<text x="808" y="70.1" class="s-legend" fill="#1c1712">Planilha antiga</text>
+<text x="808" y="134.8" class="s-cat s-cat-focal" fill="#8a6320">Motor 2</text>
+<line x1="40" y1="436" x2="960" y2="436" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<text x="40" y="454" class="s-legend" fill="#6e5e47">Premissa: 25 propostas por mês, todas de pedido-tipo (Finalizador 50 ml, 1.000 un, com embalagem).</text>
+<text x="40" y="470" class="s-legend" fill="#6e5e47">Taxa de hoje: estimativa grosseira (clientes novos no Omie ÷ propostas do Canva).</text>
+</svg></div>
+    <div class="tabela"><table class="volume">
+      <thead><tr><th>Fechamento hoje</th><th>Pedidos/mês</th><th>Contribuição planilha</th><th>Fechamento p/ empatar no Motor 2</th><th>Pedidos p/ empatar</th><th>Motor 2 se fechar +50%</th><th>Uso da linha (+50%)</th></tr></thead>
+      <tbody><tr><td>5%</td><td>1,3</td><td>R$ 13,8 mil</td><td>6,3%</td><td>1,6</td><td>R$ 16,5 mil</td><td>2,0%</td></tr><tr><td>10%</td><td>2,5</td><td>R$ 27,7 mil</td><td>12,6%</td><td>3,1</td><td>R$ 33,0 mil</td><td>3,9%</td></tr><tr><td>20%</td><td>5,0</td><td>R$ 55,4 mil</td><td>25,2%</td><td>6,3</td><td>R$ 66,0 mil</td><td>7,9%</td></tr><tr><td>30%</td><td>7,5</td><td>R$ 83,1 mil</td><td>37,8%</td><td>9,4</td><td>R$ 99,0 mil</td><td>11,8%</td></tr></tbody>
+    </table></div>
+    <p class="dica">Pedido-tipo: Finalizador 50 ml, 1.000 un, com embalagem, a 6 un/min. Cada um usa 226,7 minutos de linha (corrida + 1 h de setup); a fábrica tem 21.648 minutos produtivos por mês, o equivalente a 95 pedidos-tipo. "Uso da linha" é a fração desses minutos.</p>
+
+    <h3>Onde mora a saúde financeira</h3>
+    <div class="tabela"><table class="saude">
+      <thead><tr><th>A empresa hoje</th><th>Valor</th><th>Leitura</th></tr></thead>
+      <tbody><tr><td>Faturamento do mês</td><td>R$ 489,4 mil</td><td>BPO, rodada 6 (20/10/2026)</td></tr><tr><td>Unidades produzidas</td><td>67.367</td><td>média 2026 apontada no iApp</td></tr><tr><td>Capacidade da fábrica</td><td>126.000 un</td><td>ocupação 53%: há 58.633 un livres por mês</td></tr><tr><td>Estrutura fixa</td><td>R$ 190,6 mil</td><td>fábrica R$ 101,3 mil + adm/comercial R$ 89,3 mil</td></tr><tr><td>Ponto de equilíbrio</td><td>R$ 380,4 mil</td><td>faturamento que paga a estrutura</td></tr><tr class="tot"><td>Lucro operacional</td><td>R$ 54,6 mil (11,2%)</td><td>antes de IR e CSLL</td></tr><tr><td>Concentração</td><td>Nouê 74% do faturamento</td><td>um cliente decide o mês</td></tr></tbody>
+    </table></div>
+    <div class="regras">
+      <article class="atencao"><h3>O argumento se sustenta porque a fábrica está ociosa</h3><p>A fábrica custa R$ 101,3 mil por mês, cheia ou vazia, e roda a 53% da capacidade. Um pedido a mais não aumenta esse custo: toda a contribuição dele vira lucro. Vender mais com margem menor é bom enquanto houver linha livre, e hoje há cerca de 58 mil unidades livres por mês.</p></article>
+      <article class="atencao"><h3>O lucro está na contribuição total, não na margem do pedido</h3><p>Lucro = contribuição por pedido × número de pedidos − estrutura fixa. Margem alta com pouco pedido deixa a estrutura descoberta: o ponto de equilíbrio é R$ 380,4 mil de faturamento.</p></article>
+      <article><h3>Mais clientes, menos risco</h3><p>Hoje a Nouê responde por 74% do faturamento. Fechar mais pedidos de clientes novos também dilui esse risco: se um cliente grande atrasa ou sai, a empresa sobrevive.</p></article>
+      <article><h3>Quando o argumento NÃO se sustenta</h3><p>Se a taxa de fechamento não subir pelo menos 26% nos pedidos com embalagem, o lucro cai. Também cai se o volume novo vier com desconto extra, em lotes abaixo de 1.000 (o setup pesa) ou passar da capacidade (hora extra e turno novo são custos que o motor não prevê).</p></article>
+    </div>
+    <div class="chave">
+      <h3>Como medir se está funcionando</h3>
+      <p>Hoje não há registro de propostas fechadas. A estimativa de cerca de 5% de fechamento sai de uma conta grosseira: clientes faturados pela primeira vez no Omie (6 entre junho e outubro) divididos pelas propostas numeradas no Canva (cerca de 25 por mês). É uma amostra pequena, e o ciclo amostra → pedido leva meses. Com as propostas e o status saindo do Studio (enviada, aprovada, recusada), a taxa real passa a ser medida todo mês. Esse é o número que prova, ou derruba, a tese da BPO.</p>
+    </div>
+  </section>
+
+  <section id="impostos-volume">
+    <header>
+      <p class="passo">Estratégia · a conta do governo</p>
+      <h2>Mais faturamento, mais imposto</h2>
+    </header>
+    <div class="texto">
+      <p>O imposto da nota (ICMS, PIS, COFINS e IPI) cresce junto com o faturamento, pedido a pedido, mesmo que o pedido dê pouco lucro. IRPJ e CSLL vêm depois e levam até 34% do lucro que sobra: 15% de IRPJ, mais 10% de adicional sobre o que passa de R$ 20 mil por mês, mais 9% de CSLL. Por unidade, o Motor 2 recolhe menos (o preço é menor). Só que, para lucrar o mesmo, precisa vender mais unidades.</p>
+    </div>
+    <div class="tabela"><table class="impun">
+      <thead><tr><th>Por unidade (com embalagem)</th><th>Planilha antiga</th><th>Motor 2</th><th>Observação</th></tr></thead>
+      <tbody><tr><td>Preço sem IPI (base dos tributos)</td><td>R$ 28,48</td><td>R$ 25,41</td><td></td></tr><tr><td>ICMS 12% (por dentro)</td><td>R$ 3,42</td><td>R$ 3,05</td><td>débito na saída</td></tr><tr><td>PIS 2,2% (monofásico)</td><td>R$ 0,63</td><td>R$ 0,56</td><td>débito na saída</td></tr><tr><td>COFINS 10,3% (monofásico)</td><td>R$ 2,93</td><td>R$ 2,62</td><td>débito na saída</td></tr><tr><td>IPI 14,3% (por fora)</td><td>R$ 4,07</td><td>R$ 3,63</td><td>o cliente paga; a Private recolhe</td></tr><tr class="sub"><td>Débitos da venda</td><td>R$ 11,05</td><td>R$ 9,86</td><td></td></tr><tr><td>Créditos da compra (MP + embalagem)</td><td>−R$ 2,13</td><td>−R$ 2,13</td><td>iguais nos dois: mesma compra</td></tr><tr class="tot"><td>Imposto a recolher por unidade</td><td>R$ 8,92</td><td>R$ 7,73</td><td>guias do mês seguinte</td></tr><tr><td>Tarifa bancária 1% sobre a nota</td><td>R$ 0,33</td><td>R$ 0,29</td><td>não está no motor</td></tr></tbody>
+    </table></div>
+    <div class="diagrama"><svg viewBox="0 0 1000 490" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="imposto-volume-title imposto-volume-desc" style="min-width:1000px">
+<title id="imposto-volume-title">Imposto e lucro líquido conforme os pedidos novos do mês</title>
+<desc id="imposto-volume-desc">Cada pedido novo soma imposto a recolher em linha reta; o lucro líquido sobe menos, porque IRPJ, adicional e CSLL levam 34% de cada real de lucro; o Motor 2 paga menos imposto por pedido mas precisa de mais pedidos para o mesmo lucro.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<text transform="rotate(-90 24 210)" x="24" y="210" class="s-eyebrow" fill="#6e5e47" text-anchor="middle">R$ MIL POR MÊS</text>
+<line x1="80" y1="380.0" x2="800" y2="380.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="384.0" class="s-tick" fill="#6e5e47" text-anchor="end">0</text>
+<line x1="80" y1="314.6" x2="800" y2="314.6" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="318.6" class="s-tick" fill="#6e5e47" text-anchor="end">25</text>
+<line x1="80" y1="249.2" x2="800" y2="249.2" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="253.2" class="s-tick" fill="#6e5e47" text-anchor="end">50</text>
+<line x1="80" y1="183.8" x2="800" y2="183.8" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="187.8" class="s-tick" fill="#6e5e47" text-anchor="end">75</text>
+<line x1="80" y1="118.5" x2="800" y2="118.5" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="122.5" class="s-tick" fill="#6e5e47" text-anchor="end">100</text>
+<line x1="80" y1="53.1" x2="800" y2="53.1" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="57.1" class="s-tick" fill="#6e5e47" text-anchor="end">125</text>
+<text x="80.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">0</text>
+<text x="200.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">2</text>
+<text x="320.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">4</text>
+<text x="440.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">6</text>
+<text x="560.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">8</text>
+<text x="680.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">10</text>
+<text x="800.0" y="398" class="s-tick" fill="#6e5e47" text-anchor="middle">12</text>
+<line x1="80" y1="40" x2="80" y2="380" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="80" y1="380" x2="800" y2="380" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<text x="440" y="420" class="s-eyebrow" fill="#6e5e47" text-anchor="middle">PEDIDOS-TIPO NOVOS NO MÊS (1.000 UN COM EMBALAGEM)</text>
+<path d="M80.0,280.5 L140.0,261.4 L200.0,242.3 L260.0,223.1 L320.0,204.0 L380.0,184.9 L440.0,165.8 L500.0,146.7 L560.0,127.5 L620.0,108.4 L680.0,89.3 L740.0,70.2 L800.0,51.1" class="s-line" fill="none" stroke="#1c1712" stroke-width="1.4"/>
+<path d="M80.0,280.5 L140.0,265.3 L200.0,250.1 L260.0,235.0 L320.0,219.8 L380.0,204.6 L440.0,189.4 L500.0,174.2 L560.0,159.1 L620.0,143.9 L680.0,128.7 L740.0,113.5 L800.0,98.3" class="s-line-focal" fill="none" stroke="#8a6320" stroke-width="2"/>
+<path d="M80.0,380.0 L140.0,356.7 L200.0,333.3 L260.0,310.0 L320.0,286.7 L380.0,263.3 L440.0,240.0 L500.0,216.7 L560.0,193.3 L620.0,170.0 L680.0,146.7 L740.0,123.4 L800.0,100.0" class="s-line" fill="none" stroke="#1c1712" stroke-width="1.4" stroke-dasharray="6,4"/>
+<path d="M80.0,380.0 L140.0,359.8 L200.0,339.6 L260.0,319.3 L320.0,299.1 L380.0,278.9 L440.0,258.7 L500.0,238.5 L560.0,218.3 L620.0,198.0 L680.0,177.8 L740.0,157.6 L800.0,137.4" class="s-line-focal" fill="none" stroke="#8a6320" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="808" y="55.1" class="s-legend" fill="#1c1712">Lucro líquido, planilha</text>
+<text x="808" y="102.3" class="s-cat s-cat-focal" fill="#8a6320">Lucro líquido, Motor 2</text>
+<text x="808" y="117.3" class="s-legend" fill="#1c1712">Imposto, planilha</text>
+<text x="808" y="141.4" class="s-cat s-cat-focal" fill="#8a6320">Imposto, Motor 2</text>
+<line x1="40" y1="436" x2="960" y2="436" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<text x="40" y="454" class="s-legend" fill="#6e5e47">Linha cheia: lucro líquido da empresa (lucro de hoje + pedidos novos − IR/CSLL).</text>
+<text x="40" y="470" class="s-legend" fill="#6e5e47">Tracejada: ICMS + PIS + COFINS + IPI a recolher sobre os pedidos novos, já sem os créditos.</text>
+</svg></div>
+    <div class="tabela"><table class="cenarios">
+      <thead><tr><th>Mês com pedidos novos</th><th>Pedidos-tipo</th><th>Faturamento (NF)</th><th>Imposto da nota a recolher</th><th>Contribuição nova</th><th>Lucro antes IR</th><th>IRPJ + CSLL</th><th>Lucro líquido</th><th>Imposto total pago</th></tr></thead>
+      <tbody><tr><td>Planilha antiga</td><td>5,0</td><td>R$ 162,8 mil</td><td>R$ 44,6 mil</td><td>R$ 55,4 mil</td><td>R$ 110,0 mil</td><td>R$ 35,4 mil</td><td>R$ 74,6 mil</td><td>R$ 80,0 mil</td></tr><tr><td>Motor 2, mesmo volume</td><td>5,0</td><td>R$ 145,2 mil</td><td>R$ 38,7 mil</td><td>R$ 44,0 mil</td><td>R$ 98,6 mil</td><td>R$ 31,5 mil</td><td>R$ 67,1 mil</td><td>R$ 70,2 mil</td></tr><tr class="tot"><td>Motor 2, volume de empate</td><td>6,3</td><td>R$ 182,9 mil</td><td>R$ 48,7 mil</td><td>R$ 55,4 mil</td><td>R$ 110,0 mil</td><td>R$ 35,4 mil</td><td>R$ 74,6 mil</td><td>R$ 84,1 mil</td></tr><tr><td>Motor 2, conversão +60%</td><td>8,0</td><td>R$ 232,3 mil</td><td>R$ 61,8 mil</td><td>R$ 70,4 mil</td><td>R$ 125,0 mil</td><td>R$ 40,5 mil</td><td>R$ 84,5 mil</td><td>R$ 102,3 mil</td></tr><tr><td>Motor 2 com 10% de desconto</td><td>6,3</td><td>R$ 164,6 mil</td><td>R$ 42,5 mil</td><td>R$ 43,5 mil</td><td>R$ 98,1 mil</td><td>R$ 31,4 mil</td><td>R$ 66,7 mil</td><td>R$ 73,8 mil</td></tr></tbody>
+    </table></div>
+    <div class="diagrama"><svg viewBox="0 0 1000 524" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ultima-linha-title ultima-linha-desc" style="min-width:1000px">
+<title id="ultima-linha-title">Do lucro de hoje à última linha, com os pedidos novos no Motor 2</title>
+<desc id="ultima-linha-desc">Mês com 6,3 pedidos-tipo novos no Motor 2 (volume que empata com 5 pedidos na planilha): o lucro operacional de hoje mais a contribuição dos pedidos novos, menos IRPJ, adicional e CSLL, dá o lucro líquido de R$ 74,6 mil.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<text transform="rotate(-90 24 230)" x="24" y="230" class="s-eyebrow" fill="#6e5e47" text-anchor="middle">R$ MIL POR MÊS</text>
+<line x1="80" y1="420.0" x2="960" y2="420.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="424.0" class="s-tick" fill="#6e5e47" text-anchor="end">0</text>
+<line x1="80" y1="346.9" x2="960" y2="346.9" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="350.9" class="s-tick" fill="#6e5e47" text-anchor="end">25</text>
+<line x1="80" y1="273.8" x2="960" y2="273.8" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="277.8" class="s-tick" fill="#6e5e47" text-anchor="end">50</text>
+<line x1="80" y1="200.8" x2="960" y2="200.8" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="204.8" class="s-tick" fill="#6e5e47" text-anchor="end">75</text>
+<line x1="80" y1="127.7" x2="960" y2="127.7" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="131.7" class="s-tick" fill="#6e5e47" text-anchor="end">100</text>
+<line x1="80" y1="54.6" x2="960" y2="54.6" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="58.6" class="s-tick" fill="#6e5e47" text-anchor="end">125</text>
+<line x1="80" y1="40" x2="80" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="80" y1="420" x2="960" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="184" y1="260.39" x2="224" y2="260.39" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="54.604"/>
+<line x1="308" y1="98.49" x2="348" y2="98.49" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="109.9915"/>
+<line x1="432" y1="98.49" x2="472" y2="98.49" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="109.9915"/>
+<line x1="556" y1="146.71" x2="596" y2="146.71" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="93.4928"/>
+<line x1="680" y1="173.02" x2="720" y2="173.02" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="84.4937"/>
+<line x1="804" y1="201.95" x2="844" y2="201.95" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="74.5945"/>
+<rect x="100" y="260.39" width="84" height="159.61" class="s-paper" fill="#ffffff"/>
+<rect x="100" y="260.39" width="84" height="159.61" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="54.604" data-name="Lucro hoje"/>
+<text x="142" y="252.39" class="s-val-total" fill="#6e5e47" text-anchor="middle">54,60</text>
+<text x="142" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Lucro hoje</text>
+<text x="142" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">BPO, antes de IR</text>
+<rect x="224" y="98.49" width="84" height="161.9" class="s-paper" fill="#ffffff"/>
+<rect x="224" y="98.49" width="84" height="161.9" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="+55.3875" data-name="Pedidos novos"/>
+<text x="266" y="90.49" class="s-val" fill="#6e5e47" text-anchor="middle">+55,39</text>
+<text x="266" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Pedidos novos</text>
+<text x="266" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">contribuição</text>
+<rect x="348" y="98.49" width="84" height="321.51" class="s-paper" fill="#ffffff"/>
+<rect x="348" y="98.49" width="84" height="321.51" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="subtotal" data-value="109.9915" data-name="Lucro antes IR"/>
+<text x="390" y="90.49" class="s-val-total" fill="#6e5e47" text-anchor="middle">109,99</text>
+<text x="390" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Lucro antes IR</text>
+<text x="390" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">do mês</text>
+<rect x="472" y="98.49" width="84" height="48.22" class="s-paper" fill="#ffffff"/>
+<rect x="472" y="98.49" width="84" height="48.22" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-16.4987" data-name="IRPJ 15%"/>
+<text x="514" y="158.71" class="s-val" fill="#6e5e47" text-anchor="middle">−16,50</text>
+<text x="514" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">IRPJ 15%</text>
+<text x="514" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">sobre o lucro</text>
+<rect x="596" y="146.71" width="84" height="26.31" class="s-paper" fill="#ffffff"/>
+<rect x="596" y="146.71" width="84" height="26.31" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1" data-role="delta" data-value="-8.9991" data-name="Adicional 10%"/>
+<text x="638" y="185.02" class="s-val-focal" fill="#6e5e47" text-anchor="middle">−9,00</text>
+<text x="638" y="440" class="s-cat s-cat-focal" fill="#1c1712" text-anchor="middle">Adicional 10%</text>
+<text x="638" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">acima de 20 mil</text>
+<rect x="720" y="173.02" width="84" height="28.93" class="s-paper" fill="#ffffff"/>
+<rect x="720" y="173.02" width="84" height="28.93" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-9.8992" data-name="CSLL 9%"/>
+<text x="762" y="213.95" class="s-val" fill="#6e5e47" text-anchor="middle">−9,90</text>
+<text x="762" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">CSLL 9%</text>
+<text x="762" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">sobre o lucro</text>
+<rect x="844" y="201.95" width="84" height="218.05" class="s-paper" fill="#ffffff"/>
+<rect x="844" y="201.95" width="84" height="218.05" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="74.5945" data-name="Lucro líquido"/>
+<text x="886" y="193.95" class="s-val-total" fill="#6e5e47" text-anchor="middle">74,59</text>
+<text x="886" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Lucro líquido</text>
+<text x="886" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">do mês</text>
+<line x1="40" y1="474" x2="960" y2="474" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<rect x="40" y="492" width="16" height="10" rx="2" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1"/>
+<text x="64" y="501" class="s-legend" fill="#6e5e47">Total / subtotal</text>
+<rect x="240" y="492" width="16" height="10" rx="2" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="264" y="501" class="s-legend" fill="#6e5e47">Soma</text>
+<rect x="440" y="492" width="16" height="10" rx="2" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1"/>
+<text x="464" y="501" class="s-legend" fill="#6e5e47">Subtrai</text>
+<rect x="640" y="492" width="16" height="10" rx="2" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1"/>
+<text x="664" y="501" class="s-legend" fill="#6e5e47">Adicional 10%</text>
+</svg></div>
+    <div class="chave">
+      <h3>O que a tabela mostra</h3>
+      <p>Para chegar ao mesmo lucro líquido (R$ 74,6 mil), o Motor 2 fatura 12,4% a mais (R$ 182,9 mil contra R$ 162,8 mil) e recolhe 9,1% a mais de imposto da nota (R$ 48,7 mil contra R$ 44,6 mil). É mais trabalho, mais compra, mais nota e mais guia para o mesmo resultado. Se a conversão subir 60%, o lucro líquido vai a R$ 84,5 mil. Se o comercial der 10% de desconto para fechar, a empresa vende mais e paga quase o mesmo imposto da planilha, mas o lucro cai para R$ 66,7 mil.</p>
+      <p><strong>Mal administrado, o problema é o caixa.</strong> O imposto vence no mês seguinte ao da nota (dia 20 ou 25), mesmo que o cliente pague só 70% antes e 30% na entrega. Com mais volume, a Private adianta mais imposto ao governo antes de receber. E a tarifa de 1% do banco incide sobre tudo que entra, inclusive o IPI, que é dinheiro do governo; o motor ainda não desconta essa tarifa.</p>
+    </div>
+    <p class="dica">Estimativas mensais, sem saldo credor nem DIFAL. Base de lucro: lucro operacional de hoje da BPO (R$ 54,6 mil), mais os pedidos novos como incremento (a fábrica ociosa já está paga). IRPJ e CSLL pela estimativa mensal do Lucro Real. Os créditos de 21,21% (MP) e 13,82% (embalagem) somam ICMS, PIS/COFINS e IPI de entrada, como no motor.</p>
+  </section>
+
+  <section id="v3-embalagem">
+    <header>
+      <p class="passo">Ideia da diretoria · V3</p>
+      <h2>Cliente paga a embalagem direto ao fornecedor</h2>
+    </header>
+    <div class="texto">
+      <p>Hoje o cliente paga a embalagem dentro do preço da Private. O dinheiro entra na conta, que desconta 1%. A Private paga o fornecedor e o motor já abate o crédito de 13,82% da embalagem. Se o fornecedor não gera crédito (Simples Nacional, por exemplo), esse crédito não volta e a Private fica com <span class="num">R$ 0,36</span> por unidade em vez de <span class="num">R$ 1,18</span>. Não chega a dar prejuízo, mas perde 70% do que ficaria.</p>
+    </div>
+    <div class="diagrama"><svg viewBox="0 0 1000 524" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="emb-hoje-title emb-hoje-desc" style="min-width:1000px">
+<title id="emb-hoje-title">Embalagem de R$ 6,00 no Motor 2: o que fica com a Private</title>
+<desc id="emb-hoje-desc">Por unidade: o cliente paga R$ 8,55 pela parte da embalagem; saem tributos, o pagamento ao fornecedor e a tarifa bancária; o crédito de 13,82% volta; ficam R$ 1,18. Sem crédito do fornecedor, ficam R$ 0,36.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<text transform="rotate(-90 24 230)" x="24" y="230" class="s-eyebrow" fill="#6e5e47" text-anchor="middle">R$ POR UNIDADE</text>
+<line x1="80" y1="420.0" x2="960" y2="420.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="424.0" class="s-tick" fill="#6e5e47" text-anchor="end">0</text>
+<line x1="80" y1="344.0" x2="960" y2="344.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="348.0" class="s-tick" fill="#6e5e47" text-anchor="end">2</text>
+<line x1="80" y1="268.0" x2="960" y2="268.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="272.0" class="s-tick" fill="#6e5e47" text-anchor="end">4</text>
+<line x1="80" y1="192.0" x2="960" y2="192.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="196.0" class="s-tick" fill="#6e5e47" text-anchor="end">6</text>
+<line x1="80" y1="116.0" x2="960" y2="116.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="120.0" class="s-tick" fill="#6e5e47" text-anchor="end">8</text>
+<line x1="80" y1="40.0" x2="960" y2="40.0" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="72" y="44.0" class="s-tick" fill="#6e5e47" text-anchor="end">10</text>
+<line x1="80" y1="40" x2="80" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="80" y1="420" x2="960" y2="420" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<line x1="208" y1="95.22" x2="256" y2="95.22" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="8.5468"/>
+<line x1="352" y1="174.79" x2="400" y2="174.79" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="6.4528"/>
+<line x1="496" y1="402.79" x2="544" y2="402.79" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="0.4528"/>
+<line x1="640" y1="371.28" x2="688" y2="371.28" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="1.2820"/>
+<line x1="784" y1="375.0" x2="832" y2="375.0" class="s-carry" stroke="rgba(28,23,18,0.55)" stroke-width="1" data-carry="1.1843"/>
+<rect x="112" y="95.22" width="96" height="324.78" class="s-paper" fill="#ffffff"/>
+<rect x="112" y="95.22" width="96" height="324.78" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="8.5468" data-name="Preço"/>
+<text x="160" y="87.22" class="s-val-total" fill="#6e5e47" text-anchor="middle">8,55</text>
+<text x="160" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Preço</text>
+<text x="160" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">parte da embalagem</text>
+<rect x="256" y="95.22" width="96" height="79.57" class="s-paper" fill="#ffffff"/>
+<rect x="256" y="95.22" width="96" height="79.57" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-2.094" data-name="Tributos"/>
+<text x="304" y="186.79" class="s-val" fill="#6e5e47" text-anchor="middle">−2,09</text>
+<text x="304" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Tributos</text>
+<text x="304" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">24,5% por dentro</text>
+<rect x="400" y="174.79" width="96" height="228.0" class="s-paper" fill="#ffffff"/>
+<rect x="400" y="174.79" width="96" height="228.0" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-6.0" data-name="Fornecedor"/>
+<text x="448" y="414.79" class="s-val" fill="#6e5e47" text-anchor="middle">−6,00</text>
+<text x="448" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Fornecedor</text>
+<text x="448" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">NF paga</text>
+<rect x="544" y="371.28" width="96" height="31.51" class="s-paper" fill="#ffffff"/>
+<rect x="544" y="371.28" width="96" height="31.51" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1" data-role="delta" data-value="+0.8292" data-name="Crédito"/>
+<text x="592" y="363.28" class="s-val-focal" fill="#6e5e47" text-anchor="middle">+0,83</text>
+<text x="592" y="440" class="s-cat s-cat-focal" fill="#1c1712" text-anchor="middle">Crédito</text>
+<text x="592" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">13,82% volta</text>
+<rect x="688" y="371.28" width="96" height="3.72" class="s-paper" fill="#ffffff"/>
+<rect x="688" y="371.28" width="96" height="3.72" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1" data-role="delta" data-value="-0.0977" data-name="Banco 1%"/>
+<text x="736" y="387.0" class="s-val" fill="#6e5e47" text-anchor="middle">−0,10</text>
+<text x="736" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Banco 1%</text>
+<text x="736" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">sobre o que entra</text>
+<rect x="832" y="375.0" width="96" height="45.0" class="s-paper" fill="#ffffff"/>
+<rect x="832" y="375.0" width="96" height="45.0" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1" data-role="total" data-value="1.1843" data-name="Fica"/>
+<text x="880" y="367.0" class="s-val-total" fill="#6e5e47" text-anchor="middle">1,18</text>
+<text x="880" y="440" class="s-cat" fill="#1c1712" text-anchor="middle">Fica</text>
+<text x="880" y="454" class="s-sub" fill="#6e5e47" text-anchor="middle">com a Private</text>
+<line x1="40" y1="474" x2="960" y2="474" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<rect x="40" y="492" width="16" height="10" rx="2" class="s-total" fill="rgba(28,23,18,0.08)" stroke="#1c1712" stroke-width="1"/>
+<text x="64" y="501" class="s-legend" fill="#6e5e47">Total / subtotal</text>
+<rect x="240" y="492" width="16" height="10" rx="2" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="264" y="501" class="s-legend" fill="#6e5e47">Soma</text>
+<rect x="440" y="492" width="16" height="10" rx="2" class="s-down" fill="#ffffff" stroke="#6e5e47" stroke-width="1"/>
+<text x="464" y="501" class="s-legend" fill="#6e5e47">Subtrai</text>
+<rect x="640" y="492" width="16" height="10" rx="2" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1"/>
+<text x="664" y="501" class="s-legend" fill="#6e5e47">Crédito</text>
+</svg></div>
+    <div class="diagrama"><svg viewBox="0 0 1000 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="emb-casos-title emb-casos-desc" style="min-width:1000px">
+<title id="emb-casos-title">Quanto o cliente desembolsa pela embalagem em cada desenho</title>
+<desc id="emb-casos-desc">Desembolso do cliente por unidade de embalagem de R$ 6,00: hoje no Motor 2 R$ 9,77 com IPI; sem descontar o crédito R$ 11,34; nos desenhos V3, R$ 6,00 ao fornecedor mais a taxa da Private com IPI.</desc>
+<rect width="100%" height="100%" class="s-paper" fill="#ffffff"/>
+<line x1="320.0" y1="28" x2="320.0" y2="304" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="320.0" y="320" class="s-tick" fill="#6e5e47" text-anchor="middle">R$ 0,00</text>
+<line x1="450.0" y1="28" x2="450.0" y2="304" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="450.0" y="320" class="s-tick" fill="#6e5e47" text-anchor="middle">R$ 3,00</text>
+<line x1="580.0" y1="28" x2="580.0" y2="304" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="580.0" y="320" class="s-tick" fill="#6e5e47" text-anchor="middle">R$ 6,00</text>
+<line x1="710.0" y1="28" x2="710.0" y2="304" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="710.0" y="320" class="s-tick" fill="#6e5e47" text-anchor="middle">R$ 9,00</text>
+<line x1="840.0" y1="28" x2="840.0" y2="304" class="s-grid" stroke="rgba(28,23,18,0.08)" stroke-width="0.8"/>
+<text x="840.0" y="320" class="s-tick" fill="#6e5e47" text-anchor="middle">R$ 12,00</text>
+<line x1="320" y1="28" x2="320" y2="304" class="s-axis" stroke="rgba(28,23,18,0.25)" stroke-width="1"/>
+<rect x="320" y="40" width="423.3" height="28" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="304" y="52" class="s-cat" fill="#1c1712" text-anchor="end">Motor 2 hoje</text>
+<text x="304" y="65" class="s-sub" fill="#6e5e47" text-anchor="end">fornecedor com crédito</text>
+<text x="753.3" y="58" class="s-val-total" fill="#6e5e47">R$ 9,77</text>
+<rect x="320" y="92" width="423.3" height="28" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="304" y="104" class="s-cat" fill="#1c1712" text-anchor="end">Motor 2 hoje</text>
+<text x="304" y="117" class="s-sub" fill="#6e5e47" text-anchor="end">fornecedor sem crédito</text>
+<text x="753.3" y="110" class="s-val-total" fill="#6e5e47">R$ 9,77</text>
+<rect x="320" y="144" width="491.2" height="28" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="304" y="156" class="s-cat" fill="#1c1712" text-anchor="end">Motor 2 sem descontar crédito</text>
+<text x="304" y="169" class="s-sub" fill="#6e5e47" text-anchor="end">preço com margem de segurança</text>
+<text x="821.2" y="162" class="s-val-total" fill="#6e5e47">R$ 11,34</text>
+<rect x="320" y="196" width="283.7" height="28" class="s-up" fill="rgba(110,94,71,0.16)" stroke="#6e5e47" stroke-width="1"/>
+<text x="304" y="208" class="s-cat" fill="#1c1712" text-anchor="end">V3 como proposta</text>
+<text x="304" y="221" class="s-sub" fill="#6e5e47" text-anchor="end">NF à Private, cliente paga</text>
+<text x="613.7" y="214" class="s-val-total" fill="#6e5e47">R$ 6,55</text>
+<rect x="320" y="248" width="338.9" height="28" class="s-focal" fill="rgba(184,131,42,0.14)" stroke="#8a6320" stroke-width="1"/>
+<text x="304" y="260" class="s-cat s-cat-focal" fill="#1c1712" text-anchor="end">V3 recomendada</text>
+<text x="304" y="273" class="s-sub" fill="#6e5e47" text-anchor="end">embalagem do cliente, por conta e ordem</text>
+<text x="668.9" y="266" class="s-val-focal" fill="#6e5e47">R$ 7,82</text>
+<line x1="40" y1="338" x2="960" y2="338" class="s-rule" stroke="rgba(28,23,18,0.10)" stroke-width="0.8"/>
+<text x="40" y="360" class="s-legend" fill="#6e5e47">Em todos os casos a Private fica com o mesmo resultado (R$ 1,18 por unidade), exceto "sem crédito" (R$ 0,36) e "sem descontar crédito" (R$ 1,37).</text>
+</svg></div>
+    <div class="tabela"><table class="v3">
+      <thead><tr><th>Por unidade (embalagem R$ 6,00)</th><th>Motor 2, com crédito</th><th>Motor 2, sem crédito</th><th>Motor 2 sem descontar crédito</th><th>V3 como proposta</th><th>V3 recomendada</th></tr></thead>
+      <tbody><tr><td>Cliente desembolsa (com IPI)</td><td>R$ 9,77</td><td>R$ 9,77</td><td>R$ 11,34</td><td>R$ 6,55</td><td>R$ 7,82</td></tr><tr><td>Entra na conta da Private</td><td>R$ 9,77</td><td>R$ 9,77</td><td>R$ 11,34</td><td>R$ 0,55</td><td>R$ 1,82</td></tr><tr><td>Tarifa bancária 1%</td><td>−R$ 0,10</td><td>−R$ 0,10</td><td>−R$ 0,11</td><td>−R$ 0,01</td><td>−R$ 0,02</td></tr><tr><td>Private paga ao fornecedor</td><td>−R$ 6,00</td><td>−R$ 6,00</td><td>−R$ 6,00</td><td>cliente paga</td><td>cliente paga</td></tr><tr><td>Crédito de entrada</td><td>+R$ 0,83</td><td>—</td><td>—</td><td>+R$ 0,83</td><td>—</td></tr><tr><td>Tributos da Private (24,5%)</td><td>−R$ 2,09</td><td>−R$ 2,09</td><td>−R$ 2,43</td><td>−R$ 0,12</td><td>−R$ 0,39</td></tr><tr><td>Valor na NF da Private (sem IPI)</td><td>R$ 8,55</td><td>R$ 8,55</td><td>R$ 9,92</td><td>R$ 0,48</td><td>R$ 1,59</td></tr><tr class="tot"><td>Fica com a Private por unidade</td><td>R$ 1,18</td><td>R$ 0,36</td><td>R$ 1,37</td><td>R$ 1,18</td><td>R$ 1,18</td></tr><tr><td>Por pedido de 1.000 un</td><td>R$ 1.184</td><td>R$ 355</td><td>R$ 1.374</td><td>R$ 1.184</td><td>R$ 1.184</td></tr></tbody>
+    </table></div>
+    <div class="chave">
+      <h3>Minha opinião</h3>
+      <p>O objetivo é certo: tirar a embalagem da conta bancária, do risco de crédito e, principalmente, da base de tributos da Private. É ela que faz R$ 6,00 virarem R$ 9,77 para o cliente. O desenho "NF em nome da Private, paga pelo cliente" é o que preocupa. A embalagem sai dentro do produto vendido pela Private. Se ela é da Private (NF em seu nome, crédito tomado), o valor dela precisa estar na nota de venda; se não estiver, é subfaturamento, com risco de autuação no ICMS e no IPI. E quem deve ao fornecedor é a Private, mesmo que o cliente não pague.</p>
+      <p>O caminho seguro, que a Private já usa em outras operações (venda à ordem / remessa por conta e ordem), é este: o fornecedor fatura a embalagem <strong>para o cliente</strong>, com entrega na Private. A embalagem entra como material do cliente na industrialização, e a Private cobra só a industrialização mais uma taxa de gestão sobre a embalagem. No Studio, isso é o modo "híbrido" com uma taxa de gestão da embalagem, que ainda não existe. Para a Private ficar com o mesmo R$ 1,18 por unidade, a taxa é de <strong>R$ 1,59 por unidade (26,5% do valor da embalagem)</strong>. O cliente desembolsa R$ 7,82 em vez de R$ 9,77 (20% menos).</p>
+    </div>
+    <div class="regras">
+      <article class="atencao"><h3>Validar com o contador antes de usar</h3><p>Base do IPI e do ICMS na industrialização por encomenda (se o valor da embalagem do cliente entra na base), CFOPs de remessa e retorno (5.901/5.902/5.124 e venda à ordem 5.923/6.923), e se a taxa de gestão é industrialização ou serviço.</p></article>
+      <article class="atencao"><h3>Se insistir na NF em nome da Private</h3><p>A taxa que empata é de só R$ 0,48 por unidade, mas ela depende de tomar R$ 0,83 de crédito sobre uma compra que a Private não pagou. Precisa de contrato tripartite, comprovante do pagamento pelo cliente, lançamento contábil como adiantamento de cliente e valor da embalagem na nota de venda.</p></article>
+      <article><h3>Garantia ao fornecedor</h3><p>No desenho recomendado, o fornecedor cobra o cliente e a Private não assume a dívida. Mas a produção só começa com a embalagem recebida: o prazo de entrega passa a depender do pagamento do cliente ao fornecedor.</p></article>
+      <article><h3>Ajuste que já vale no Motor 2</h3><p>Quando o fornecedor da embalagem não gera crédito, não descontar os 13,82%: a Private fica com R$ 1,37 por unidade, mas o cliente paga R$ 11,34. Também vale incluir a tarifa bancária de 1% como parâmetro do motor.</p></article>
+    </div>
   </section>
 
   <section id="regras">

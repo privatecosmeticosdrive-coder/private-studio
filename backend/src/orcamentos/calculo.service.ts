@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import type { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import type { ParametrosCusto } from './custo-engine';
 import {
@@ -33,6 +34,7 @@ import type {
 } from './matriz-fiscal.util';
 import { resolverTributosSaida } from './matriz-fiscal.util';
 import { hojeSaoPaulo } from './hoje.util';
+import { aplicarAjusteFac, type AjusteFac } from './fac.util';
 
 /** Tolerância da soma da composição (pontos percentuais) antes de normalizar. */
 export const TOLERANCIA_SOMA_PCT = 0.5;
@@ -139,7 +141,9 @@ export class CalculoService {
     };
     const [cfg, formula, motor, embBruta, ncmRow, fiscais, producao] = await Promise.all([
       this.getParametros(),
-      orc.formula_id ? this.carregarFormula(orc.formula_id) : Promise.resolve(null),
+      orc.formula_id
+        ? this.carregarFormula(orc.formula_id, orc.ajuste_fac as AjusteFac | null)
+        : Promise.resolve(null),
       overrides.motor != null
         ? Promise.resolve<MotorPrecificacao>(overrides.motor)
         : this.ouBadRequest(() => lerMotorPadrao(this.prisma, hoje)),
@@ -292,6 +296,8 @@ export class CalculoService {
             origem: formula.origem,
           }
         : null,
+      // FAC: formula ajustada pelo comercial (a do lab nao muda). Tag no orcamento/PDF interno.
+      ajuste_fac: formula && orc.ajuste_fac ? orc.ajuste_fac : null,
       embalagem: emb.snapshot,
       ingredientes: formula?.ingredientes ?? [],
     };
@@ -524,30 +530,53 @@ export class CalculoService {
   }
 
   // ---------------- carrega formula + custo atual + score ----------------
-  private async carregarFormula(formulaId: number): Promise<FormulaComCusto> {
-    const f = await this.prisma.formula.findUnique({
-      where: { id: formulaId },
-      include: {
-        composicao: {
-          orderBy: { ordem: 'asc' },
-          include: {
-            mp: {
-              select: {
-                codigo: true,
-                nome: true,
-                preco_kg_brl: true,
-                data_cotacao: true,
-              },
-            },
+  private async carregarFormula(formulaId: number, fac?: AjusteFac | null): Promise<FormulaComCusto> {
+    const mpSelect = { codigo: true, nome: true, preco_kg_brl: true, data_cotacao: true } as const;
+    const adicionadas = fac?.itens.filter((i) => i.acao === 'adicionar').map((i) => i.mp_id) ?? [];
+    const [f, mpsNovas] = await Promise.all([
+      this.prisma.formula.findUnique({
+        where: { id: formulaId },
+        include: {
+          composicao: {
+            orderBy: { ordem: 'asc' },
+            include: { mp: { select: mpSelect } },
           },
         },
-      },
-    });
+      }),
+      adicionadas.length
+        ? this.prisma.materiaPrima.findMany({ where: { id: { in: adicionadas } }, select: { id: true, ...mpSelect } })
+        : Promise.resolve(
+            [] as { id: number; codigo: number; nome: string; preco_kg_brl: Prisma.Decimal | null; data_cotacao: Date | null }[],
+          ),
+    ]);
     if (!f) return null;
 
+    // FAC: camada do comercial sobre a formula do lab (fac.util). Sem ajuste = base intacta.
+    const composicao = aplicarAjusteFac(
+      f.composicao.map((c) => ({
+        ...c,
+        nome: c.mp?.nome ?? c.mp_nome_original ?? '',
+        concentracao_pct: c.concentracao_pct != null ? Number(c.concentracao_pct) : 0,
+      })),
+      fac,
+      (item) => {
+        const mp = mpsNovas.find((m) => m.id === item.mp_id) ?? null;
+        return {
+          ...f.composicao[0],
+          id: 0,
+          mp_id: item.mp_id,
+          mp,
+          mp_nome_original: item.nome,
+          fase: null,
+          nome: mp?.nome ?? item.nome,
+          concentracao_pct: item.para_pct,
+        };
+      },
+    );
+
     let custoAtual = 0;
-    const ingredientes = f.composicao.map((c) => {
-      const conc = c.concentracao_pct != null ? Number(c.concentracao_pct) : 0;
+    const ingredientes = composicao.map((c) => {
+      const conc = c.concentracao_pct;
       const preco =
         c.mp?.preco_kg_brl != null ? Number(c.mp.preco_kg_brl) : null;
       const custo = preco != null ? (conc / 100) * preco : null;
@@ -560,6 +589,7 @@ export class CalculoService {
         custo_na_formula: custo != null ? Number(custo.toFixed(4)) : null,
         score: c.mp ? scoreCotacao(c.mp.data_cotacao) : 50,
         fase: c.fase,
+        ...(c.fac ? { fac: c.fac } : {}),
       };
     });
 

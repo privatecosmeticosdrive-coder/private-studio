@@ -22,6 +22,7 @@ import { SystemConfigModule } from './system-config/system-config.module';
 import { MatrizCustoModule } from './matriz-custo/matriz-custo.module';
 import { PendenciasLabModule } from './pendencias-lab/pendencias-lab.module';
 import { ViabilidadeModule } from './viabilidade/viabilidade.module';
+import { PropostasModule } from './propostas/propostas.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ViabilidadeModule } from './viabilidade/viabilidade.module';
     SystemConfigModule,
     MatrizCustoModule,
     ViabilidadeModule,
+    PropostasModule,
     PendenciasLabModule,
     HealthModule,
   ],
